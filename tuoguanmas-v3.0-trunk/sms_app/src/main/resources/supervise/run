@@ -1,0 +1,15 @@
+#!/bin/sh
+
+TGMAS_HOME=/var/tgmas
+SMS_HOME=${TGMAS_HOME}/sms-app
+APP_NAME=$1
+JAVA_HOME=${TGMAS_HOME}/jdk
+
+cd ${SMS_HOME}/logs
+
+# java -Dsun.net.inetaddr.ttl=10 -Xms256M -Xmx512M -Xss5M -cp .:../lib/* LeadTone.Center.CMPPCenter configs/config/sms-config.xml  configs/config/log4j.properties bj &
+
+${JAVA_HOME}/bin/java -Dsun.net.inetaddr.ttl=10 -Xms256M -Xmx512M -Xss5M -cp .:../../sms-app/:../../lib/* LeadTone.Center.CMPPCenter ../../sms-app/configs/config/sms-config.xml ../../sms-app/configs/config/log4j.properties ../../sms-app/configs/config/to_transfer.properties ${APP_NAME} & 
+
+
+cd ..

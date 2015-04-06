@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="vote">
+	 
+	<typeAlias alias="VoteAlias" type="com.leadtone.mas.bizplug.vote.bean.MasSmsToupiaodiaocha"/>
+	 <typeAlias alias="VoteOptionAlias" type="com.leadtone.mas.bizplug.vote.bean.MasSmsToupiaoxuanxiang"/>
+	<typeAlias alias="VoteResultAlias" type="com.leadtone.mas.bizplug.vote.bean.MasSmsToupiaojieguo"/>
+
+	<resultMap class="VoteAlias" id="toupiaodiaocha">
+		<result property="id" column="id" jdbcType="BIGINT"/>
+		<result property="title" column="title" jdbcType="VARCHAR"/>
+		<result property="tos" column="tos" jdbcType="VARCHAR"/>
+		<result property="commit_time" column="commit_time" jdbcType="DATE"/>
+		<result property="ready_send_time" column="ready_send_time" jdbcType="DATE"/>
+		<result property="begin_time" column="begin_time" jdbcType="DATE"/>
+		<result property="end_time" column="end_time" jdbcType="DATE"/>
+		<result property="content" column="content" jdbcType="VARCHAR"/>
+		<result property="create_by" column="create_by" jdbcType="BIGINT"/>
+		<result property="multi_selected_number" column="multi_selected_number" jdbcType="INT"/>
+		<result property="support_repeat" column="support_repeat" jdbcType="INT"/>
+		<result property="effective_mode" column="effective_mode" jdbcType="INT"/>
+		<result property="need_successful_remind" column="need_successful_remind" jdbcType="INT"/>
+		<result property="need_successful_content" column="need_successful_content" jdbcType="VARCHAR"/>
+		<result property="need_not_permmit_remind" column="need_not_permmit_remind" jdbcType="INT"/>
+		<result property="need_not_permmit_content" column="need_not_permmit_content" jdbcType="VARCHAR"/>
+		<result property="need_content_error_remind" column="need_content_error_remind" jdbcType="INT"/>
+		<result property="need_content_error_content" column="need_content_error_content" jdbcType="VARCHAR"/>
+		<result property="taskNumber" column="taskNumber" jdbcType="VARCHAR"/>
+		<result property="deleted" column="deleted" jdbcType="INT"/>
+	</resultMap>
+	 <resultMap class="VoteOptionAlias" id="toupiaoxuanxiang">
+		<result property="id" column="id" jdbcType="BIGINT"/>
+		<result property="tpdc_id" column="tpdc_id" jdbcType="BIGINT"/>
+		<result property="order_number" column="order_number" jdbcType="VARCHAR"/>
+		<result property="answer_content" column="answer_content" jdbcType="VARCHAR"/>
+		<result property="create_time" column="create_time" jdbcType="DATE"/>
+		<result property="modify_time" column="modify_time" jdbcType="DATE"/>
+		<result property="create_by" column="create_by" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<resultMap class="VoteResultAlias" id="toupiaojieguo">
+		<result property="id" column="id" jdbcType="BIGINT"/>
+		<result property="tpdc_id" column="tpdc_id" jdbcType="BIGINT"/>
+		<result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="order_number" column="order_number" jdbcType="VARCHAR"/>
+		<result property="answer_content" column="answer_content" jdbcType="VARCHAR"/>
+		<result property="create_time" column="create_time" jdbcType="DATE"/>
+		<result property="create_by" column="create_by" jdbcType="BIGINT"/>
+	</resultMap> 
+	
+	<resultMap id="VoteList" class="com.leadtone.mas.bizplug.vote.bean.MasSmsVoteList">
+		<result property="id" column="id"/>
+		<result property="title" column="title"/>
+		<result property="begin_time" column="begin_time"/>
+		<result property="end_time" column="end_time"/>
+		<result property="create_by" column="create_by"/>
+		<result property="result_count" column="result_count"/>
+	</resultMap>
+	<resultMap id="VoteExportList" class="com.leadtone.mas.bizplug.vote.bean.MasSmsVoteExportList">
+		<result property="title" column="title"/>
+		<result property="begin_time" column="begin_time"/>
+		<result property="end_time" column="end_time"/>
+		<result property="create_by" column="create_by"/>
+		<result property="result_count" column="result_count"/>
+		<result property="tos" column="tos"/>
+		<result property="content" column="content"/>
+		<result property="voteoptions" column="voteoptions"/>
+	</resultMap>
+	<insert id="insertVote" parameterClass="VoteAlias">
+		INSERT INTO mbn_sms_toupiaodiaocha
+		(id,title,tos,commit_time,ready_send_time,begin_time,end_time,content,create_by,multi_selected_number,support_repeat,effective_mode,need_successful_remind,need_successful_content,need_not_permmit_remind,need_not_permmit_content,need_content_error_remind,need_content_error_content,taskNumber,deleted)
+		VALUES
+		(#id#,#title#,#tos#,#commit_time#,#ready_send_time#,#begin_time#,#end_time#,#content#,#create_by#,#multi_selected_number#,#support_repeat#,#effective_mode#,#need_successful_remind#,#need_successful_content#,#need_not_permmit_remind#,#need_not_permmit_content#,#need_content_error_remind#,#need_content_error_content#,#taskNumber#,#deleted#)
+	</insert>
+	<update id="deleteVote" parameterClass="java.lang.Long">
+		UPDATE mbn_sms_toupiaodiaocha
+		SET deleted=1
+		WHERE id=#id#
+	</update>
+	<insert id="insertVoteOption" parameterClass="VoteOptionAlias">
+		INSERT INTO mbn_sms_toupiaodiaocha_toupiaoxuanxiang
+		(id,tpdc_id,order_number,answer_content,create_time,modify_time,create_by)
+		VALUES
+		(#id#,#tpdc_id#,#order_number#,#answer_content#,#create_time#,#modify_time#,#create_by#)
+	</insert>
+	<insert id="insertVoteResult" parameterClass="VoteResultAlias">
+		INSERT INTO mbn_sms_toupiaodiaocha_toupiaojieguo
+		(id,tpdc_id,mobile,name,order_number,answer_content,create_time,create_by)
+		VALUES
+		(#id#,#tpdc_id#,#mobile#,#name#,#order_number#,#answer_content#,#create_time#,#create_by#)
+	</insert>
+	<delete id="deleteVoteResult" parameterClass="java.lang.Long">
+		delete from mbn_sms_toupiaodiaocha_toupiaojieguo where id=#id#
+	</delete>
+	<update id="closeVote" parameterClass="java.util.Map">
+		UPDATE mbn_sms_toupiaodiaocha
+		SET end_time=#end_time:DATETIME#
+		WHERE id=#id#
+	</update>
+ 
+	<select id="queryVoteByTaskNumber" parameterClass="java.util.Map" resultClass="VoteAlias">
+		SELECT a.id,title,tos,commit_time,ready_send_time,begin_time,end_time,content,a.create_by,multi_selected_number,support_repeat,effective_mode,need_successful_remind,need_successful_content,need_not_permmit_remind,need_not_permmit_content,need_content_error_remind,need_content_error_content,taskNumber,deleted FROM mbn_sms_toupiaodiaocha a
+		LEFT JOIN portal_user b ON a.create_by=b.id
+		WHERE b.merchant_pin=#merchant_pin# AND a.taskNumber=#taskNumber#
+	</select>
+	<select id="queryVoteResultByNum" parameterClass="java.util.Map" resultClass="VoteResultAlias">
+		SELECT id,tpdc_id,mobile,NAME,order_number,answer_content,create_time,create_by FROM mbn_sms_toupiaodiaocha_toupiaojieguo
+		WHERE tpdc_id=#tpdc_id# and mobile=#mobile#
+	</select>
+	
+	
+	
+	<select id="queryVoteById" parameterClass="java.lang.Long" resultClass="VoteAlias">
+		SELECT id,title,tos,commit_time,ready_send_time,begin_time,end_time,content,create_by,multi_selected_number,support_repeat,effective_mode,need_successful_remind,need_successful_content,need_not_permmit_remind,need_not_permmit_content,need_content_error_remind,need_content_error_content,taskNumber,deleted FROM mbn_sms_toupiaodiaocha
+		WHERE id=#id#
+	</select>
+	<select id="queryVoteOptionById" parameterClass="java.lang.Long" resultClass="VoteOptionAlias">
+		SELECT id,tpdc_id,order_number,answer_content,create_time,modify_time,create_by FROM mbn_sms_toupiaodiaocha_toupiaoxuanxiang
+		WHERE tpdc_id=#tpdc_id#
+	</select>
+	<select id="queryVoteResultList" parameterClass="java.lang.Long" resultClass="VoteResultAlias">
+		SELECT id,tpdc_id,mobile,NAME,order_number,answer_content,create_time,create_by FROM mbn_sms_toupiaodiaocha_toupiaojieguo
+		WHERE tpdc_id=#tpdc_id#
+	</select>
+	<select id="queryVoteResultById" parameterClass="java.util.Map" resultClass="VoteResultAlias">
+		SELECT id,tpdc_id,mobile,NAME,order_number,answer_content,create_time,create_by FROM mbn_sms_toupiaodiaocha_toupiaojieguo
+		WHERE tpdc_id=#tpdc_id#
+		<isNotNull prepend="and" property="name">
+			name like 
+			CONCAT('%',#name:VARCHAR#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="mobile">
+			mobile LIKE
+			CONCAT('%',#mobile:VARCHAR#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<![CDATA[create_time>=#startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+			<![CDATA[create_time<=#endDate:DATETIME#]]>
+		</isNotNull>
+		ORDER BY create_time DESC
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit #startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<select id="queryVoteResultByIdCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		SELECT count(1) FROM mbn_sms_toupiaodiaocha_toupiaojieguo
+		WHERE tpdc_id=#tpdc_id#
+		<isNotNull prepend="and" property="name">
+			name like 
+			CONCAT('%',#name:VARCHAR#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="mobile">
+			mobile LIKE
+			CONCAT('%',#mobile:VARCHAR#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<![CDATA[create_time>=#startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+			<![CDATA[create_time<=#endDate:DATETIME#]]>
+		</isNotNull>
+	</select>
+		
+   <!-- 导出已发送投票-->
+	<select id="exportVoteBySend" parameterClass="java.util.Map" resultMap="VoteExportList">
+		SELECT a.title,a.begin_time,a.end_time,d.voteoptions,a.tos,a.content,
+        (SELECT pu.name FROM portal_user pu WHERE a.create_by=pu.id) AS create_by,
+        (SELECT COUNT(1) FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id ) AS result_count 
+        FROM mbn_sms_toupiaodiaocha a
+        RIGHT JOIN (SELECT DISTINCT batch_id FROM mbn_sms_had_send WHERE operation_id=4) AS c ON c.batch_id=a.id
+        LEFT JOIN (SELECT  tpdc_id,GROUP_CONCAT(order_number,',',answer_content ORDER BY order_number) AS voteoptions FROM mbn_sms_toupiaodiaocha_toupiaoxuanxiang  GROUP BY tpdc_id) d ON d.tpdc_id=c.batch_id
+        WHERE a.deleted=0  and create_by=#createby:BIGINT#
+        <isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+	</select>
+	<!-- 导出未发送投票-->
+	<select id="exportVoteByNotSend" parameterClass="java.util.Map" resultMap="VoteExportList">
+		SELECT a.title,a.begin_time,a.end_time,d.voteoptions,a.tos,a.content,
+        (SELECT pu.name FROM portal_user pu WHERE a.create_by=pu.id) AS create_by,
+        (SELECT COUNT(1) FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id ) AS result_count 
+        FROM mbn_sms_toupiaodiaocha a
+        RIGHT JOIN (SELECT DISTINCT batch_id FROM mbn_sms_ready_send WHERE operation_id=4) AS c ON c.batch_id=a.id
+        LEFT JOIN (SELECT  tpdc_id,GROUP_CONCAT(order_number,',',answer_content ORDER BY order_number) AS voteoptions FROM mbn_sms_toupiaodiaocha_toupiaoxuanxiang  GROUP BY tpdc_id) d ON d.tpdc_id=c.batch_id
+        WHERE a.deleted=0  and create_by=#createby:BIGINT#
+        <isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+	</select>
+	<!-- 导出已回复投票-->
+	<select id="exportVoteByReply" parameterClass="java.util.Map" resultMap="VoteExportList">
+	SELECT a.id,a.title,a.begin_time,a.end_time,d.voteoptions,a.tos,a.content,
+        (SELECT pu.name FROM portal_user pu WHERE a.create_by=pu.id) AS create_by,
+        (SELECT COUNT(1)  FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id ) AS result_count 
+        FROM mbn_sms_toupiaodiaocha a
+        LEFT JOIN (SELECT  tpdc_id,GROUP_CONCAT(order_number,',',answer_content ORDER BY order_number) AS voteoptions FROM mbn_sms_toupiaodiaocha_toupiaoxuanxiang  GROUP BY tpdc_id) d ON d.tpdc_id=a.id
+		WHERE a.deleted=0 AND (SELECT COUNT(1) AS result_count FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id )>0 AND create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+	
+	</select>
+	<!-- 查询已发送投票-->
+	<select id="queryVoteBySend" parameterClass="java.util.Map" resultMap="VoteList">
+        SELECT a.id,a.title,a.begin_time,a.end_time,
+        (SELECT pu.name FROM portal_user pu WHERE a.create_by=pu.id) AS create_by,
+        (SELECT COUNT(1) FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id ) AS result_count 
+        FROM mbn_sms_toupiaodiaocha a
+        RIGHT JOIN (SELECT DISTINCT batch_id FROM mbn_sms_had_send WHERE operation_id=4) AS c ON c.batch_id=a.id
+		WHERE a.deleted=0  and create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+		order by commit_time desc
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit #startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+    </select>
+    <!-- 查询已发送投票数目-->
+	<select id="queryVoteBySendCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+        SELECT count(1) 
+        FROM mbn_sms_toupiaodiaocha a
+        RIGHT JOIN (SELECT DISTINCT batch_id FROM mbn_sms_had_send WHERE operation_id=4) AS c ON c.batch_id=a.id
+		WHERE a.deleted=0  and create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+    </select>
+	<!-- 查询待发送投票-->
+	<select id="queryVoteByNotSend" parameterClass="java.util.Map" resultMap="VoteList">
+        SELECT a.id,a.title,a.begin_time,a.end_time,
+        (SELECT pu.name FROM portal_user pu WHERE a.create_by=pu.id) AS create_by,
+        (SELECT COUNT(1) FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id ) AS result_count 
+        FROM mbn_sms_toupiaodiaocha a
+        RIGHT JOIN (SELECT DISTINCT batch_id FROM mbn_sms_ready_send WHERE operation_id=4) AS c ON c.batch_id=a.id
+		WHERE a.deleted=0  and create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+		order by commit_time desc
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit #startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+    </select>
+    <!-- 查询待发送投票数量-->
+	<select id="queryVoteByNotSendCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+        SELECT count(1) 
+        FROM mbn_sms_toupiaodiaocha a
+        RIGHT JOIN (SELECT DISTINCT batch_id FROM mbn_sms_ready_send WHERE operation_id=4) AS c ON c.batch_id=a.id
+		WHERE a.deleted=0  and create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+    </select>
+    <!-- 查询已回复投票-->
+	<select id="queryVoteByReply" parameterClass="java.util.Map" resultMap="VoteList">
+        SELECT a.id,a.title,a.begin_time,a.end_time,
+        (SELECT pu.name FROM portal_user pu WHERE a.create_by=pu.id) AS create_by,
+        (SELECT COUNT(1)  FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id ) AS result_count 
+        FROM mbn_sms_toupiaodiaocha a
+		WHERE a.deleted=0 and (SELECT COUNT(1) AS result_count FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id )>0 and create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+		order by commit_time desc
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit #startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+    </select>
+    <!-- 查询已回复投票-->
+	<select id="queryVoteByReplyCount" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+        SELECT Count(1) 
+        FROM mbn_sms_toupiaodiaocha a
+		WHERE a.deleted=0  and (SELECT COUNT(1) FROM mbn_sms_toupiaodiaocha_toupiaojieguo b WHERE a.id=b.tpdc_id )>0 and create_by=#createby:BIGINT#
+		<isNotNull prepend="and" property="title">
+			title like
+			CONCAT('%',#title:VARCHAR#,'%')
+		</isNotNull> 
+		<isNotNull prepend="and" property="createByName">
+	       	<![CDATA[ create_by in (select pu.id from portal_user pu where pu.name like CONCAT('%',#createByName:VARCHAR#,'%'))]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ ((begin_time<=#startDate:DATETIME# AND end_time>=#startDate:DATETIME#) OR (begin_time<=#endDate:DATETIME# AND end_time>=#endDate:DATETIME#))]]>
+	    	</isNotNull>
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+			<isNull property="endDate">
+	    		<![CDATA[ begin_time <= #startDate:DATETIME# and  end_time >= #startDate:DATETIME#]]>
+	    	</isNull>
+		</isNotNull>
+		<isNull prepend="and" property="startDate">
+			<isNotNull property="endDate">
+	    		<![CDATA[ end_time >= #endDate:DATETIME# and begin_time <= #endDate:DATETIME#]]>
+	    	</isNotNull>
+		</isNull>
+    </select>
+</sqlMap>

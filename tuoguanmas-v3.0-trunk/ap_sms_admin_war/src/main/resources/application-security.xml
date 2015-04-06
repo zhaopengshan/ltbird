@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+           http://www.springframework.org/schema/security
+           http://www.springframework.org/schema/security/spring-security-3.0.xsd">
+	<global-method-security pre-post-annotations="enabled" />
+	<!-- 该路径下的资源不用过滤 -->
+	<http use-expressions="true" auto-config="true">
+
+		<form-login login-page="/smslogin.jsp"
+			authentication-failure-url="/smslogin.jsp?error=true"
+			default-target-url="/apsms/login.action" />
+		<logout invalidate-session="true" logout-success-url="/smslogin.jsp" />
+		<intercept-url pattern="/**/*.jpg" filters="none" />
+		<intercept-url pattern="/**/*.png" filters="none" />
+		<intercept-url pattern="/**/*.gif" filters="none" />
+		<intercept-url pattern="/**/*.css" filters="none" />
+		<intercept-url pattern="/**/*.js" filters="none" />
+		<intercept-url pattern="/security/verifyCode.action" filters="none" />
+		<intercept-url pattern="/login.jsp" filters="none" />
+		<intercept-url pattern="/forgotpassword.jsp" filters="none" />
+		<intercept-url pattern="/smslogin.jsp" filters="none" />
+		
+		<!-- 实现免登陆验证 -->
+		<remember-me />
+		<session-management invalid-session-url="/timeout.jsp">
+			<concurrency-control max-sessions="60"
+				error-if-maximum-exceeded="true" />
+		</session-management>
+		<http-basic />
+		<custom-filter ref="myFilter" before="FILTER_SECURITY_INTERCEPTOR" />
+	</http>
+
+	<!-- 配置过滤器 -->
+	<beans:bean id="myFilter"
+		class="com.leadtone.mas.admin.security.service.MasSecurityFilter">
+		<!-- 用户拥有的权限 -->
+		<beans:property name="authenticationManager" ref="myAuthenticationManager" />
+		<!-- 用户是否拥有所请求资源的权限 -->
+		<beans:property name="accessDecisionManager" ref="myAccessDecisionManager" />
+		<!-- 资源与权限对应关系 -->
+		<beans:property name="securityMetadataSource" ref="mySecurityMetadataSource" />
+	</beans:bean>
+	<!-- 实现了UserDetailsService的Bean -->
+	<authentication-manager alias="myAuthenticationManager">
+		<authentication-provider user-service-ref="myUserDetailServiceImpl">
+			<password-encoder ref="passwordEncoder">
+				<salt-source user-property="username" />
+			</password-encoder>
+		</authentication-provider>
+	</authentication-manager>
+	<!-- 用户的密码加密或解密 -->
+	<beans:bean id="passwordEncoder"
+		class="com.leadtone.mas.bizplug.security.service.MasPasswordEncoder" />
+
+	<beans:bean id="myAccessDecisionManager"
+		class="com.leadtone.mas.admin.security.service.MasAccessDecisionManager"></beans:bean>
+	<beans:bean id="mySecurityMetadataSource"
+		class="com.leadtone.mas.admin.security.service.MasSecurityMetadataSource">
+		<beans:constructor-arg name="resourcesDao" ref="resourcesDao"></beans:constructor-arg>
+	</beans:bean>
+	<beans:bean id="myUserDetailServiceImpl"
+		class="com.leadtone.mas.admin.security.service.MasUserDetailServiceImpl">
+		<beans:property name="usersDao" ref="usersDao"></beans:property>
+	</beans:bean>
+</beans:beans>    

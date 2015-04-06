@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsTunnelAccount">
+	<resultMap class="com.leadtone.mas.bizplug.tunnel.bean.SmsTunnelAccount"
+		id="smsTunnelAccount">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="tunnelId" column="tunnel_id" jdbcType="BIGINT" />
+		<result property="balanceNumber" column="balance_number"
+			jdbcType="BIGINT" />
+		<result property="balanceAmount" column="balance_amount"
+			jdbcType="FLOAT" />
+		<result property="modifyTime" column="modify_time" jdbcType="DATETIME" />
+	</resultMap>
+	<!-- 添加 -->
+	<insert id="insert"
+		parameterClass="com.leadtone.mas.bizplug.tunnel.bean.SmsTunnelAccount">
+		insert into
+		mbn_tunnel_account(id,tunnel_id,balance_number,balance_amount,modify_time)
+		values
+		(#id:BIGINT#,#tunnelId:BIGINT#,#balanceNumber:BIGINT#,#balanceAmount:FLOAT#,#modifyTime:DATETIME#)
+	</insert>
+	<!-- 修改 -->
+	<update id="update"
+		parameterClass="com.leadtone.mas.bizplug.tunnel.bean.SmsTunnelAccount">
+		update mbn_tunnel_account
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="tunnelId">
+				tunnel_id=#tunnelId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="balanceNumber">
+				balance_number=#balanceNumber:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="balanceAmount">
+				balance_amount=#balanceAmount:FLOAT#
+			</isNotNull>
+			<isNotNull prepend="," property="modifyTime">
+				modify_time=#modifyTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<!-- 修改 根据通道ID-->
+	<update id="updateByTunnel"
+		parameterClass="com.leadtone.mas.bizplug.tunnel.bean.SmsTunnelAccount">
+		update mbn_tunnel_account
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="tunnelId">
+				tunnel_id=#tunnelId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="balanceNumber">
+				balance_number=#balanceNumber:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="balanceAmount">
+				balance_amount=#balanceAmount:FLOAT#
+			</isNotNull>
+			<isNotNull prepend="," property="modifyTime">
+				modify_time=#modifyTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where tunnel_id=#tunnelId:BIGINT#
+	</update>
+	<select id="getByTunnelId" resultMap="smsTunnelAccount"
+		parameterClass="java.lang.Long">
+		select id,tunnel_id,balance_number,balance_amount,modify_time from
+		mbn_tunnel_account
+		where tunnel_id=#tunnelId:BIGINT#
+	</select>
+</sqlMap>

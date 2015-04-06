@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="MbnSevenHCode">
+	<resultMap id="mbnSevenHCode" class="com.leadtone.mas.bizplug.config.bean.MbnSevenHCode">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="mobilePrefix" column="mobile_prefix" jdbcType="VARCHAR" />
+		<result property="corp" column="corp" jdbcType="VARCHAR" />
+		<result property="provinceCoding" column="province_coding" jdbcType="VARCHAR" />
+		<result property="city" column="city" jdbcType="VARCHAR" />
+		 </resultMap>
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="mbnSevenHCode"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select 
+			id, mobile_prefix, corp, province_coding, city
+		from  
+			mbn_h7  
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select count(id)
+		from
+		mbn_h7
+		 
+	</select>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnSevenHCode" parameterClass="java.lang.Long">
+		select 
+			id, mobile_prefix, corp, province_coding, city
+		from  
+			mbn_h7  
+		where id = #id:BIGING#
+	</select>
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="queryByBobilePrefix" resultMap="mbnSevenHCode" parameterClass="java.lang.String">
+		select 
+			id, mobile_prefix, corp, province_coding, city
+		from  
+			mbn_h7  
+		where mobile_prefix = #mobilePrefix:VARCHAR#
+	</select>
+	<!-- 查询List by ids  -->
+	<select id="getByPks" resultMap="mbnSevenHCode" parameterClass="java.lang.String">
+		select 
+			id, mobile_prefix, corp, province_coding, city
+		from  
+			mbn_h7  where id in (#ids:VARCHAR#)
+	</select>
+	
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.config.bean.MbnSevenHCode">
+		INSERT INTO mbn_h7
+			(id, mobile_prefix, corp, province_coding, city )
+		VALUES
+			(#id:BIGINT#, #mobilePrefix:VARCHAR#, #corp:VARCHAR#, #provinceCoding:VARCHAR#, #city:VARCHAR#);
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.config.bean.MbnSevenHCode">
+		update mbn_h7 mcs
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id" >
+					mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="mobilePrefix" >
+					mcs.mobile_prefix=#mobilePrefix:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="corp" >
+					mcs.name=#corp:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="provinceCoding" >
+					mcs.provinceCoding=#provinceCodeing:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="city" >
+					mcs.city=#city:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where mcs.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete"  parameterClass="com.leadtone.mas.bizplug.config.bean.MbnSevenHCode">
+		delete from  mbn_h7 mcs
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id" >
+					mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="mobilePrefix" >
+					mcs.type=#mobilePrefix:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="corp" >
+					mcs.name=#corp:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="provinceCoding" >
+					mcs.provinceCoding=#provinceCodeing:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="city" >
+					mcs.city=#city:VARCHAR#
+			</isNotNull>
+		</dynamic>
+	</delete>
+		<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_h7  where id=#id:BIGINT# 
+	</delete>
+  
+</sqlMap>

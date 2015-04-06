@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="SmsMoLog">
+
+	<typeAlias alias="smsmolog" type="com.leadtone.mas.bizplug.sms.bean.SmsMoLogBean"/>
+	<typeAlias alias="smsmologVo" type="com.leadtone.mas.bizplug.sms.bean.SmsMoLogBeanVO"/>
+
+	<cacheModel id="smsmolog-cache" type="OSCACHE">
+		<flushInterval hours="24" />
+		<!-- <flushOnExecute statement="queryAll" /> -->
+		<property name="size" value="1000" />
+		<property name="reference-type" value="WEAK"/>
+	</cacheModel>
+
+	<!-- 查询操作 -->
+	<resultMap id="smsmologs" class="smsmolog">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="sender" column="sender_mobile" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="content" column="content" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="receiver" column="receiver_access_number" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="createTime" column="create_time" javaType="java.sql.Timestamp" jdbcType="datetime"/>
+		<result property="status" column="status" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="type" column="type" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="classify" column="classify" javaType="java.lang.Integer" jdbcType="int"/>
+	</resultMap>
+	<resultMap id="smsmologVos" class="smsmologVo" extends="smsmologs">
+		<result property="userId" column="user_id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="merchantPin" column="merchant_pin" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="cpoid" column="cpoid" javaType="java.lang.String" jdbcType="varchar"/>
+	</resultMap>
+	
+	<select id="queryByStatus" parameterClass="java.util.Map" resultMap="smsmologs">
+        select id, sender_mobile, content, receiver_access_number, create_time, status, type, classify
+        from mbn_sms_up_comm_log
+        where status = #status:INT# and type=#type:VARCHAR# limit 200;
+    </select>
+    <select id="queryByStatusVo" parameterClass="java.util.Map" resultMap="smsmologVos">
+        select id, sender_mobile, content, receiver_access_number, create_time, status, type, classify, user_id, merchant_pin, cpoid
+        from mbn_sms_up_comm_log
+        where status = #status:INT# and type=#type:VARCHAR# limit 200;
+    </select>
+
+	<!-- 更新操作 -->
+	<update id="updateStatus" parameterClass="smsmolog">
+		update mbn_sms_up_comm_log set status = #status:INT# where id = #id:BIGINT#;
+	</update>
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="smsmolog">
+		INSERT INTO
+			mbn_sms_up_comm_log(id, sender_mobile, content, receiver_access_number, create_time, status, type, classify)
+		VALUES
+			(#id:BIGINT#, #sender:VARCHAR#, #content:VARCHAR#,#receiver:VARCHAR#,#createTime:DATETIME#,#status:INTEGER#, #type:VARCHAR#, #classify:INTEGER#);
+	</insert>
+	<insert id="insertVo" parameterClass="smsmologVo">
+		INSERT INTO
+			mbn_sms_up_comm_log(id, sender_mobile, content, receiver_access_number, create_time, status, type, classify, user_id, merchant_pin, cpoid)
+		VALUES
+			(#id:BIGINT#, #sender:VARCHAR#, #content:VARCHAR#,#receiver:VARCHAR#,#createTime:DATETIME#,#status:INTEGER#, #type:VARCHAR#, 
+			#classify:INTEGER#, #userId:INTEGER#, #merchantPin:BIGINT#,#cpoid:VARCHAR#);
+	</insert>
+
+</sqlMap>

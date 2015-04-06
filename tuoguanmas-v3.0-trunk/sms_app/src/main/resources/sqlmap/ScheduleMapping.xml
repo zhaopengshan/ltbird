@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="ConfigData">
+
+
+	<typeAlias alias="ConfigData" type="com.leadtone.hostmas.smsapp.domain.ConfigData" />
+	
+  <resultMap id="ConfigDataMap" class="ConfigData">
+    <result column="id" property="id" jdbcType="int" />
+    <result column="gatewayID" property="gatewayID" jdbcType="VARCHAR" />
+    <result column="province_code" property="province_code" jdbcType="VARCHAR" />
+    <result column="area_code" property="area_code" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="port" property="port" jdbcType="int" />
+    <result column="run_status" property="run_status" jdbcType="VARCHAR" />
+    <result column="running_time" property="running_time" jdbcType="VARCHAR" />
+    <result column="create_time" property="create_time" jdbcType="VARCHAR" />
+    <result column="listen_port" property="listen_port" jdbcType="int" />
+    <result column="mas_ip" property="mas_ip" jdbcType="VARCHAR" />
+    <result column="gw_ip" property="gw_ip" jdbcType="VARCHAR" />
+    <result column="gw_port" property="gw_port" jdbcType="int" />
+    <result column="gw_user" property="gw_user" jdbcType="VARCHAR" />
+    <result column="gw_passwd" property="gw_passwd" jdbcType="VARCHAR" />
+    <result column="enterprise_code" property="enterprise_code" jdbcType="VARCHAR" />
+    <result column="protocol_version" property="protocol_version" jdbcType="VARCHAR" />
+    <result column="tunnel_id" property="tunnel_id" jdbcType="int" />
+    <result column="senderCode" property="senderCode" jdbcType="VARCHAR" />
+    <result column="sendSpeed" property="sendSpeed" jdbcType="int" />
+    <result column="mms_url" property="mms_url" jdbcType="VARCHAR" />
+    <result column="service_code" property="service_code" jdbcType="VARCHAR" />
+  </resultMap>
+  
+   <insert id="insert" parameterClass="ConfigData">
+	    
+    insert into schedule_mapping (gatewayID, province_code, area_code, ip, port, 
+      run_status,running_time,create_time,  
+      mas_ip, gw_ip, gw_port,gw_user,gw_passwd,enterprise_code,protocol_version,senderCode,sendSpeed,mms_url,service_code) 
+    values (#gatewayID#, #province_code#, #area_code#, #ip#, #port#, #run_status#, 
+      #running_time#, #create_time#, #mas_ip#, 
+      #gw_ip#, #gw_port#,#gw_user#,#gw_passwd#,#enterprise_code#,#protocol_version#,#senderCode#,#sendSpeed#,#mms_url#,#service_code#) ;
+  </insert>
+  
+  <update id="update_tunnelid_listenport" parameterClass="ConfigData">
+  	UPDATE schedule_mapping 
+  	SET listen_port = #listen_port#+id,
+  	tunnel_id = #tunnel_id#+id 
+  	where gatewayID = #gatewayID#;
+  </update>
+  
+  <update id="update" parameterClass="ConfigData">
+    update schedule_mapping
+    set province_code = #province_code#,
+      area_code = #area_code#,
+      ip = #ip#,
+      port = #port#,
+      run_status = #run_status#,
+      running_time = #running_time#,
+      mas_ip = #mas_ip#,
+      gw_ip = #gw_ip#,
+      gw_port = #gw_port#,
+      gw_user = #gw_user#,
+      gw_passwd = #gw_passwd#,
+      protocol_version = #protocol_version#,
+      enterprise_code = #enterprise_code#,
+      senderCode = #senderCode#,
+      sendSpeed = #sendSpeed#,
+      mms_url = #mms_url#,
+      service_code = #service_code#
+    where gatewayID = #gatewayID#
+  </update>
+  
+  <update id="update_app_status" parameterClass="ConfigData">
+    update schedule_mapping
+    set run_status = #run_status#   
+    where gatewayID = #gatewayID#
+  </update>
+  
+  
+  <select id="load" resultMap="ConfigDataMap" parameterClass="string">
+    select id ,gatewayID,province_code,
+      area_code,
+      ip,
+      port,
+      run_status,start_time,
+      running_time,
+      create_time,
+      listen_port,
+      mas_ip,
+      gw_ip,
+      gw_port,
+      gw_user,
+      gw_passwd,enterprise_code,
+      protocol_version,tunnel_id,senderCode,sendSpeed,mms_url,service_code
+    from schedule_mapping
+      where gatewayID = #gatewayID#
+  </select>
+  
+  <select id="loadByProvinceName" resultMap="ConfigDataMap" parameterClass="string">
+    select id ,gatewayID,province_code,
+      area_code,
+      ip,
+      port,
+      run_status,start_time,
+      running_time,
+      create_time,
+      listen_port,
+      mas_ip,
+      gw_ip,
+      gw_port,
+      gw_user,
+      gw_passwd,enterprise_code,
+      protocol_version,tunnel_id,senderCode,sendSpeed,mms_url,service_code
+    from schedule_mapping
+      where province_code = #province_code# and protocol_version like 'CMPP___'
+  </select>
+  
+    
+  <select id="list" resultMap="ConfigDataMap" parameterClass="java.util.Map">
+    select id ,gatewayID,province_code,
+      area_code,
+      ip,
+      port,
+      run_status,start_time,
+      running_time,
+      create_time,
+      listen_port,
+      mas_ip,
+      gw_ip,
+      gw_port,
+      gw_user,
+      gw_passwd,enterprise_code,
+      protocol_version,tunnel_id,senderCode,sendSpeed,mms_url,service_code
+    from schedule_mapping
+    <dynamic prepend="WHERE">
+		<isNotEmpty property="parameterName" prepend="AND">
+			gatewayID=#gatewayID#
+	</isNotEmpty>
+	</dynamic>
+  </select>
+  
+  <select id="count" parameterClass="map" resultClass="int">
+  	select count(*) from schedule_mapping
+  </select>
+  
+  <delete id="delete" parameterClass="string">
+    delete from schedule_mapping
+      where gatewayID = #gatewayID#
+  </delete>
+  
+  <select id="loadMMSConfigByProvinceName" resultMap="ConfigDataMap" parameterClass="string">
+    select id ,gatewayID,province_code,
+      area_code,
+      ip,
+      port,
+      run_status,start_time,
+      running_time,
+      create_time,
+      listen_port,
+      mas_ip,
+      gw_ip,
+      gw_port,
+      gw_user,
+      gw_passwd,enterprise_code,
+      protocol_version,tunnel_id,senderCode,sendSpeed,mms_url,service_code
+    from schedule_mapping
+      where province_code = #province_code# and protocol_version like 'mm7'
+  </select>
+  
+</sqlMap>

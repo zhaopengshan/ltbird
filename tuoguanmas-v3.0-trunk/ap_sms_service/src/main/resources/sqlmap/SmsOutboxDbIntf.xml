@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsOutboxDbIntf">
+	<typeAlias alias="SmsOutboxDbIntf" type="com.leadtone.mas.connector.domain.SmsOutboxDbIntf" />
+
+	<resultMap class="SmsOutboxDbIntf" id="SmsOutboxMap">
+		<result column="SISMSID" property="siSmsId" jdbcType="VARCHAR" />
+		<result column="EXTCODE" property="extCode" jdbcType="VARCHAR" />
+		<result column="DESTADDR" property="destAddr" jdbcType="VARCHAR" />
+		<result column="MESSAGECONTENT" property="messageContent" jdbcType="VARCHAR" />
+		<result column="REQDELIVERYREPORT" property="reqDeliveryReport" jdbcType="INTEGER" />
+		<result column="MSGFMT" property="msgFmt" jdbcType="INTEGER" />
+		<result column="SENDMETHOD" property="sendMethod" jdbcType="INTEGER" />
+		<result column="REQUESTTIME" property="requestTime" jdbcType="DATETIME" />
+		<result column="APPLICATIONID" property="applicationId" jdbcType="VARCHAR" />
+		<result column="MERCHANT_PIN" property="merchantPin" jdbcType="BIGINT" />
+		<result column="ACCOUNT_ID" property="accountId" jdbcType="VARCHAR" />
+		<result column="TUNNEL_ID" property="tunnelId" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<select id="loadAll" resultMap="SmsOutboxMap">
+		select SISMSID,EXTCODE,DESTADDR,MESSAGECONTENT,
+			REQDELIVERYREPORT,MSGFMT,SENDMETHOD,REQUESTTIME,
+			APPLICATIONID,MERCHANT_PIN,ACCOUNT_ID,TUNNEL_ID
+		from sms_outbox
+		order by MERCHANT_PIN,REQUESTTIME asc
+	</select>
+	
+	<delete id="deleteByPk" parameterClass="java.lang.String">
+		delete from sms_outbox where SISMSID = #siSmsId:VARCHAR#
+	</delete>
+</sqlMap>

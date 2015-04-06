@@ -1,0 +1,532 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="contact">
+	<typeAlias alias="contactAlias" type="com.leadtone.mas.bizplug.addr.bean.Contact"/>
+	<typeAlias alias="contactVOAlias" type="com.leadtone.mas.bizplug.addr.bean.ContactVO"/>
+	<typeAlias alias="groupAlias" type="com.leadtone.mas.bizplug.addr.bean.Group"/>
+	<typeAlias alias="afirmAlias" type="com.leadtone.mas.bizplug.addr.bean.AffirmReceive"/>
+	<!-- group's map start -->
+ 	<resultMap class="groupAlias" id="group">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="pid" column="pid" jdbcType="BIGINT"/>
+        <result property="bookId" column="address_book_id" jdbcType="BIGINT"/>
+        <result property="groupName" column="address_book_group" jdbcType="varchar"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="createBy" column="create_by" jdbcType="BIGINT"/>
+    </resultMap>
+    <!-- group's map end -->
+	<!-- address's map start -->
+
+	<resultMap class="contactAlias" id="address">
+		<result property="id" column="id" jdbcType="BIGINT"/>
+		<result property="bookId" column="address_book_id" jdbcType="BIGINT"/>
+		<result property="bookGroupId" column="address_book_id_group" jdbcType="BIGINT"/>
+		<result property="name" column="name" jdbcType="VARCHAR"/>
+		<result property="gender" column="gender" jdbcType="INT"/>
+		<result property="birthday" column="birthday" jdbcType="DATE"/>
+		<result property="mobile" column="mobile" jdbcType="VARCHAR"/>
+		<result property="telephone" column="telephone" jdbcType="VARCHAR"/>
+		<result property="address" column="address" jdbcType="VARCHAR"/>
+		<result property="company" column="company" jdbcType="VARCHAR"/>
+		<result property="preferences" column="preferences" jdbcType="VARCHAR"/>
+		<!-- result property="smsTunnel" column="sms_tunnel" jdbcType="INT"/>
+		<result property="mmsTunnel" column="mms_tunnel" jdbcType="INT"/> -->
+		<result property="customerAffirmFlag" column="customer_affirm_flag" jdbcType="INT"/>
+		<result property="lastModifyTime" column="last_modify_time" jdbcType="DATETIME"/>
+		<result property="identificationNumber" column="identification_number" jdbcType="VARCHAR"/>
+		<result property="email" column="email" jdbcType="VARCHAR"/>
+		<result property="qqNumber" column="qq_number" jdbcType="VARCHAR"/>
+		<result property="msn" column="msn" jdbcType="VARCHAR"/>
+		<result property="microBlog" column="micro_blog" jdbcType="VARCHAR"/>
+		<result property="vpmn" column="vpmn" jdbcType="VARCHAR"/>
+		<result property="createTime" column="create_time" jdbcType="DATETIME"/>
+		<result property="description" column="description" jdbcType="VARCHAR"/>
+		<result property="merchantBlackFlag" column="merchant_black_flag" jdbcType="INT"/>
+		<result property="createBy" column="create_by" jdbcType="BIGINT"/>
+	</resultMap>
+	<resultMap class="contactVOAlias" id="contactVO" extends="address">
+		<result property="groupName" column="address_book_group" jdbcType="VARCHAR"/>
+	</resultMap>
+	<!-- address's map end -->
+	<!-- groupVO's map start -->
+ 	<resultMap class="com.leadtone.mas.bizplug.addr.bean.GroupVO" id="groupVO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="pid" column="pid" jdbcType="BIGINT"/>
+        <result property="bookId" column="address_book_id" jdbcType="BIGINT"/>
+        <result property="groupName" column="address_book_group" jdbcType="varchar"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="counts" column="counts" jdbcType="BIGINT"/>
+		<result property="createBy" column="create_by" jdbcType="BIGINT"/>
+    </resultMap>
+    <!-- groupVO's map end -->
+	<!-- group's sql start -->
+	<!-- 查询所有的组名  新增通讯录时用  bookid就是商户PIN码-->
+	<select id="queryAllGroups" resultMap="group" parameterClass="java.util.Map">
+		select id, pid, address_book_id, address_book_group ,description, create_by
+		from mbn_address_book_group
+		where address_book_id=#bookId#
+		<isNotNull prepend=" and " property="groupName">address_book_group=#groupName#</isNotNull>
+		<isNotNull property="createBy">
+			and ( create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+			or create_by =  #createBy# )
+        </isNotNull>
+	</select>
+	<!-- 查询出通讯录住数量，再某个商户下 -->
+	<select id="pageCountGroup" resultClass="java.lang.Integer" parameterClass="java.util.Map">
+		select count(id)
+		from mbn_address_book_group
+		where address_book_id=#bookId#
+		<isNotNull property="createBy" >
+            and  create_by = #createBy#
+        </isNotNull>
+	</select>
+	<!--通讯录组分页 -->
+	<select id="selectContactGroup" parameterClass="java.util.Map" resultMap="group">
+		select 	id, pid, address_book_id, address_book_group ,description,create_by
+		from mbn_address_book_group
+		where address_book_id=#bookId#
+		<isNotNull property="createBy" >
+            and  create_by = #createBy#
+        </isNotNull>
+		<dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$
+				<isNotNull property="pageSize" >
+	                ,$pageSize$
+	            </isNotNull>
+            </isNotNull>
+        </dynamic>
+     </select>
+	 <!-- 根据groupId查询通讯录组 -->
+	<select id="loadGroupById" resultClass="groupAlias" parameterClass="java.lang.Long">
+		select id, pid, address_book_id as bookId , address_book_group as groupName ,description, create_by as createBy
+		from	mbn_address_book_group
+		where id =#id#
+	</select>
+	<!-- 查询某一个通讯录组 -->
+	<select id="loadGroup" resultClass="groupAlias" parameterClass="groupAlias">
+		select id, pid, address_book_id as bookId , address_book_group as groupName ,description, create_by as createBy
+		from	mbn_address_book_group
+		where
+		address_book_id=#bookId# and
+		address_book_group=#groupName#
+		<isNotNull prepend="and " property="id">id=#id#</isNotNull>
+		<isNotNull prepend="and " property="pid">pid=#pid#</isNotNull>
+		<isNotNull prepend="and " property="createBy">create_by=#createBy#</isNotNull>
+	</select>
+	<!--添加通讯录组 -->
+	<insert id="insertGroup" parameterClass="groupAlias">
+		insert into mbn_address_book_group
+			(id, pid, address_book_id, address_book_group,description, create_by )
+			values
+			(#id#,#pid#,#bookId#,#groupName#,#description#,#createBy#)
+	</insert>
+	<!-- 更新通讯录组 -->
+	<update id="updateGroup" parameterClass="groupAlias">
+		update mbn_address_book_group
+			<dynamic prepend="set">
+				<isNotNull prepend=", " property="pid">pid=#pid#</isNotNull>
+				<isNotNull prepend=", " property="bookId">address_book_id=#bookId#</isNotNull>
+				<isNotNull prepend=", " property="groupName">address_book_group=#groupName#</isNotNull>
+				<isNotNull prepend=", " property="description">description=#description#</isNotNull>
+				<isNotNull prepend=", " property="createBy">create_by=#createBy#</isNotNull>
+			</dynamic>
+		where	id=#id#
+	</update>
+	<!-- 删除通讯录组 -->
+	<delete id="deleteGroup" parameterClass="java.lang.Long">
+		delete from mbn_address_book_group where id=#id#
+	</delete>
+
+	<!-- group's sql end -->
+
+
+	<!-- address's sql start -->
+	<!-- 新增联系人 -->
+	<insert id="insertContact" parameterClass="contactAlias">
+		insert into mbn_address_book_member (id, address_book_id, address_book_id_group, name, gender, birthday,
+			mobile, telephone, 	address, company, preferences, customer_affirm_flag, last_modify_time,
+				identification_number, email, qq_number, msn, micro_blog, vpmn, create_time, description, 
+			merchant_black_flag, create_by)
+		values(#id#,#bookId#,#bookGroupId#,#name#,#gender#,#birthday#,
+			#mobile#,#telephone#,#address#,#company#,#preferences#,#customerAffirmFlag#,#lastModifyTime#,
+				#identificationNumber#,#email#,#qqNumber#,#msn#,#microBlog#,#vpmn#,#createTime#,#description#,
+				#merchantBlackFlag#, #createBy#);
+	</insert>
+	
+	<!-- 新增联系人 sunyadong batchsave use  -->
+	<insert id="replaceContact" parameterClass="contactAlias">
+		replace into mbn_address_book_member (id, address_book_id, address_book_id_group, name, gender, birthday,
+			mobile, telephone, 	address, company, preferences, customer_affirm_flag, last_modify_time,
+				identification_number, email, qq_number, msn, micro_blog, vpmn, create_time, description, 
+			merchant_black_flag, create_by)
+		values(#id#,#bookId#,#bookGroupId#,#name#,#gender#,#birthday#,
+			#mobile#,#telephone#,#address#,#company#,#preferences#,#customerAffirmFlag#,#lastModifyTime#,
+				#identificationNumber#,#email#,#qqNumber#,#msn#,#microBlog#,#vpmn#,#createTime#,#description#,
+				#merchantBlackFlag#, #createBy#);
+	</insert>
+
+	<!-- 修改联系人 -->
+	<update id="updateContact" parameterClass="contactAlias">
+		update mbn_address_book_member
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="bookGroupId">
+				address_book_id_group=#bookGroupId#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				name=#name#
+			</isNotNull>
+			<isNotNull prepend="," property="gender">
+				gender=#gender#
+			</isNotNull>
+			<isNotNull prepend="," property="birthday">
+				birthday=#birthday#
+			</isNotNull>
+			<isNotNull prepend="," property="mobile">
+				mobile=#mobile#
+			</isNotNull>
+			<isNotNull prepend="," property="telephone">
+				telephone=#telephone#
+			</isNotNull>
+			<isNotNull prepend="," property="address">
+				address=#address#
+			</isNotNull>
+			<isNotNull prepend="," property="company">
+				company=#company#
+			</isNotNull>
+			<!-- isNotNull prepend="," property="smsTunnel">
+				sms_tunnel=#smsTunnel#
+			</isNotNull>
+			<isNotNull prepend="," property="mmsTunnel">
+				mms_tunnel=#mmsTunnel#
+			</isNotNull> -->
+			<isNotNull prepend="," property="customerAffirmFlag">
+				customer_affirm_flag=#customerAffirmFlag#
+			</isNotNull>
+			<isNotNull prepend="," property="lastModifyTime">
+				last_modify_time=#lastModifyTime#
+			</isNotNull>
+			<isNotNull prepend="," property="identificationNumber">
+				identification_number=#identificationNumber#
+			</isNotNull>
+			<isNotNull prepend="," property="email">
+				email=#email#
+			</isNotNull>
+			<isNotNull prepend="," property="qqNumber">
+				qq_number=#qqNumber#
+			</isNotNull>
+			<isNotNull prepend="," property="msn">
+				msn=#msn#
+			</isNotNull>
+			<isNotNull prepend="," property="microBlog">
+				micro_blog=#microBlog#
+			</isNotNull>
+			<isNotNull prepend="," property="vpmn">
+				vpmn=#vpmn#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				create_time=#createTime#
+			</isNotNull>
+			<isNotNull prepend="," property="description">
+				description=#description#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantBlackFlag">
+				merchant_black_flag=#merchantBlackFlag#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by=#createBy#
+			</isNotNull>
+		</dynamic>
+		where id=#id# and address_book_id=#bookId#
+	</update>
+	<!-- 删除联系人 -->
+	<delete id="deleteContact" parameterClass="java.util.Map">
+		delete from mbn_address_book_member
+			where id=#id# and address_book_id=#bookId#
+	</delete>
+	<!-- 删除联系人 -->
+	<delete id="deleteContactBySelectedOrAll" parameterClass="contactAlias">
+		delete from mbn_address_book_member
+			where address_book_id=#bookId#
+		<isNotNull prepend="and" property="bookGroupId">
+			address_book_id_group = #bookGroupId#
+		</isNotNull>
+		<isNotNull prepend="and" property="createBy">
+			create_by = #createBy#
+		</isNotNull>
+		<isNotEmpty prepend="and" property="mobile">
+			mobile like CONCAT('%',#mobile#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="name">
+			name like CONCAT('%',#name#,'%')
+		</isNotEmpty>
+	</delete>
+	<!-- 将联系人移动到某组 -->
+	<update id="moveContact" parameterClass="java.util.Map">
+		update mbn_address_book_member
+			set address_book_id_group=#groupId#, last_modify_time=#updateTime#
+			<isNotNull prepend="," property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+				where id=#id# and address_book_id = #bookId#
+	</update>
+	<!-- 查询联系人 -->
+	<select id="selectContact" parameterClass="java.util.Map" resultMap="contactVO">
+		select 	member.id, member.address_book_id, member.address_book_id_group, member.name, member.gender, member.birthday, member.mobile,
+				member.telephone, member.address, member.company, member.preferences, member.customer_affirm_flag,
+				member.last_modify_time, member.identification_number, member.email, member.qq_number, member.msn, member.micro_blog,
+				member.vpmn, member.create_time, member.description, member.merchant_black_flag, member.create_by, _group.address_book_group
+		from
+				mbn_address_book_member member left join mbn_address_book_group _group
+				<!--(select * from mbn_address_book_group 
+					<dynamic prepend="where">
+						<isNotNull prepend="and" property="createBy">
+							( create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+							or create_by =  #createBy# )
+				        </isNotNull>
+					</dynamic>
+				) _group -->
+		on member.address_book_id_group = _group.id where member.address_book_id = #bookId#
+		<isNotNull prepend="and" property="groupId">
+			member.address_book_id_group = #groupId#
+		</isNotNull>
+		<isNotEmpty prepend="and" property="mobile">
+			member.mobile like CONCAT('%',#mobile#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="name">
+			member.name like CONCAT('%',#name#,'%')
+		</isNotEmpty>
+		<isNotNull prepend="and" property="createBy">
+			( member.create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+			or member.create_by =  #createBy# )
+        </isNotNull>
+		order by member.create_time desc
+		<dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$,
+            </isNotNull>
+            <isNotNull property="pageSize" >
+                $pageSize$
+            </isNotNull>
+        </dynamic>
+     </select>
+	 <select id="loadContactById" parameterClass="java.lang.Long" resultMap="address">
+		select id, address_book_id, address_book_id_group, name, gender, birthday,
+			mobile, telephone, 	address, company, preferences, customer_affirm_flag, last_modify_time,
+				identification_number, email, qq_number, msn, micro_blog, vpmn,
+				create_time, description, merchant_black_flag, create_by
+		from mbn_address_book_member
+		where id = #id#
+	</select>
+	<select id="findContact" parameterClass="contactAlias" resultMap="address">
+		select id, address_book_id, address_book_id_group, name, gender, birthday,
+			mobile, telephone, 	address, company, preferences, customer_affirm_flag, last_modify_time,
+				identification_number, email, qq_number, msn, micro_blog, vpmn,
+				create_time, description, merchant_black_flag, create_by
+		from mbn_address_book_member
+		where
+			address_book_id=#bookId:BIGINT#
+			<isNotNull prepend="and " property="bookGroupId">address_book_id_group=#bookGroupId:BIGINT#</isNotNull>
+			<isNotNull prepend="and " property="name">name=#name#</isNotNull>
+			<isNotNull prepend="and " property="gender">gender=#gender#</isNotNull>
+			<isNotNull prepend="and " property="birthday">birthday=#birthday#</isNotNull>
+			<isNotNull prepend="and " property="telephone">telephone=#telephone#</isNotNull>
+			<isNotNull prepend="and " property="address">address=#address#</isNotNull>
+			<isNotNull prepend="and " property="company">company=#company#</isNotNull>
+			<isNotNull prepend="and " property="customerAffirmFlag">customer_affirm_flag=#customerAffirmFlag#</isNotNull>
+			<isNotNull prepend="and " property="lastModifyTime">last_modify_time=#lastModifyTime#</isNotNull>
+			<isNotNull prepend="and " property="identificationNumber">identification_number=#identificationNumber#</isNotNull>
+			<isNotNull prepend="and " property="email">email=#email#</isNotNull>
+			<isNotNull prepend="and " property="qqNumber">qq_number=#qqNumber#</isNotNull>
+			<isNotNull prepend="and " property="msn">msn=#msn#</isNotNull>
+			<isNotNull prepend="and " property="microBlog">micro_blog=#microBlog#</isNotNull>
+			<isNotNull prepend="and " property="vpmn">vpmn=#vpmn#</isNotNull>
+			<isNotNull prepend="and " property="createTime">create_time=#createTime#</isNotNull>
+			<isNotNull prepend="and " property="description">description=#description#</isNotNull>
+			<isNotNull prepend="and " property="merchantBlackFlag">merchant_black_flag=#merchantBlackFlag#</isNotNull>
+			<isNotNull prepend="and " property="mobile">mobile=#mobile#</isNotNull>
+			<isNotNull prepend="and " property="createBy">create_by=#createBy#</isNotNull>
+	</select>
+	<select id="findContactVO" parameterClass="java.util.Map" resultMap="address">
+		select id, address_book_id, address_book_id_group, name, gender, birthday,
+			mobile, telephone, 	address, company, preferences, customer_affirm_flag, last_modify_time,
+				identification_number, email, qq_number, msn, micro_blog, vpmn,
+				create_time, description, merchant_black_flag, create_by
+		from mbn_address_book_member
+		where
+			address_book_id=#bookId:BIGINT#
+			<isNotNull prepend="and " property="bookGroupId">address_book_id_group=#bookGroupId:BIGINT#</isNotNull>
+			<isNotNull prepend="and " property="name">name=#name#</isNotNull>
+			<isNotNull prepend="and " property="gender">gender=#gender#</isNotNull>
+			<isNotNull prepend="and " property="birthday">birthday=#birthday#</isNotNull>
+			<isNotNull prepend="and " property="telephone">telephone=#telephone#</isNotNull>
+			<isNotNull prepend="and " property="address">address=#address#</isNotNull>
+			<isNotNull prepend="and " property="company">company=#company#</isNotNull>
+			<isNotNull prepend="and " property="customerAffirmFlag">customer_affirm_flag=#customerAffirmFlag#</isNotNull>
+			<isNotNull prepend="and " property="lastModifyTime">last_modify_time=#lastModifyTime#</isNotNull>
+			<isNotNull prepend="and " property="identificationNumber">identification_number=#identificationNumber#</isNotNull>
+			<isNotNull prepend="and " property="email">email=#email#</isNotNull>
+			<isNotNull prepend="and " property="qqNumber">qq_number=#qqNumber#</isNotNull>
+			<isNotNull prepend="and " property="msn">msn=#msn#</isNotNull>
+			<isNotNull prepend="and " property="microBlog">micro_blog=#microBlog#</isNotNull>
+			<isNotNull prepend="and " property="vpmn">vpmn=#vpmn#</isNotNull>
+			<isNotNull prepend="and " property="createTime">create_time=#createTime#</isNotNull>
+			<isNotNull prepend="and " property="description">description=#description#</isNotNull>
+			<isNotNull prepend="and " property="merchantBlackFlag">merchant_black_flag=#merchantBlackFlag#</isNotNull>
+			<isNotNull prepend="and " property="mobile">mobile=#mobile#</isNotNull>
+			<isNotNull prepend="and " property="createBy">create_by=#createBy#</isNotNull>
+			<dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$
+				<isNotNull property="pageSize" >
+	                ,$pageSize$
+	            </isNotNull>
+            </isNotNull>
+        	</dynamic>
+	</select>
+	<!-- 统计联系人 -->
+	<select id="pageCountConcat" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+		select count(distinct member.id)
+		from
+				mbn_address_book_member member left join mbn_address_book_group _group
+				<!--(select * from mbn_address_book_group 
+					<dynamic prepend="where">
+						<isNotNull prepend="and" property="createBy">
+							( create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+							or create_by =  #createBy# )
+				        </isNotNull>
+					</dynamic>
+				) _group-->
+		on member.address_book_id_group = _group.id  where member.address_book_id = #bookId#
+		<isNotNull prepend="and" property="createBy">
+			( member.create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+			or member.create_by =  #createBy# )
+        </isNotNull>
+		<isNotNull prepend="and" property="groupId">
+			member.address_book_id_group = #groupId#
+		</isNotNull>
+		<isNotEmpty prepend="and" property="mobile">
+			member.mobile like CONCAT('%',#mobile#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="name">
+			member.name like CONCAT('%',#name#,'%')
+		</isNotEmpty>
+	</select>
+
+	<select id="queryAfirmReceive" parameterClass="afirmAlias" resultClass="afirmAlias">
+		 select id, merchant_pin merchantPin, province, customer_mobile customerMobile,
+		    receiver_access_number receiverAccessNumber, operation_id operationId, content content,
+		    create_time createTime, update_time updateTime, affirm_time affirmTime
+		from
+ 		mbn_customer_affirm_receive_sms
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="merchantPin">
+				merchant_pin=#merchantPin#
+			</isNotNull>
+			<isNotNull prepend="and" property="customerMobile">
+				customer_mobile=#customerMobile#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 导出联系人-->
+	<select id="exportContact" parameterClass="java.util.Map" resultMap="contactVO">
+		select 	member.id, member.address_book_id, member.address_book_id_group, member.name, member.gender, member.birthday, member.mobile,
+				member.telephone, member.address, member.company, member.preferences, member.customer_affirm_flag, member.merchant_black_flag,
+				member.last_modify_time, member.identification_number, member.email, member.qq_number, member.msn, member.micro_blog,
+				member.vpmn, member.create_time, member.description, member.create_by, _group.address_book_group
+		from
+				mbn_address_book_member member left join
+				mbn_address_book_group _group
+		on member.address_book_id_group = _group.id
+	    where member.address_book_id = #bookId#
+	    <isNotNull prepend="and" property="bookGroupId">
+			member.address_book_id_group = #bookGroupId#
+		</isNotNull>
+		<isNotNull prepend="and" property="createBy">
+			memver.create_by = #createBy#
+		</isNotNull>
+	    <isNotEmpty prepend="and" property="mobile">
+			member.mobile like CONCAT('%',#mobile#,'%')
+		</isNotEmpty>
+		<isNotEmpty prepend="and" property="name">
+			member.name like CONCAT('%',#name#,'%')
+		</isNotEmpty>
+		<isNotNull prepend="and" property="id">
+			member.id in
+			<iterate  open="("  close=")"  conjunction="," property="id">
+                 #id[]#
+      	 	</iterate>
+		</isNotNull>
+		order by member.create_time desc
+	</select>
+
+	<!-- 统计组及组下的联系人 -->
+	<select id="countGroupContacts" resultClass="contactVOAlias" parameterClass="java.util.Map">
+		select _g.id bookGroupId,  _g.address_book_group  groupName,  count(_m.id) counts
+			from mbn_address_book_member _m
+				right join mbn_address_book_group _g on _m.address_book_id_group = _g.id
+					where _g.address_book_id=#bookId# 
+		<isNotNull property="createBy">
+			and  ( _g.create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+			or _g.create_by =  #createBy# )
+        </isNotNull>
+		group by _g.id
+	</select>
+
+	<!-- 依据手机号查询联系人姓名 -->
+	<select id="queryNamebyMobile" resultClass="java.lang.String" parameterClass="java.lang.String">
+		select name from mbn_address_book_member where mobile=#mobile:VARCHAR# limit 1;
+	</select>
+	<!-- address's sql end -->
+
+	<!-- 查询所有的组名与成员数量 -->
+	<select id="queryAllGroupVOs" resultMap="groupVO" parameterClass="java.util.Map">
+		select _group.id, _group.pid, _group.address_book_id, _group.address_book_group ,_group.description, _group.create_by, count(_member.id) as counts
+		from mbn_address_book_group _group left join mbn_address_book_member _member
+		on _member.address_book_id_group = _group.id
+		where _group.address_book_id=#bookId#
+		<isNotNull property="createBy">
+			and  ( _group.create_by in (select id from portal_user where merchant_pin =#bookId# and user_type = '3' )
+			or _group.create_by =  #createBy# )
+        </isNotNull>
+		group by _group.id, _group.pid, _group.address_book_id, _group.address_book_group ,_group.description
+	</select>
+	
+	<select id="findByGroupId" parameterClass="java.util.Map" resultMap="address">
+		select 	member.id, member.address_book_id, member.address_book_id_group, member.name, member.gender, member.birthday, member.mobile,
+				member.telephone, member.address, member.company, member.preferences, member.customer_affirm_flag,
+				member.last_modify_time, member.identification_number, member.email, member.qq_number, member.msn, member.micro_blog,
+				member.vpmn, member.create_time, member.description, member.merchant_black_flag, create_by
+		from
+				mbn_address_book_member member
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="groupId">
+				member.address_book_id_group = #groupId#
+			</isNotNull>
+			<isNotNull prepend="and" property="bookId">
+				member.address_book_id = #bookId#
+			</isNotNull>
+		</dynamic>
+     </select>
+	<select id="findByUserName" parameterClass="java.util.Map" resultMap="address">
+		select 	member.id, member.address_book_id, member.address_book_id_group, member.name, member.gender, member.birthday, member.mobile,
+				member.telephone, member.address, member.company, member.preferences, member.customer_affirm_flag,
+				member.last_modify_time, member.identification_number, member.email, member.qq_number, member.msn, member.micro_blog,
+				member.vpmn, member.create_time, member.description, member.merchant_black_flag, create_by
+		from
+				mbn_address_book_member member
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="bookId">
+				member.address_book_id = #bookId#
+			</isNotNull>
+			<isNotNull prepend="and" property="userName">
+				(member.name like
+				CONCAT('%',#userName:VARCHAR#,'%') || member.mobile like
+				CONCAT('%',#userName:VARCHAR#,'%') )
+			</isNotNull>
+		</dynamic>
+     </select>
+</sqlMap>

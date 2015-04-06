@@ -1,0 +1,95 @@
+<config>
+    <center type="cmpp" version="SmsGateway 3.0P1" release="2008-04-22 17:54:00">
+        <company>LeadTone</company>
+        <authorization abbreviation="CMCC GEGW SMS SERVER">CMCC SmsGateway P4</authorization>
+        <company-site>www.LeadTone.com</company-site>
+        <technology-site>www.LeadTone.com</technology-site>
+        <telephone>010-59250900</telephone>
+        <email>sunlei@corp.leadtone.com</email>
+        <comment>SmsGateway 3.0P1</comment>
+    </center>
+
+   <time>
+        <packet>
+            <survive>15000</survive>
+        </packet>
+        <engine>
+            <wait>10000</wait>
+            <nap>5</nap>
+            <nap_submit>500</nap_submit>
+            <nap_deliver>500</nap_deliver>
+            <nap_query>500</nap_query>
+            <nap_submit_clean>3600000</nap_submit_clean>
+            <sleep>1000</sleep>
+        </engine>
+        <session>
+            <socket>15000</socket>
+            <listen>1000</listen>
+            <packet>60000</packet>
+            <message>900000</message>
+            <activetest>30000</activetest>
+        </session>
+        <gateway>
+            <exception>300000</exception>
+        </gateway>
+        <database>
+            <connection>120000</connection>
+            <retry>300000</retry>
+        </database>
+    </time>
+
+
+    <database name="cmwap" type="mysql" port="5679" count="512" error="5">
+        <jdbc>
+            <driver>com.mysql.jdbc.Driver</driver>
+            <url>jdbc:mysql://192.168.5.30:3306/mbn3.1?useUnicode=true&characterEncoding=UTF-8</url>
+            <account>root</account>
+            <password>canada</password>
+        </jdbc>
+        <pipe>
+            <submit>1</submit>
+            <deliver>1</deliver>
+            <query>1</query>
+        </pipe>
+        <switch>
+            <input>
+                <submit>on</submit>
+                <deliver>on</deliver>
+                <query>on</query>
+            </input>
+            <output>
+                <submit>on</submit>
+                <deliver>on</deliver>
+                <query>on</query>
+            </output>
+            <clean>
+                <submit>on</submit>
+                <deliver>off</deliver>
+                <query>off</query>
+            </clean>
+        </switch>
+    </database>
+    
+    <gateway name="cmpp_pe_xz" type="standard" exchange="2" host="127.0.0.1" bind="127.0.0.1" licence="">
+        <service-provider>
+            <service-code>1234567</service-code>
+            <enterprise-code>123456</enterprise-code>
+            <user>123456</user>
+            <password>123456</password>
+        </service-provider>
+        <connect port="7890" bind="transceiver" queue="0" count="1" error="3" flux="10">
+            <timeout>
+                <packet>60000</packet>
+                <message>900000</message>
+                <activetest>20000</activetest>
+            </timeout>
+        </connect>
+    </gateway> 
+	
+	<leadtonelogic switch="false"></leadtonelogic>
+
+    <updatefinalresult switch="true"></updatefinalresult>
+
+    <dynamicbackuptable switch="true"></dynamicbackuptable>
+
+</config>

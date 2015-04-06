@@ -1,0 +1,744 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="mms">
+<!-- 
+<typeAlias alias="mmsoperationalias" type="com.leadtone.mas.bizplug.mms.bean" />
+<typeAlias alias="mmsoperationvoalias" type="com.leadtone.mas.bizplug.mms.bean" /> 
+-->
+<typeAlias alias="mmsalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMms" />
+<typeAlias alias="mmsvoalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsVO" />
+	<resultMap class="mmsalias" id="mms">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="varchar"/>
+        <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="update_by" jdbcType="BIGINT" />
+        <result property="createTime" column="create_time" jdbcType="DATETIME" />
+        <result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+        <result property="attachmentSize" column="attachment_size" jdbcType="double"/>
+    </resultMap>
+    <resultMap class="mmsvoalias" id="mmsVO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="title" column="title" jdbcType="varchar"/>
+        <result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="update_by" jdbcType="BIGINT" />
+        <result property="createTime" column="create_time" jdbcType="DATETIME" />
+        <result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+        <result property="attachmentSize" column="attachment_size" jdbcType="double"/>
+        <result property="createUser" column="createby" select="security.queryByUserId" />
+    </resultMap>
+<typeAlias alias="mmsattachmentalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsAttachment" />
+<typeAlias alias="mmsattachmentvoalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsAttachmentVO" />
+    <resultMap class="mmsattachmentalias" id="attachment">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="frameId" column="frame_id" jdbcType="BIGINT"/>
+        <result property="typeId" column="type_id" jdbcType="int"/>
+        <result property="storePath" column="store_path" jdbcType="varchar" />
+        <result property="attachmentName" column="attachment_name" jdbcType="varchar" />
+        <result property="attachmentSize" column="attachment_size" jdbcType="double"/>
+    </resultMap>
+<typeAlias alias="mmsframealias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsFrame" />
+<typeAlias alias="mmsframevoalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsFrameVO" />
+    <resultMap class="mmsframealias" id="mmsframe">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="frameName" column="frame_name" jdbcType="varchar"/>
+        <result property="frameText" column="frame_text" jdbcType="VARCHAR"/>
+        <result property="mmsId" column="mms_id" jdbcType="BIGINT" />
+        <result property="persistTime" column="persist_time" jdbcType="INTEGER" />
+    </resultMap>
+<typeAlias alias="mmshadsendalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsHadsend" />
+<typeAlias alias="mmshadsendvoalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsHadsendVO" />	
+	<resultMap class="mmshadsendalias" id="mmshadsend">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="operationId" column="operation_id" jdbcType="BIGINT"/>
+        <result property="selfMobile" column="self_mobile" jdbcType="VARCHAR"/>
+        <result property="tos" column="tos" jdbcType="VARCHAR" />
+        <result property="mmsId" column="mms_id" jdbcType="BIGINT" />
+        <result property="completeTime" column="complete_time" jdbcType="DATETIME" />
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+        <result property="serviceId" column="service_id" jdbcType="VARCHAR" />
+        <result property="tunnelType" column="tunnel_type" jdbcType="int" />
+        <result property="commitTime" column="commit_time" jdbcType="DATETIME" />
+        <result property="readySendTime" column="ready_send_time" jdbcType="DATETIME" />
+        <result property="sendResult" column="send_result" jdbcType="int" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+    </resultMap>
+<typeAlias alias="mmsreadysendalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsReadysend" />
+<typeAlias alias="mmsreadysendvoalias" type="com.leadtone.mas.bizplug.mms.bean.MbnMmsReadysendVO" />
+	<resultMap class="mmsreadysendalias" id="mmsreadysend">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="operationId" column="operation_id" jdbcType="BIGINT"/>
+        <result property="selfMobile" column="self_mobile" jdbcType="VARCHAR"/>
+        <result property="tos" column="tos" jdbcType="VARCHAR" />
+        <result property="mmsId" column="mms_id" jdbcType="BIGINT" />
+        <result property="frameXml" column="frame_xml" jdbcType="VARCHAR" />
+        <result property="readySendTime" column="ready_send_time" jdbcType="DATETIME" />
+        <result property="expireTime" column="expire_time" jdbcType="DATETIME" />
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+        <result property="serviceId" column="service_id" jdbcType="VARCHAR" />
+        <result property="tunnelType" column="tunnel_type" jdbcType="int" />
+        <result property="priorityLevel" column="priority_level" jdbcType="int" />
+        <result property="commitTime" column="commit_time" jdbcType="DATETIME" />
+        <result property="sendResult" column="send_result" jdbcType="int" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+    </resultMap>
+    <resultMap class="mmsreadysendvoalias" id="mmsreadysendVO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="operationId" column="operation_id" jdbcType="BIGINT"/>
+        <result property="selfMobile" column="self_mobile" jdbcType="VARCHAR"/>
+        <result property="tos" column="tos" jdbcType="VARCHAR" />
+        <result property="mmsId" column="mms_id" jdbcType="BIGINT" />
+        <result property="frameXml" column="frame_xml" jdbcType="VARCHAR" />
+        <result property="readySendTime" column="ready_send_time" jdbcType="DATETIME" />
+        <result property="expireTime" column="expire_time" jdbcType="DATETIME" />
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+        <result property="serviceId" column="service_id" jdbcType="VARCHAR" />
+        <result property="tunnelType" column="tunnel_type" jdbcType="int" />
+        <result property="priorityLevel" column="priority_level" jdbcType="int" />
+        <result property="commitTime" column="commit_time" jdbcType="DATETIME" />
+        <result property="sendResult" column="send_result" jdbcType="int" />
+        <result property="description" column="description" jdbcType="VARCHAR" />
+        <result property="mmses" column="mmsid" select="mms.mmsvoLoadById" />
+    </resultMap>
+	
+<!-- MMS  -->
+	<insert id="mmsInsert" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMms" >
+		insert into mbn_mms(id,title,create_by,update_by,create_time,update_time,attachment_size) values
+		(#id#,#title#,#createBy#,#updateBy#,#createTime#,#updateTime#,#attachmentSize#)
+  	</insert>
+  	<delete id="mmsDeleteById" parameterClass="java.lang.Long" >
+	    delete from mbn_mms where id= #id:BIGINT#
+  	</delete>
+  	<update id="mmsUpdate" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMms">
+		update mbn_mms
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id#
+			</isNotNull>
+			<isNotNull prepend="," property="title">
+				title = #title#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="," property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="," property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+			<isNotNull prepend="," property="attachmentSize">
+				attachment_size = #attachmentSize#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="mmsPage" resultMap="mms" parameterClass="java.util.Map">
+		select id,title,create_by,update_by,create_time,update_time,attachment_size
+		from mbn_mms
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="title">
+				title = #title#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+			<isNotNull prepend="," property="attachmentSize">
+				attachment_size = #attachmentSize#
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="mmsCount" parameterClass="java.util.Map"
+		resultClass="java.lang.Integer">
+		select count(*) from mbn_mms
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="title">
+				title = #title#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+			<isNotNull prepend="," property="attachmentSize">
+				attachment_size = #attachmentSize#
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="mmsLoadById" resultMap="mms"
+		parameterClass="java.lang.Long">
+		select id,title,create_by,update_by,create_time,update_time,attachment_size
+		from mbn_mms
+		where id = #id:BIGINT#
+	</select>
+	<select id="mmsvoLoadById" resultMap="mmsVO"
+		parameterClass="java.lang.Long">
+		select id,title,create_by,update_by,create_time,update_time,attachment_size,create_by as createby
+		from mbn_mms
+		where id = #id:BIGINT#
+	</select>
+	
+<!-- attachment -->
+
+	<insert id="attachmentInsert" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsAttachment">
+		insert into
+		mbn_mms_attachment_tb(id,frame_id,type_id,store_path,attachment_name,attachment_size)
+		values(#id:BIGINT#,#frameId:BIGINT#,#typeId:INT#,#storePath:VARCHAR#,#attachmentName:VARCHAR#,#attachmentSize:DOUBLE#)
+	</insert>
+    <delete id="attachmentDeleteById" parameterClass="java.lang.Long">
+		delete from mbn_mms_attachment_tb where id= #id:BIGINT#
+	</delete>
+	<update id="attachmentUpdate" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsAttachment">
+		update mbn_mms_attachment_tb
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="frameId">
+				frame_id = #frameId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="typeId">
+				type_id = #typeId:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="storePath">
+				store_path = #storePath:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="attachmentName">
+				attachment_name = #attachmentName:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="attachmentSize">
+				attachment_size = #attachmentSize:DOUBLE#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="attachmentPage" resultMap="attachment"
+		parameterClass="java.util.Map">
+		select id,frame_id,type_id,store_path,attachment_name,attachment_size
+		from mbn_mms_attachment_tb
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="frameId">
+				frame_id = #frameId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="typeId">
+				type_id = #typeId:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="storePath">
+				store_path = #storePath:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="attachmentName">
+				attachment_name = #attachmentName:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="attachmentSize">
+				attachment_size = #attachmentSize:DOUBLE#
+			</isNotNull>
+		</dynamic>
+	</select>
+    <select id="attachmentCount" parameterClass="java.util.Map"
+		resultClass="java.lang.Integer">
+		select count(*) from mbn_mms_attachment_tb
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="frameId">
+				frame_id = #frameId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="typeId">
+				type_id = #typeId:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="storePath">
+				store_path = #storePath:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="attachmentName">
+				attachment_name = #attachmentName:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="attachmentSize">
+				attachment_size = #attachmentSize:DOUBLE#
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="attachmentLoadById" resultMap="attachment"
+		parameterClass="java.lang.Long">
+		select id,frame_id,type_id,store_path,attachment_name,attachment_size from
+		mbn_mms_attachment_tb where id = #id:BIGINT#
+	</select>
+	
+<!-- frame -->
+	<insert id="frameInsert" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsFrame">
+		insert into
+		mbn_mms_frame_tb(id,frame_name,frame_text,mms_id,persist_time)
+		values(#id:BIGINT#,#frameName:VARCHAR#,#frameText:VARCHAR#,#mmsId:INT#,#persistTime:INT#)
+	</insert>
+	<delete id="frameDeleteById" parameterClass="java.lang.Long">
+		delete from mbn_mms_frame_tb where id= #id:BIGINT#
+	</delete>
+	<update id="frameUpdate" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsFrame">
+		update mbn_mms_frame_tb
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="frameName">
+				frame_name = #frameName:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="frameText">
+				frame_text = #frameText:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="mmsId">
+				mms_id = #mmsId:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="persistTime">
+				persist_time = #persistTime:INT#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="framePage" resultMap="mmsframe"
+		parameterClass="java.util.Map">
+		select id,frame_name,frame_text,mms_id,persist_time from
+		mbn_mms_frame_tb
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="frameName">
+				frame_name = #frameName:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="frameText">
+				frame_text = #frameText:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="mmsId">
+				mms_id = #mmsId:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="persistTime">
+				persist_time = #persistTime:INT#
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="frameCount" parameterClass="java.util.Map"
+		resultClass="java.lang.Integer">
+		select count(*) from mbn_mms_frame_tb
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="frameName">
+				frame_name = #frameName:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="frameText">
+				frame_text = #frameText:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="mmsId">
+				mms_id = #mmsId:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="persistTime">
+				persist_time = #persistTime:INT#
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="frameLoadById" resultMap="mmsframe"
+		parameterClass="java.lang.Long">
+		select id,frame_name,frame_text,mms_id,persist_time from mbn_mms_frame_tb
+		where id = #id:BIGINT#
+	</select>
+	
+<!-- hadsend -->    
+    <insert id="hadsendInsert" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsHadsend">
+		insert into
+		mbn_mms_had_send(id,operation_id,self_mobile,tos,mms_id,complete_time,merchant_pin,service_id,tunnel_type,commit_time,ready_send_time,send_result,description)
+		values(#id:BIGINT#,#operationId:BIGINT#,#selfMobile:VARCHAR#,#tos:VARCHAR#,#mmsId:BIGINT#,#completeTime:DATETIME#,#merchantPin:BIGINT#,#serviceId:VARCHAR#,#tunnelType:INT#,#commitTime:DATETIME#,#readySendTime:DATETIME#,#sendResult:INT#,#description:VARCHAR#)
+	</insert>
+  	<delete id="hadsendDelete" parameterClass="java.lang.Long">
+		delete from mbn_mms_had_send where id= #id:BIGINT#
+	</delete>
+	<update id="hadsendUpdate" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsHadsend">
+		update mbn_mms_had_send
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="operationId">
+				operation_id = #operationId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="selfMobile">
+				self_mobile = #selfMobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="tos">
+				tos = #tos:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="mmsId">
+				mms_id = #mmsId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="completeTime">
+				complete_time = #completeTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantPin">
+				merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="serviceId">
+				service_id = #serviceId:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="tunnelType">
+				tunnel_type = #tunnelType:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="commitTime">
+				commit_time = #commitTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="readySendTime">
+				ready_send_time = #readySendTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="sendResult">
+				send_result = #sendResult:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="description">
+				description = #description:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="hadsendPage" resultMap="mmshadsend"
+		parameterClass="java.util.Map">
+		select
+		a.id,a.operation_id,a.self_mobile,a.tos,mms_id,a.complete_time,a.merchant_pin,a.service_id,a.tunnel_type,a.commit_time,a.ready_send_time,a.send_result,a.description
+		<!-- ,b.title as mmsName --> 
+		from mbn_mms_had_send a<!-- ,mbn_mms b where a.mms_id=b.id -->
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="operationId">
+				operation_id = #operationId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="selfMobile">
+				self_mobile = #selfMobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="tos">
+				tos = #tos:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="mmsId">
+				mms_id = #mmsId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="completeTime">
+				complete_time = #completeTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin">
+				merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="serviceId">
+				service_id = #serviceId:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="tunnelType">
+				tunnel_type = #tunnelType:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="commitTime">
+				commit_time = #commitTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="readySendTime">
+				ready_send_time = #readySendTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="sendResult">
+				send_result = #sendResult:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="description">
+				description = #description:VARCHAR#
+			</isNotNull>
+<!-- 			
+			<isNotNull prepend="and" property="mmsName">
+				b.title = #mmsName:VARCHAR#
+			</isNotNull>
+-->
+			<isNotNull prepend="order by " property="merchantPin">
+				a.commit_time desc
+			</isNotNull>
+		</dynamic>
+	</select>
+	<select id="hadsendCount" parameterClass="java.util.Map"
+		resultClass="java.lang.Integer">
+		select count(a.id) from mbn_mms_had_send a<!-- ,mbn_mms b where a.mms_id=b.id -->
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="operationId">
+				operation_id = #operationId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="selfMobile">
+				self_mobile = #selfMobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="tos">
+				tos = #tos:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="mmsId">
+				mms_id = #mmsId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="completeTime">
+				complete_time = #completeTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin">
+				merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="serviceId">
+				service_id = #serviceId:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="tunnelType">
+				tunnel_type = #tunnelType:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="commitTime">
+				commit_time = #commitTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="readySendTime">
+				ready_send_time = #readySendTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="sendResult">
+				send_result = #sendResult:INT#
+			</isNotNull>
+			<isNotNull prepend="and" property="description">
+				description = #description:VARCHAR#
+			</isNotNull>
+<!-- 
+			<isNotNull prepend="and" property="description">
+				b.mms_title = #mmsName:VARCHAR#
+			</isNotNull> -->
+		</dynamic>
+	</select>
+	<select id="hadsendLoadById" resultMap="mmshadsend"
+		parameterClass="java.lang.Long">
+		select
+		id,operation_id,self_mobile,tos,mms_id,complete_time,merchant_pin,service_id,tunnel_type,commit_time,ready_send_time,send_result,description
+		from mbn_mms_had_send where id = #id:BIGINT#
+	</select>
+	
+<!-- readySend -->
+    <insert id="readysendInsert" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsReadysend">
+		insert into
+		mbn_mms_ready_send(id,operation_id,self_mobile,tos,mms_id,ready_send_time,expire_time,merchant_pin,service_id,
+		tunnel_type,priority_level,commit_time,description,send_result,frame_xml)
+		values(#id:BIGINT#,#operationId:BIGINT#,#selfMobile:VARCHAR#,#tos:VARCHAR#,#mmsId:BIGINT#,#readySendTime:DATETIME#,
+		#expireTime:DATETIME#,#merchantPin:BIGINT#,#serviceId:VARCHAR#,#tunnelType:INT#,#priorityLevel:INT#,
+		#commitTime:DATETIME#,#description:VARCHAR#,#sendResult:INTEGER#,#frameXml:VARCHAR#)
+	</insert>
+	<delete id="readysendDeleteById" parameterClass="java.lang.Long">
+		delete from mbn_mms_ready_send where id= #id:BIGINT#
+	</delete>
+	<update id="readysendUpdate" parameterClass="com.leadtone.mas.bizplug.mms.bean.MbnMmsReadysend">
+		update mbn_mms_ready_send
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="operationId">
+				operation_id = #operationId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="selfMobile">
+				self_mobile = #selfMobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="tos">
+				tos = #tos:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="mmsId">
+				mms_id = #mmsId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="readySendTime">
+				ready_send_time = #readySendTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="expireTime">
+				expire_time = #expireTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantPin">
+				merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="serviceId">
+				service_id = #serviceId:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="tunnelType">
+				tunnel_type = #tunnelType:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="priorityLevel">
+				priority_level = #priorityLevel:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="commitTime">
+				commit_time = #commitTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="sendResult">
+				send_result = #sendResult:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="description">
+				description = #description:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="frameXml">
+				frame_xml = #frameXml:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="readysendPageVO" resultMap="mmsreadysendVO"
+		parameterClass="java.util.Map">
+		select
+		id,operation_id,self_mobile,tos,mms_id,ready_send_time,expire_time,merchant_pin,service_id,tunnel_type,
+		priority_level,commit_time,description,send_result,frame_xml,mms_id as mmsid
+		from mbn_mms_ready_send
+		where merchant_pin = #merchantPin:BIGINT# and operation_id=1
+		<isNotNull prepend="and" property="id">
+			id = #id:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="operationId">
+			operation_id = #operationId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="selfMobile">
+			self_mobile = #selfMobile:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="tos">
+			tos = #tos:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="mmsId">
+			mms_id = #mmsId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="readySendTime">
+			ready_send_time = #readySendTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="expireTime">
+			expire_time = #expireTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="merchantPin">
+			merchant_pin = #merchantPin:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="serviceId">
+			service_id = #serviceId:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="tunnelType">
+			tunnel_type = #tunnelType:INT#
+		</isNotNull>
+		<isNotNull prepend="and" property="priorityLevel">
+			priority_level = #priorityLevel:INT#
+		</isNotNull>
+		<isNotNull prepend="and" property="commitTime">
+			commit_time = #commitTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="description">
+			description = #description:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="frameXml">
+			frame_xml = #frameXml:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="sendResult">
+			send_result = #sendResult:INTEGER#
+		</isNotNull>
+		order by commit_time desc
+		<dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$,
+            </isNotNull>
+            <isNotNull property="pageSize" >
+                $pageSize$
+            </isNotNull>
+        </dynamic>
+	</select>
+	<select id="readysendCountVO" parameterClass="java.util.Map"
+		resultClass="java.lang.Integer">
+		select count(*) 
+		from mbn_mms_ready_send
+		where merchant_pin = #merchantPin:BIGINT# and operation_id=1
+		<isNotNull prepend="and" property="id">
+			id = #id:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="operationId">
+			operation_id = #operationId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="selfMobile">
+			self_mobile = #selfMobile:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="tos">
+			tos = #tos:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="mmsId">
+			mms_id = #mmsId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="readySendTime">
+			ready_send_time = #readySendTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="expireTime">
+			expire_time = #expireTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="merchantPin">
+			merchant_pin = #merchantPin:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="serviceId">
+			service_id = #serviceId:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="tunnelType">
+			tunnel_type = #tunnelType:INT#
+		</isNotNull>
+		<isNotNull prepend="and" property="priorityLevel">
+			priority_level = #priorityLevel:INT#
+		</isNotNull>
+		<isNotNull prepend="and" property="commitTime">
+			commit_time = #commitTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="description">
+			description = #description:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="frameXml">
+			frame_xml = #frameXml:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="sendResult">
+			send_result = #sendResult:INTEGER#
+		</isNotNull>
+	</select>
+	<select id="readysendLoadById" resultMap="mmsreadysend"
+		parameterClass="java.lang.Long">
+		select
+		id,operation_id,self_mobile,tos,mms_id,ready_send_time,expire_time,merchant_pin,service_id,tunnel_type,
+		priority_level,commit_time,description,send_result,frame_xml
+		from mbn_mms_ready_send where id = #id:BIGINT#
+	</select>
+	<select id="readysendvoLoadById" resultMap="mmsreadysendVO"
+		parameterClass="java.lang.Long">
+		select
+		id,operation_id,self_mobile,tos,mms_id,ready_send_time,expire_time,merchant_pin,service_id,tunnel_type,
+		priority_level,commit_time,description,send_result,frame_xml
+		from mbn_mms_ready_send where id = #id:BIGINT#
+	</select>
+	<select id="readysendGetByPks" resultMap="mmsreadysend">
+		select
+		id,operation_id,self_mobile,tos,mms_id,ready_send_time,expire_time,merchant_pin,service_id,tunnel_type,
+		priority_level,commit_time,description,send_result,frame_xml
+		from mbn_mms_ready_send 
+		where send_result = '0'
+		<iterate prepend=" and id in " open="(" close=")"
+			conjunction=",">
+			#[]#
+		</iterate>
+	</select>
+</sqlMap>

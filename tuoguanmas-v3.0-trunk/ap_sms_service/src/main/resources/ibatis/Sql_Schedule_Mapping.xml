@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="schedule">
+    <typeAlias alias="mapping" type="com.leadtone.delegatemas.hbs.bean.ScheduleMapping"/>
+    <resultMap class="mapping" id="scheduleMapping">
+        <result property="gatewayId" column="gatewayID"/>
+        <result property="provinceCode" column="province_code"/>
+        <result property="gwIp" column="gw_ip"/>
+        <result property="gwPort" column="gw_port"/>
+        <result property="gwUser" column="gw_user"/>
+        <result property="gwPasswd" column="gw_passwd"/>
+        <result property="enterpriseCode" column="enterprise_code"/>
+        <result property="protocolVersion" column="protocol_version"/>
+        <result property="senderCode" column="senderCode"/>
+        <result property="serviceCode" column="service_code"/>
+		<!-- <result property="runStatus" column="run_status"/> -->
+    </resultMap>
+    <insert id="createMapping" parameterClass="com.leadtone.delegatemas.hbs.bean.ScheduleMapping">
+        insert into schedule_mapping(gatewayID,province_code,gw_ip,gw_port,gw_user,gw_passwd,enterprise_code,protocol_version,senderCode,service_code)
+        values(#gatewayId#,#provinceCode#,#gwIp#,#gwPort#,#gwUser#,#gwPasswd#,#enterpriseCode#,#protocolVersion#,#senderCode#,#serviceCode#)
+    </insert>
+    <update id="updateMapping" parameterClass="com.leadtone.delegatemas.hbs.bean.ScheduleMapping">
+        update schedule_mapping 
+        <dynamic prepend="set">   
+            <isNotNull prepend="," property="provinceCode" >
+                province_code=#provinceCode#
+            </isNotNull>
+            <isNotNull prepend="," property="gwIp" >
+                gw_ip=#gwIp#
+            </isNotNull>
+            <isNotNull prepend="," property="gwPort" >
+                gw_port=#gwPort#
+            </isNotNull>
+            <isNotNull prepend="," property="gwUser" >
+                gw_user=#gwUser#
+            </isNotNull>
+            <isNotNull prepend="," property="gwPasswd" >
+                gw_passwd=#gwPasswd#
+            </isNotNull>
+            <isNotNull prepend="," property="enterpriseCode" >
+                enterprise_code=#enterpriseCode#
+            </isNotNull>
+            <isNotNull prepend="," property="protocolVersion" >
+                protocol_version=#protocolVersion#
+            </isNotNull>
+            <isNotNull prepend="," property="senderCode" >
+                senderCode=#senderCode#
+            </isNotNull>
+            <isNotNull prepend="," property="serviceCode" >
+                service_code=#serviceCode#
+            </isNotNull>
+			<!--<isNotNull prepend="," property="runStatus" >
+                run_status=#runStatus#
+            </isNotNull> -->         	
+        </dynamic>
+        where gatewayID=#gatewayId#
+    </update>
+    <delete id="deleteMappging" parameterClass="java.lang.String">
+        delete from schedule_mapping where gatewayID=#gatewayId#
+    </delete>
+</sqlMap>

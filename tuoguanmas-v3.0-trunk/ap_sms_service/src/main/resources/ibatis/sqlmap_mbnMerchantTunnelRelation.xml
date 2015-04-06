@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MbnMerchantTunnelRelation">
+	<resultMap
+		class="com.leadtone.mas.bizplug.tunnel.bean.MbnMerchantTunnelRelation"
+		id="MbnMerchantTunnelRelationResult">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+		<result property="tunnelId" column="tunnel_id" jdbcType="INTEGER" />
+		<result property="accessNumber" column="access_number"
+			jdbcType="INTEGER" />
+		<result property="price" column="price" jdbcType="FLOAT" />
+		<result property="priorityLevel" column="priority_level"
+			jdbcType="INTEGER" />
+		<result property="state" column="state" jdbcType="INTEGER"/>
+		<result property="tunnelExtCode" column="tunnel_ext_code" jdbcType="VARCHAR"/>
+	</resultMap>
+	<insert id="insert"
+		parameterClass="com.leadtone.mas.bizplug.tunnel.bean.MbnMerchantTunnelRelation">
+		insert into mbn_merchant_tunnel_relation
+		(id,merchant_pin,tunnel_id,access_number,price,priority_level,state,tunnel_ext_code)
+		values
+		(#id:BIGINT#,#merchantPin:BIGINT#,#tunnelId:INTEGER#,
+		#accessNumber:INTEGER#,#price:FLOAT#,#priorityLevel:INTEGER#,
+		#state:INTEGER#,#tunnelExtCode:VARCHAR#)
+	</insert>
+	<update id="update"
+		parameterClass="com.leadtone.mas.bizplug.tunnel.bean.MbnMerchantTunnelRelation">
+		update mbn_merchant_tunnel_relation
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">id=#id:BIGINT#</isNotNull>
+			<isNotNull prepend="," property="merchantPin">merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="tunnelId">tunnel_id=#tunnelId:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="accessNumber">access_number=#accessNumber:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="price">price=#price:FLOAT#
+			</isNotNull>
+			<isNotNull prepend="," property="priorityLevel">priority_level=#priorityLevel:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="state">state=#state:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="tunnelExtCode">tunnel_ext_code=#tunnelExtCode#
+			</isNotNull>
+		</dynamic>
+		where merchant_pin=#merchantPin:BIGINT# and tunnel_id=#tunnelId:INTEGER#
+	</update>
+	<delete id="delete" parameterClass="java.lang.Long">
+		delete from mbn_merchant_tunnel_relation where
+		merchant_pin=#merchantPin:BIGINT#
+  	</delete>
+	<select id="findByPin" resultMap="MbnMerchantTunnelRelationResult"
+		parameterClass="java.lang.Long">
+		select id,merchant_pin,tunnel_id,access_number,price,priority_level,state,tunnel_ext_code
+		from mbn_merchant_tunnel_relation
+		where merchant_pin=#merchantPin:BIGINT#
+  	</select>
+	<select id="findByTunnelType" resultMap="MbnMerchantTunnelRelationResult"
+		parameterClass="java.util.HashMap">
+		select
+		rel.id,rel.merchant_pin,rel.tunnel_id,rel.access_number,rel.price,rel.priority_level,rel.state,rel.tunnel_ext_code
+		from mbn_merchant_tunnel_relation rel, mbn_tunnel tunnel
+		where rel.tunnel_id=tunnel.id
+		and merchant_pin=#merchantPin:BIGINT#
+		and tunnel.type=#type:BIGINT#
+  	</select>
+	<select id="findByClassify" resultMap="MbnMerchantTunnelRelationResult"
+		parameterClass="java.util.HashMap">
+		select
+		rel.id,rel.merchant_pin,rel.tunnel_id,rel.access_number,rel.price,rel.priority_level,rel.state,rel.tunnel_ext_code
+		from mbn_merchant_tunnel_relation rel, mbn_tunnel tunnel
+		where rel.tunnel_id=tunnel.id
+		and merchant_pin=#merchantPin:BIGINT#
+		and tunnel.classify=#classify:BIGINT#
+  	</select>
+	<select id="findByClassifyAndType" resultMap="MbnMerchantTunnelRelationResult"
+		parameterClass="java.util.HashMap">
+		select
+		rel.id,rel.merchant_pin,rel.tunnel_id,rel.access_number,rel.price,rel.priority_level,rel.state,rel.tunnel_ext_code
+		from mbn_merchant_tunnel_relation rel, mbn_tunnel tunnel
+		where rel.tunnel_id=tunnel.id
+		and merchant_pin=#merchantPin:BIGINT#
+		and tunnel.classify=#classify:BIGINT#
+		and tunnel.type=#type:BIGINT#
+  	</select>
+	<select id="findByPinAndTunnelId" resultMap="MbnMerchantTunnelRelationResult"
+		parameterClass="java.util.HashMap">
+		select id,merchant_pin,tunnel_id,access_number,price,priority_level,state,tunnel_ext_code
+		from mbn_merchant_tunnel_relation
+		where merchant_pin=#merchantPin:BIGINT#
+		and tunnel_id=#tunnelId:BIGINT#
+  	</select>
+	<select id="findByAccessNumber" resultMap="MbnMerchantTunnelRelationResult"
+		parameterClass="java.lang.String">
+		select
+		rel.id,rel.merchant_pin,rel.tunnel_id,rel.access_number,rel.price,rel.priority_level,rel.state,rel.tunnel_ext_code
+		from mbn_merchant_tunnel_relation rel, mbn_tunnel tunnel
+		where rel.tunnel_id=tunnel.id
+		and rel.access_number=#accessNumber:VARCHAR#
+  	</select>
+  	<!-- 根据表pk，查询商户已用最大的任务码  -->
+	<select id="queryMaxInUsed" resultMap="MbnMerchantTunnelRelationResult" parameterClass="java.lang.Long">
+		select 
+			id,merchant_pin,tunnel_id,access_number,price,priority_level,state,tunnel_ext_code
+		from mbn_merchant_tunnel_relation
+		where 
+			tunnel_id=#tunnelId:BIGINT#
+		order by tunnel_ext_code desc
+		limit 1
+	</select>
+	<!-- 根据表pk，查询已经过期的最小的一个  -->
+	<select id="queryExpireLastUsed" resultMap="MbnMerchantTunnelRelationResult" parameterClass="java.lang.Long">
+		select 
+			id,merchant_pin,tunnel_id,access_number,price,priority_level,state,tunnel_ext_code
+		from
+			mbn_merchant_tunnel_relation
+		where tunnel_id=#tunnelId:BIGINT#
+		and state=0
+		order by tunnel_ext_code asc
+		limit 1
+	</select>
+</sqlMap>
+	

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="PortalUser">
+	<typeAlias alias="PortalUser" type="com.leadtone.mas.connector.domain.PortalUser" />
+
+	<resultMap class="PortalUser" id="PortalUserResultMap">
+		<result property="id" column="id" />
+		<result property="merchant_pin" column="merchant_pin" nullValue="0"/>
+		<result property="login_account" column="login_account" />
+		<result property="login_pwd" column="login_pwd" />
+		<result property="user_ext_code" column="user_ext_code" nullValue=""/>
+		<result property="login_type" column="login_type" nullValue="0"/>
+		<result property="name" column="name" nullValue=""/>
+		<result property="mobile" column="mobile" nullValue=""/>
+		<result property="email" column="email" nullValue=""/>
+		<result property="department_name" column="department_name" nullValue="" />
+		<result property="duty" column="duty" nullValue=""/>
+		<result property="gender" column="gender" nullValue=""/>
+		<result property="user_type" column="user_type" />
+		<result property="lock_flag" column="lock_flag" />
+		<result property="limit_try_count" column="limit_try_count" />
+		<result property="active_flag" column="active_flag" />
+		<result property="login_time" column="login_time" nullValue="1971/01/01 00:00:00"/>
+		<result property="create_time" column="create_time" />
+		<result property="update_time" column="update_time" nullValue="1971/01/01 00:00:00"/>
+		<result property="create_by" column="create_by" nullValue="0"/>
+		<result property="update_by" column="update_by" nullValue="0"/>
+		<result property="ip_limit_flag" column="ip_limit_flag" nullValue="0"/>
+		<result property="ip_address" column="ip_address" nullValue=""/>
+		<result property="province" column="province" nullValue=""/>
+		<result property="city" column="city" nullValue=""/>
+		<result property="region" column="region" nullValue=""/>
+		<result property="corp_access_number" column="corp_access_number" nullValue=""/>
+		<result property="zxt_user_id" column="zxt_user_id" nullValue=""/>
+		<result property="webservice" column="webservice" nullValue=""/>
+		<result property="zxt_id" column="zxt_id" nullValue="0"/>	
+	</resultMap>
+
+	<select id="loadByNameAndPwd" parameterClass="map"
+		resultMap="PortalUserResultMap">
+		SELECT
+		id,merchant_pin,login_account,login_pwd,user_ext_code,login_type,
+		name,mobile,email,department_name,duty,gender,user_type,lock_flag,
+		limit_try_count,active_flag,login_time,create_time,update_time,
+		create_by,update_by,ip_limit_flag,ip_address,province,city,
+		region,corp_access_number,zxt_user_id,webservice,zxt_id
+		FROM
+		portal_user WHERE
+		login_account=#UserName# and login_pwd=#Pwd# and merchant_pin=#merchant_pin#
+	</select>
+	
+	<select id="loadByUid" parameterClass="long"
+		resultMap="PortalUserResultMap">
+		SELECT
+		id,merchant_pin,login_account,login_pwd,user_ext_code,login_type,
+		name,mobile,email,department_name,duty,gender,user_type,lock_flag,
+		limit_try_count,active_flag,login_time,create_time,update_time,
+		create_by,update_by,ip_limit_flag,ip_address,province,city,
+		region,corp_access_number,zxt_user_id,webservice,zxt_id
+		FROM
+		portal_user WHERE
+		merchant_pin=#merchant_pin#
+	</select>
+	
+	<select id="loadAllUser" resultMap="PortalUserResultMap">
+		SELECT
+		id,merchant_pin,login_account,login_pwd,user_ext_code,login_type,
+		name,mobile,email,department_name,duty,gender,user_type,lock_flag,
+		limit_try_count,active_flag,login_time,create_time,update_time,
+		create_by,update_by,ip_limit_flag,ip_address,province,city,
+		region,corp_access_number,zxt_user_id,webservice,zxt_id
+		FROM
+		portal_user
+	</select>
+	<select id="loadByName" parameterClass="map"
+		resultMap="PortalUserResultMap">
+		SELECT
+		id,merchant_pin,login_account,login_pwd,user_ext_code,login_type,
+		name,mobile,email,department_name,duty,gender,user_type,lock_flag,
+		limit_try_count,active_flag,login_time,create_time,update_time,
+		create_by,update_by,ip_limit_flag,ip_address,province,city,
+		region,corp_access_number,zxt_user_id,webservice,zxt_id
+		FROM
+		portal_user WHERE
+		login_account=#UserName# and merchant_pin=#merchant_pin#
+		and webservice = 3;
+	</select>
+
+	<select id="loadAllMerchantPin" resultClass="java.lang.Long">
+		select distinct merchant_pin from portal_user
+	</select>
+	<select id="loadAllMerchantPinDBUser" parameterClass="java.lang.Long"
+		resultMap="PortalUserResultMap">
+		SELECT
+		id,merchant_pin,login_account,login_pwd,user_ext_code,login_type,
+		name,mobile,email,department_name,duty,gender,user_type,lock_flag,
+		limit_try_count,active_flag,login_time,create_time,update_time,
+		create_by,update_by,ip_limit_flag,ip_address,province,city,
+		region,corp_access_number,zxt_user_id,webservice,zxt_id
+		FROM
+		portal_user where webservice = 3 and merchant_pin=#merchant_pin#;
+	</select>
+</sqlMap>

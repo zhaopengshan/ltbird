@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MbnMerchantVip" >
+  <resultMap id="abatorgenerated_MbnMerchantVipResult" class="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantVip" >
+                                <result column="merchant_pin" property="merchantPin" jdbcType="BIGINT" />
+				<result column="merchant_mobile" property="merchantMobile" jdbcType="VARCHAR" />
+				<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+				<result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+				<result column="ufid" property="ufid" jdbcType="VARCHAR" />
+				<result column="address" property="address" jdbcType="VARCHAR" />
+				<result column="name" property="name" jdbcType="VARCHAR" />
+				<result column="sms_state" property="smsState" jdbcType="VARCHAR" />
+				<result column="mms_state" property="mmsState" jdbcType="VARCHAR" />
+				<result column="province" property="province" jdbcType="VARCHAR" />
+				<result column="city" property="city" jdbcType="VARCHAR" />
+				<result column="region" property="region" jdbcType="VARCHAR" />
+				<result column="sms_access_number" property="smsAccessNumber" jdbcType="VARCHAR" />
+				<result column="mms_access_number" property="mmsAccessNumber" jdbcType="VARCHAR" />
+				<result column="fee_code" property="feeCode" jdbcType="VARCHAR" />
+				<result column="platform" property="platform" jdbcType="VARCHAR" />
+				<result column="key_primary" property="keyPrimary" jdbcType="VARCHAR" />
+				<result column="key_sub" property="keySub" jdbcType="VARCHAR" />
+				<result column="key_other" property="keyOther" jdbcType="VARCHAR" />
+				<result column="place_id" property="placeId" jdbcType="INT" />
+				<result column="create_time" property="createTime" jdbcType="DATETIME" />
+				<result column="email" property="email" jdbcType="VARCHAR" />
+				<result column="last_update_time" property="lastUpdateTime" jdbcType="DATETIME" />
+				<result column="corp_id" property="corpId" jdbcType="INT" />
+				<result column="corp_ext" property="corpExt" jdbcType="VARCHAR" />
+	 </resultMap>
+ <resultMap class="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantVipVO" id="merchantVO" groupBy="id">
+                                <result column="merchant_pin" property="merchantPin" jdbcType="BIGINT" />
+                                <result column="merchant_mobile" property="merchantMobile" jdbcType="VARCHAR" />
+				<result column="telephone" property="telephone" jdbcType="VARCHAR" />
+				<result column="group_code" property="groupCode" jdbcType="VARCHAR" />
+				<result column="ufid" property="ufid" jdbcType="VARCHAR" />
+				<result column="address" property="address" jdbcType="VARCHAR" />
+				<result column="name" property="name" jdbcType="VARCHAR" />
+				<result column="sms_state" property="smsState" jdbcType="VARCHAR" />
+				<result column="mms_state" property="mmsState" jdbcType="VARCHAR" />
+				<result column="province" property="province" jdbcType="VARCHAR" />
+				<result column="city" property="city" jdbcType="VARCHAR" />
+				<result column="region" property="region" jdbcType="VARCHAR" />
+				<result column="sms_access_number" property="smsAccessNumber" jdbcType="VARCHAR" />
+				<result column="mms_access_number" property="mmsAccessNumber" jdbcType="VARCHAR" />
+				<result column="fee_code" property="feeCode" jdbcType="VARCHAR" />
+				<result column="platform" property="platform" jdbcType="VARCHAR" />
+				<result column="key_primary" property="keyPrimary" jdbcType="VARCHAR" />
+				<result column="key_sub" property="keySub" jdbcType="VARCHAR" />
+				<result column="key_other" property="keyOther" jdbcType="VARCHAR" />
+				<result column="place_id" property="placeId" jdbcType="INT" />
+				<result column="create_time" property="createTime" jdbcType="DATETIME" />
+				<result column="email" property="email" jdbcType="VARCHAR" />
+				<result column="last_update_time" property="lastUpdateTime" jdbcType="DATETIME" />
+				<result column="corp_id" property="corpId" jdbcType="INT" />
+				<result column="corp_ext" property="corpExt" jdbcType="VARCHAR" />
+                                <result property="user" resultMap="security.userMerchantVO"/>
+ </resultMap>
+ <resultMap class="com.leadtone.delegatemas.merchant.bean.PointsCityStatistic" id="pointsCityStatistic">
+     <result column="city_id" property="cityId"/>
+        <result column="city_name" property="cityName"/>
+        <result column="corp_count" property="corpCount"/>
+        <result column="login_account" property="loginAccount"/>
+	<result column="login_pwd" property="loginPwd"/>
+ </resultMap>
+<!--  商户分页 ��始-->
+ <select id="queryMerchantByCondition" parameterClass="java.util.Map" resultMap="merchantVO">
+       	select mmv.merchant_pin,mmv.merchant_mobile,mmv.telephone,mmv.group_code,
+            mmv.ufid,mmv.address,mmv.name,mmv.sms_state,
+            mmv.mms_state,mmv.province,mmv.city,mmv.region,
+            mmv.sms_access_number,mmv.mms_access_number,mmv.fee_code,mmv.platform,
+            mmv.key_primary,mmv.key_sub,mmv.key_other,mmv.place_id,
+            mmv.create_time,mmv.email,mmv.last_update_time,mmv.corp_id,mmv.corp_ext,
+    		user.id as user_id,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+     	  	user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+       		user.merchant_pin,user.user_type,user.city,user.user_ext_code,
+			user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,
+			user.first_login_flag,user.update_time
+    	from mbn_merchant_vip mmv,portal_user user
+        where mmv.merchant_pin=user.merchant_pin and user.user_type=3 and mmv.sms_state in ('b','B')
+            <isNotEmpty prepend="and" property="name">
+                mmv.name like CONCAT('%',#name:VARCHAR#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="mobile">
+                user.mobile like CONCAT('%',#mobile:VARCHAR#,'%')
+            </isNotEmpty>
+             order by mmv.last_update_time desc, mmv.create_time desc
+        <dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$,
+            </isNotNull>
+            <isNotNull property="pageSize" >
+                $pageSize$
+            </isNotNull>
+        </dynamic>
+    </select>
+    
+    <select id="pageCountMerchant" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+    	select count(distinct user.id)
+    	from mbn_merchant_vip mmv,portal_user user
+        where mmv.merchant_pin=user.merchant_pin and user.user_type=3 and mmv.sms_state in ('b','B')
+            <isNotEmpty prepend="and" property="name">
+                mmv.name like CONCAT('%',#name:VARCHAR#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="mobile">
+                user.mobile like CONCAT('%',#mobile:VARCHAR#,'%')
+            </isNotEmpty>
+    </select>
+<!-- 商户分页结束 -->
+  <select id="loadByMerhcantPin" resultMap="abatorgenerated_MbnMerchantVipResult" parameterClass="java.lang.Long" >
+    select merchant_pin,merchant_mobile,telephone,group_code,
+            ufid,address,name,sms_state,
+            mms_state,province,city,region,
+            sms_access_number,mms_access_number,fee_code,platform,
+            key_primary,key_sub,key_other,place_id,
+            create_time,email,last_update_time,corp_id,corp_ext
+    from mbn_merchant_vip where merchant_pin = #merchantPin:BIGINT#
+  </select>
+  <select id="loadByName" resultMap="abatorgenerated_MbnMerchantVipResult" parameterClass="java.lang.String" >
+    select merchant_pin,merchant_mobile,telephone,group_code,
+            ufid,address,name,sms_state,
+            mms_state,province,city,region,
+            sms_access_number,mms_access_number,fee_code,platform,
+            key_primary,key_sub,key_other,place_id,
+            create_time,email,last_update_time,corp_id,corp_ext
+    from mbn_merchant_vip where name = #name:VARCHAR#
+  </select>
+  <select id="loadByProvinceAndCity" resultMap="abatorgenerated_MbnMerchantVipResult" parameterClass="java.util.HashMap" >
+    select merchant_pin,merchant_mobile,telephone,group_code,
+            ufid,address,name,sms_state,
+            mms_state,province,city,region,
+            sms_access_number,mms_access_number,fee_code,platform,
+            key_primary,key_sub,key_other,place_id,
+            create_time,email,last_update_time,corp_id,corp_ext
+    from mbn_merchant_vip 
+    where platform='2' 
+    <isNotNull prepend="and" property="privinceCode">
+		province =
+		#privinceCode:VARCHAR#
+	</isNotNull>
+	<isNotNull prepend="and" property="cityCode">
+		city =
+		#cityCode:VARCHAR#
+	</isNotNull>
+  </select>  
+  <select id="queryVirtualProvinceMerchant" resultMap="abatorgenerated_MbnMerchantVipResult" parameterClass="java.util.HashMap" >
+    select merchant_pin,merchant_mobile,telephone,group_code,
+            ufid,address,name,sms_state,
+            mms_state,province,city,region,
+            sms_access_number,mms_access_number,fee_code,platform,
+            key_primary,key_sub,key_other,place_id,
+            create_time,email,last_update_time,corp_id,corp_ext
+    from mbn_merchant_vip 
+    <dynamic prepend="where">
+   		<isNotNull prepend="and" property="privinceCode">
+			province =
+			#privinceCode:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="merchantType">
+			platform = 
+			#merchantType:VARCHAR#
+		</isNotNull>
+	</dynamic>
+  </select>
+  <select id="queryVirtualCityMerchant" resultMap="abatorgenerated_MbnMerchantVipResult" parameterClass="java.util.HashMap" >
+    select merchant_pin,merchant_mobile,telephone,group_code,
+            ufid,address,name,sms_state,
+            mms_state,province,city,region,
+            sms_access_number,mms_access_number,fee_code,platform,
+            key_primary,key_sub,key_other,place_id,
+            create_time,email,last_update_time,corp_id,corp_ext
+    from mbn_merchant_vip 
+    <dynamic prepend="where">
+   		<isNotNull prepend="and" property="cityCode">
+			city =
+			#cityCode:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="merchantType">
+			platform = 
+			#merchantType:VARCHAR#
+		</isNotNull>
+	</dynamic>
+  </select>
+  <insert id="insert" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantVip" >
+insert into mbn_merchant_vip(merchant_pin,merchant_mobile,telephone,group_code,
+							ufid,address,name,sms_state,
+							mms_state,province,city,region,
+							sms_access_number,mms_access_number,fee_code,platform,
+							key_primary,key_sub,key_other,place_id,
+							create_time,email,last_update_time,corp_id,corp_ext) 
+						values(#merchantPin:BIGINT#,#merchantMobile:VARCHAR#,#telephone:VARCHAR#,#groupCode:VARCHAR#,
+							#ufid:VARCHAR#,#address:VARCHAR#,#name:VARCHAR#,#smsState:VARCHAR#,
+							#mmsState:VARCHAR#,#province:VARCHAR#,#city:VARCHAR#,#region:VARCHAR#,
+							#smsAccessNumber:VARCHAR#,#mmsAccessNumber:VARCHAR#,#feeCode:VARCHAR#,#platform:VARCHAR#,
+							#keyPrimary:VARCHAR#,#keySub:VARCHAR#,#keyOther:VARCHAR#,#placeId:INT#,
+							#createTime:DATETIME#,#email:VARCHAR#,#lastUpdateTime:DATETIME#,#corpId:INT#,#corpExt:VARCHAR#)
+  </insert>
+  <update id="update" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantVip" >
+    update mbn_merchant_vip
+    <dynamic prepend="set" >
+	<isNotNull prepend="," property="merchantMobile" >
+        merchant_mobile = #merchantMobile:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="telephone" >
+        telephone = #telephone:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="groupCode" >
+        group_code = #groupCode:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="ufid" >
+        ufid = #ufid:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="address" >
+        address = #address:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="name" >
+        name = #name:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="smsState" >
+        sms_state = #smsState:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="mmsState" >
+        mms_state = #mmsState:VARCHAR#
+      </isNotNull>      
+	<isNotNull prepend="," property="province" >
+        province = #province:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="city" >
+        city = #city:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="region" >
+        region = #region:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="smsAccessNumber" >
+       	sms_access_number = #smsAccessNumber:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="mmsAccessNumber" >
+        mms_access_number = #mmsAccessNumber:VARCHAR#
+      </isNotNull>       
+	<isNotNull prepend="," property="feeCode" >
+        fee_code = #feeCode:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="platform" >
+        platform = #platform:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="keyPrimary" >
+        key_primary = #keyPrimary:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="keySub" >
+        key_sub = #keySub:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="keyOther" >
+        key_other = #keyOther:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="placeId" >
+        place_id = #placeId:INT#
+    </isNotNull>
+	<isNotNull prepend="," property="createTime" >
+        create_time = #createTime:DATETIME#
+    </isNotNull>
+	<isNotNull prepend="," property="email" >
+        email = #email:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="lastUpdateTime" >
+        last_update_time = #lastUpdateTime:DATETIME#
+    </isNotNull>    
+    </dynamic>
+   where merchant_pin=#merchantPin:BIGINT#
+  </update>
+  <!--mas sql-->
+  <select id="queryMasMerchantByCondition" parameterClass="java.util.Map" resultMap="merchantVO">
+       	select mmv.merchant_pin,mmv.merchant_mobile,mmv.telephone,mmv.group_code,
+            mmv.ufid,mmv.address,mmv.name,mmv.sms_state,
+            mmv.mms_state,mmv.province,mmv.city,mmv.region,
+            mmv.sms_access_number,mmv.mms_access_number,mmv.fee_code,mmv.platform,
+            mmv.key_primary,mmv.key_sub,mmv.key_other,mmv.place_id,
+            mmv.create_time,mmv.email,mmv.last_update_time,mmv.corp_id,mmv.corp_ext,
+            user.id as user_id,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+            user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+            user.merchant_pin,user.user_type,user.city,user.user_ext_code,
+			user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,
+			user.first_login_flag,user.update_time
+    	from mbn_merchant_vip mmv left join portal_user user on mmv.merchant_pin=user.merchant_pin and user.user_type=3
+        where mmv.platform='2'
+        <isNotEmpty prepend="and" property="name">
+                mmv.name like CONCAT('%',#name#,'%')
+        </isNotEmpty>    
+        <isNotEmpty prepend="and" property="province">
+                mmv.province=#province#
+        </isNotEmpty>          
+        <isNotEmpty prepend="and" property="region">
+                mmv.city=#region#
+        </isNotEmpty>            
+        group by mmv.merchant_pin order by mmv.last_update_time desc, mmv.create_time desc
+        <dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$,
+            </isNotNull>
+            <isNotNull property="pageSize" >
+                $pageSize$
+            </isNotNull>
+        </dynamic>
+    </select>    
+    <select id="pageMasCountMerchant" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+    	select count(distinct mmv.merchant_pin)
+    	from mbn_merchant_vip mmv left join portal_user user on mmv.merchant_pin=user.merchant_pin and user.user_type=3
+        where mmv.platform='2'
+            <isNotEmpty prepend="and" property="name">
+                mmv.name like CONCAT('%',#name:VARCHAR#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="province">
+                mmv.province=#province#
+            </isNotEmpty>  
+            <isNotEmpty prepend="and" property="region">
+                mmv.city=#region#
+            </isNotEmpty>
+    </select>
+    <select id="queryPointsCityStatistic" parameterClass="java.util.Map" resultMap="pointsCityStatistic">
+    	select count(distinct mmv.merchant_pin) as corp_count,region.id as city_id,region.name as city_name,user.login_account,user.login_pwd  	
+        from portal_region region left join mbn_merchant_vip mmv on region.id=cast(mmv.city as UNSIGNED) and mmv.platform='2' left join portal_user user on region.id=cast(user.city as UNSIGNED) and user.user_type=2
+        <dynamic prepend="where"> 
+            <isNotEmpty prepend="and" property="province">
+                region.parent_id=#province#
+            </isNotEmpty>
+        </dynamic>
+         group by region.id   
+    </select>
+    <delete id="deleteMerchantVip" parameterClass="java.lang.Long">
+        delete from mbn_merchant_vip where merchant_pin=#merchantPin#;
+    </delete>
+     <select  id="countByZxtUserId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+        select count(*) from mbn_merchant_vip 
+        where corp_ext=#zxtUserId#
+    </select>
+    <select  id="getCorpZXTId" parameterClass="java.lang.Long" resultClass="java.lang.Integer">
+        select corp_id from mbn_merchant_vip 
+        where merchant_pin=#merchantPin:BIGINT#
+    </select>
+  <!--mas sql-->
+</sqlMap>
+	

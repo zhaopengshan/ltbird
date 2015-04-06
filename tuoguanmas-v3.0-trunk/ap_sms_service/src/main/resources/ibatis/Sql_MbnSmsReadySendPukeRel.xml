@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ReadySendPukeRel">
+	<typeAlias alias="relAlias" type="com.leadtone.mas.merchantcm.sms.bean.ReadySendPukeRel"/>
+	<!--  -->
+ 	<resultMap class="relAlias" id="readysendPukeRel">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="readyId" column="ready_id" jdbcType="BIGINT"/>
+        <result property="pukeId" column="puke_id" jdbcType="BIGINT"/>
+    </resultMap>
+	
+	<insert id="insert" parameterClass="relAlias">
+		insert into mbn_sms_ready_puke_rel
+			(ready_id, puke_id) values (#readyId#,#pukeId#)
+	</insert>
+	
+	<select id="selectByObj" resultMap="MbnSmsReadySend.mbnSmsReadySendAll" parameterClass="relAlias">
+		select
+			readysend.id, readysend.merchant_pin, readysend.operation_id,readysend.batch_id,webservice,
+			province, self_mobile, tos, tos_name,
+			content, cut_apart_number, commit_time,
+			ready_send_time, expire_time,complete_time,task_number,
+			sms_access_number, tunnel_type, priority_level,
+			send_result, fail_reason, description,create_by,title
+		from
+			mbn_sms_ready_puke_rel rel left join mbn_sms_ready_send readysend 
+		on rel.ready_id = readysend.id
+		<dynamic prepend="where">
+        	<isNotNull prepend="and" property="id">
+        		rel.id = #id:BIGINT#
+        	</isNotNull>
+        	<isNotNull prepend="and" property="readyId">
+        		rel.ready_id = #readyId:BIGINT#
+        	</isNotNull>
+			<isNotNull prepend="and" property="pukeId">
+        		rel.puke_id = #pukeId:BIGINT#
+        	</isNotNull>
+        </dynamic>
+	</select>
+	<select id="selectByPukeId" resultMap="MbnSmsReadySend.mbnSmsReadySendAll" parameterClass="java.lang.Long">
+		select
+			readysend.id, readysend.merchant_pin, readysend.operation_id,readysend.batch_id,webservice,
+			province, self_mobile, tos, tos_name,
+			content, cut_apart_number, commit_time,
+			ready_send_time, expire_time,complete_time,task_number,
+			sms_access_number, tunnel_type, priority_level,
+			send_result, fail_reason, description,create_by,title
+		from
+			mbn_sms_ready_puke_rel rel left join mbn_sms_ready_send readysend 
+		on rel.ready_id = readysend.id where rel.puke_id = #pukeId:BIGINT#
+	</select>
+	
+	<update id="updateResult" parameterClass="java.util.HashMap">
+		update mbn_sms_ready_puke_rel rel left join mbn_sms_ready_send readysend 
+		on rel.ready_id = readysend.id
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="sendResult">
+				readysend.send_result = #sendResult:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="failReason">
+				readysend.fail_reason=#failReason:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="completeTime">
+				readysend.complete_time=#completeTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where rel.puke_id = #pukeId:BIGINT#
+	</update>
+	
+	
+</sqlMap>

@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="SmsMbnTunnel">
+	 
+	<resultMap class="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnel" id="mbnTunnel">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="accessNumber" column="access_number"
+			jdbcType="VARCHAR" />
+		<result property="state" column="state" jdbcType="BIGINT" />
+		<result property="corpExtLen" column="corp_ext_len" jdbcType="BIGINT" />
+		<result property="classify" column="classify" jdbcType="BIGINT" />
+		<result property="gatewayAddr" column="gateway_addr" jdbcType="VARCHAR" />
+		<result property="gatewayPort" column="gateway_port" jdbcType="BIGINT" />
+		<result property="user" column="user" jdbcType="VARCHAR" />
+		<result property="passwd" column="passwd" jdbcType="VARCHAR" />
+		<result property="province" column="province" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="BIGINT" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="smsSendPath" column="sms_send_path" jdbcType="VARCHAR" />
+		<result property="smsReceivePath" column="sms_receive_path"
+			jdbcType="VARCHAR" />
+		<result property="smsReportPath" column="sms_report_path"
+			jdbcType="VARCHAR" />
+		<result property="updateTime" column="update_time" jdbcType="DATETIME" />
+		<result property="createTime" column="create_time" jdbcType="DATETIME" />
+		<result property="delStatus" column="del_status" jdbcType="BIGINT" />
+		<result property="attribute" column="attribute" jdbcType="BIGINT" />
+		<result property="tunnelRange" column="tunnel_range" jdbcType="BIGINT" />
+	</resultMap>
+	<resultMap extends="mbnTunnel"
+		class="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnelVO" id="smsMbnTunnelVO">
+		<result property="smsNumber" column="number" jdbcType="BIGINT" />
+		<result property="provinceName" column="province_name" jdbcType="VARCHAR" />
+	</resultMap>
+	<resultMap extends="smsMbnTunnelVO"
+		class="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnelConsumerVO" id="smsMbnTunneConsumerVO">
+		<result property="remainNumber" column="remain_number" jdbcType="BIGINT"/>
+	</resultMap>
+        <resultMap class="com.leadtone.delegatemas.tunnel.bean.MasTunnel" id="masTunnel">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="accessNumber" column="access_number"
+			jdbcType="VARCHAR" />
+		<result property="state" column="state" jdbcType="BIGINT" />
+		<result property="corpExtLen" column="corp_ext_len" jdbcType="BIGINT" />
+		<result property="classify" column="classify" jdbcType="BIGINT" />
+		<result property="gatewayAddr" column="gateway_addr" jdbcType="VARCHAR" />
+		<result property="gatewayPort" column="gateway_port" jdbcType="BIGINT" />
+		<result property="user" column="user" jdbcType="VARCHAR" />
+		<result property="passwd" column="passwd" jdbcType="VARCHAR" />
+		<result property="province" column="province" jdbcType="VARCHAR" />
+		<result property="type" column="type" jdbcType="BIGINT" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+		<result property="smsSendPath" column="sms_send_path" jdbcType="VARCHAR" />
+		<result property="smsReceivePath" column="sms_receive_path"
+			jdbcType="VARCHAR" />
+		<result property="smsReportPath" column="sms_report_path"
+			jdbcType="VARCHAR" />
+		<result property="updateTime" column="update_time" jdbcType="DATETIME" />
+		<result property="createTime" column="create_time" jdbcType="DATETIME" />
+		<result property="delStatus" column="del_status" jdbcType="BIGINT" />
+		<result property="attribute" column="attribute" jdbcType="BIGINT" />
+        <result property="serviceId" column="service_id" />
+        <result property="smsCorpIdent" column="sms_corp_ident" />
+        <result property="protocalVersion" column="protocal_version" />
+		<result property="tunnelRange" column="tunnel_range" />
+	</resultMap>
+	<!-- 分页（�表联查） -->
+	<select id="page" resultMap="smsMbnTunnelVO" parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select 
+			mt.id,mt.name,access_number,state,corp_ext_len,
+			classify,gateway_addr,gateway_port,user,passwd,province,
+			mt.type,mt.description,sms_send_path,sms_receive_path,sms_report_path,
+			update_time,mt.create_time,del_status,attribute,
+			balance_number as number,cd.name as province_name, mt.tunnel_range
+		from  mbn_tunnel mt 
+			left join mbn_tunnel_account ta
+			on mt.id=ta.tunnel_id
+			left join mbn_config_sys_dictionary cd
+			on cd.coding=mt.province
+		where mt.del_status=0 
+				<isNotNull prepend="and" property="name">
+					 mt.name  like CONCAT('%',#name:VARCHAR#,'%') 
+				</isNotNull>
+				<isNotNull prepend="and" property="state">
+					 mt.state=#state:BIGINT#
+				</isNotNull>
+				<isNotNull prepend="and" property="attribute">
+					 mt.attribute=#attribute:BIGINT#
+				</isNotNull>
+				<isNotNull prepend="and" property="province">
+					 mt.province=#province:VARCHAR#
+				</isNotNull>
+				<isNotNull prepend="and" property="classify">
+					 mt.classify=#classify:BIGINT#
+				</isNotNull> 
+				order by mt.name 
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit #startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+		
+	</select>
+	<!-- change by wangyu1 13/1/29
+	classify=2用户托管mas
+	classify=1由于上海福特 -->
+	<select id="getTunnelByMerchantPin" resultMap="mbnTunnel" parameterClass="java.lang.Long">
+		SELECT
+			mbn_tunnel.id,mbn_tunnel.name,mbn_tunnel.access_number, mbn_tunnel.tunnel_range,
+			mbn_tunnel.state,mbn_tunnel.corp_ext_len,mbn_tunnel.classify,
+			mbn_tunnel.gateway_addr,mbn_tunnel.gateway_port,mbn_tunnel.user,
+			mbn_tunnel.passwd,mbn_tunnel.province,mbn_tunnel.type,mbn_tunnel.description,
+			mbn_tunnel.sms_send_path,mbn_tunnel.sms_receive_path,mbn_tunnel.sms_report_path,
+			mbn_tunnel.update_time,mbn_tunnel.create_time,mbn_tunnel.del_status,mbn_tunnel.attribute
+		from mbn_merchant_tunnel_relation mtr
+		     inner join (select * from mbn_tunnel  where classify=1) mbn_tunnel on mbn_tunnel.id=mtr.tunnel_id
+			where mtr.merchant_pin=#merchantPin:VARCHAR#
+	</select>
+	<select id="getMmsTunnelByMerchantPin" resultMap="masTunnel" parameterClass="java.lang.Long">
+		SELECT
+			mbn_tunnel.id,mbn_tunnel.name,mbn_tunnel.access_number, mbn_tunnel.tunnel_range,
+			mbn_tunnel.state,mbn_tunnel.corp_ext_len,mbn_tunnel.classify,
+			mbn_tunnel.gateway_addr,mbn_tunnel.gateway_port,mbn_tunnel.user,
+			mbn_tunnel.passwd,mbn_tunnel.province,mbn_tunnel.type,mbn_tunnel.description,
+			mbn_tunnel.sms_send_path,mbn_tunnel.sms_receive_path,mbn_tunnel.sms_report_path,
+			mbn_tunnel.update_time,mbn_tunnel.create_time,mbn_tunnel.del_status,mbn_tunnel.attribute
+			,mbn_tunnel.service_id,mbn_tunnel.sms_corp_ident,mbn_tunnel.protocal_version
+		from mbn_merchant_tunnel_relation mtr
+		     inner join mbn_tunnel on mbn_tunnel.id=mtr.tunnel_id
+			where mtr.merchant_pin=#merchantPin:VARCHAR# and mbn_tunnel.type = 2
+	</select>
+	<select id="getMerchantPinTunnels" resultMap="masTunnel" parameterClass="java.lang.Long">
+		SELECT
+				mbn_tunnel.id,mbn_tunnel.name,mbn_tunnel.access_number, mbn_tunnel.tunnel_range,
+				mbn_tunnel.state,mbn_tunnel.corp_ext_len,mbn_tunnel.classify,
+				mbn_tunnel.gateway_addr,mbn_tunnel.gateway_port,mbn_tunnel.user,
+				mbn_tunnel.passwd,mbn_tunnel.province,mbn_tunnel.type,mbn_tunnel.description,
+				mbn_tunnel.sms_send_path,mbn_tunnel.sms_receive_path,mbn_tunnel.sms_report_path,
+				mbn_tunnel.update_time,mbn_tunnel.create_time,mbn_tunnel.del_status,mbn_tunnel.attribute
+				,mbn_tunnel.service_id,mbn_tunnel.sms_corp_ident,mbn_tunnel.protocal_version
+			from mbn_merchant_tunnel_relation mtr
+			     inner join mbn_tunnel on mbn_tunnel.id=mtr.tunnel_id
+			where mtr.merchant_pin = #merchantPin:BIGINT#
+	</select>
+	<!-- 分页总数 -->
+	<select id="pageCount" resultClass="java.lang.Integer" parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+	select  count(id)  from  mbn_tunnel mt
+		where mt.del_status=0
+	    <isNotNull prepend="and" property="name">
+			 mt.name like CONCAT('%',#name:VARCHAR#,'%') 
+		</isNotNull>
+		<isNotNull prepend="and" property="state">
+			 mt.state=#state:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="attribute">
+			 mt.attribute=#attribute:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="province">
+			 mt.province=#province:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="classify">
+			 mt.classify=#classify:BIGINT#
+		</isNotNull>  
+	</select>
+	<select id="getByTunnelPk" resultMap="masTunnel" parameterClass="java.lang.Long">
+		SELECT
+			mbn_tunnel.id,mbn_tunnel.name,mbn_tunnel.access_number, mbn_tunnel.tunnel_range,
+			mbn_tunnel.state,mbn_tunnel.corp_ext_len,mbn_tunnel.classify,
+			mbn_tunnel.gateway_addr,mbn_tunnel.gateway_port,mbn_tunnel.user,
+			mbn_tunnel.passwd,mbn_tunnel.province,mbn_tunnel.type,mbn_tunnel.description,
+			mbn_tunnel.sms_send_path,mbn_tunnel.sms_receive_path,mbn_tunnel.sms_report_path,
+			mbn_tunnel.update_time,mbn_tunnel.create_time,mbn_tunnel.del_status,mbn_tunnel.attribute,
+			mbn_tunnel.service_id,mbn_tunnel.sms_corp_ident,mbn_tunnel.protocal_version
+		from mbn_tunnel
+		where mbn_tunnel.id=#id:BIGINT#
+	</select>
+	<select id="getByPk" resultMap="smsMbnTunnelVO" parameterClass="java.lang.Long">
+		select 
+			mt.id,mt.name,access_number,state,corp_ext_len,
+			classify,gateway_addr,gateway_port,user,passwd,province,
+			mt.type,mt.description,sms_send_path,sms_receive_path,sms_report_path,
+			update_time,mt.create_time,del_status,attribute, mt.tunnel_range,
+			balance_number as number
+			,cd.name as province_name 
+		from 
+			mbn_tunnel mt 
+		left join mbn_tunnel_account ta
+			on mt.id=ta.tunnel_id
+		left join mbn_config_sys_dictionary cd
+			on cd.coding=mt.province
+		where mt.del_status=0 
+			and mt.id=#tunnelId:BIGINT# 
+			 
+	</select>
+	<select id="queryByTunnelId" resultMap="smsMbnTunnelVO" parameterClass="java.lang.Long">
+		select 
+			mt.id,mt.name,access_number,state,corp_ext_len, mt.tunnel_range,
+			classify,gateway_addr,gateway_port,user,passwd,province,
+			mt.type,mt.description,sms_send_path,sms_receive_path,sms_report_path,
+			update_time,mt.create_time,del_status,attribute,
+			balance_number as number
+			,cd.name as province_name 
+		from 
+			mbn_tunnel mt 
+		left join mbn_tunnel_account ta
+			on mt.id=ta.tunnel_id
+		left join mbn_config_sys_dictionary cd
+			on cd.coding=mt.province
+		where mt.del_status=0 
+			and mt.id=#tunnelId:BIGINT# 
+			 
+	</select>
+	
+	
+	<!-- add 增加操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnel">
+		insert into mbn_tunnel
+		(
+		id,name,access_number,state,corp_ext_len,
+		classify,gateway_addr,gateway_port,user,passwd,province,
+		type,description,sms_send_path,sms_receive_path,sms_report_path,
+		update_time,create_time,del_status,attribute, tunnel_range
+		)
+		values
+		(
+		#id:BIGINT#,#name:VARCHAR#,#accessNumber:VARCHAR#,#state:BIGINT#,#corpExtLen:BIGINT#
+		,#classify:BIGINT#,#gatewayAddr:VARCHAR#,#gatewayPort:BIGINT#,#user:VARCHAR#
+		,#passwd:VARCHAR#,#province:VARCHAR#,#type:BIGINT#,#description:VARCHAR#
+		,#smsSendPath:VARCHAR#,#smsReceivePath:VARCHAR#,#smsReportPath:VARCHAR#
+		,#updateTime:DATETIME#,#createTime:DATETIME#,#delStatus:BIGINT#,#attribute:BIGINT#,#tunnelRange:BIGINT#
+		) 
+	</insert>
+	<!--delete 根据对象删除 -->
+	<delete id="delete" parameterClass="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnel">
+		delete from mbn_tunnel
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+			id=#id:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="name">
+			name=#name:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="accessNumber">
+			access_number=#accessNumber:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="state">
+			state=#state:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="corpExtLen">
+			corp_ext_len=#corpExtLen:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="classify">
+			classify=#classify:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="gatewayAddr">
+			gateway_addr=#gatewayAddr:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="gatewayPort">
+			gateway_port=#gatewayPort:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="user">
+			user=#user:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="passwd">
+			passwd=#passwd:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="province">
+			province=#province:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="type">
+			type=#type:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="description">
+			description=#description:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="smsSendPath">
+			sms_send_path=#smsSendPath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="smsReceivePath">
+			sms_receive_path=#smsReceivePath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="smsReportPath">
+			sms_report_path=#smsReportPath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="updateTime">
+			update_time=#updateTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="createTime">
+			create_time=#createTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="and" property="delStatus">
+			del_status=#delStatus:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="attribute">
+			attribute=#attribute:BIGINT#
+		</isNotNull> 
+		<isNotNull prepend="and" property="tunnelRange">
+			tunnel_range=#tunnelRange:BIGINT#
+		</isNotNull> 
+		</dynamic>
+	</delete>
+
+	<!--deleteById 根据ID删除 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_tunnel where id=#id:BIGINT#
+	</delete>
+	
+	<!-- 根据通道名称查询通道个数 -->
+	<select id="getByName" resultClass="java.lang.Integer">
+		select count(id) from mbn_tunnel where name=#name:VARCHAR#
+	</select>
+	<!-- 根据通道名称查询通道 -->
+	<select id="getTunnelByName" resultMap="mbnTunnel" parameterClass="java.lang.String">
+		select 
+		id,name,access_number,state,corp_ext_len,
+		classify,gateway_addr,gateway_port,user,passwd,province,
+		type,description,sms_send_path,sms_receive_path,sms_report_path,
+		update_time,create_time,del_status,attribute,tunnel_range
+		from mbn_tunnel where name=#name:VARCHAR#
+	</select>
+
+	<!-- update 修改 -->
+	<update id="updateDel" parameterClass="java.util.HashMap">
+		update mbn_tunnel 
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="delStatus">
+				del_status=#delStatus:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="updateTime">
+				update_time=#updateTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where id in (#ids:VARCHAR#)  and del_status=0
+	</update>
+	<!-- update 修改 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnel">
+		update mbn_tunnel
+		<dynamic prepend="set">
+		<isNotNull prepend="," property="id">
+			id=#id:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="name">
+			name=#name:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="accessNumber">
+			access_number=#accessNumber:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="state">
+			state=#state:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="corpExtLen">
+			corp_ext_len=#corpExtLen:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="classify">
+			classify=#classify:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="gatewayAddr">
+			gateway_addr=#gatewayAddr:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="gatewayPort">
+			gateway_port=#gatewayPort:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="user">
+			user=#user:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="passwd">
+			passwd=#passwd:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="province">
+			province=#province:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="type">
+			type=#type:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="description">
+			description=#description:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="smsSendPath">
+			sms_send_path=#smsSendPath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="smsReceivePath">
+			sms_receive_path=#smsReceivePath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="smsReportPath">
+			sms_report_path=#smsReportPath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="updateTime">
+			update_time=#updateTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="," property="createTime">
+			create_time=#createTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="," property="delStatus">
+			del_status=#delStatus:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="attribute">
+			attribute=#attribute:BIGINT#
+		</isNotNull> 
+		<isNotNull prepend="," property="tunnelRange">
+			tunnel_range=#tunnelRange:BIGINT#
+		</isNotNull> 
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<!-- 分页（多表联查） -->
+	<select id="pageConsumer" resultMap="smsMbnTunneConsumerVO" parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select 
+			mt.id,mt.name,access_number,state,corp_ext_len,
+			classify,gateway_addr,gateway_port,user,passwd,province,
+			mt.type,mt.description,sms_send_path,sms_receive_path,sms_report_path,
+			update_time,mt.create_time,del_status,attribute,
+			balance_number as number,cd.name as province_name ,mmc.remain_number as remain_number, mt.tunnel_range as tunnel_range
+		from 
+			mbn_tunnel mt 
+		left join mbn_tunnel_account ta
+		on mt.id=ta.tunnel_id
+		left join mbn_config_sys_dictionary cd
+		on cd.coding=mt.province
+		left join (select * from mbn_merchant_consume where merchant_pin=#merchantPin#) mmc
+		on mt.id=mmc.tunnel_id 
+		where mt.del_status=0 
+				<isNotNull prepend="and" property="name">
+					 mt.name  like CONCAT('%',#name:VARCHAR#,'%') 
+				</isNotNull>
+				<isNotNull prepend="and" property="state">
+					 mt.state=#state:BIGINT#
+				</isNotNull>
+				<isNotNull prepend="and" property="attribute">
+					 mt.attribute=#attribute:BIGINT#
+				</isNotNull>
+				<isNotNull prepend="and" property="province">
+					 mt.province=#province:VARCHAR#
+				</isNotNull>
+				<isNotNull prepend="and" property="classify">
+					 mt.classify=#classify:BIGINT#
+				</isNotNull> 
+				order by mt.name 
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit #startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+		
+	</select>
+	
+	<!-- 分页总数 -->
+	<select id="pageConsumerCount" resultClass="java.lang.Integer" parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+	select  count(id)  from  mbn_tunnel mt
+		where mt.del_status=0
+	    <isNotNull prepend="and" property="name">
+			 mt.name like CONCAT('%',#name:VARCHAR#,'%') 
+		</isNotNull>
+		<isNotNull prepend="and" property="state">
+			 mt.state=#state:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="attribute">
+			 mt.attribute=#attribute:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="province">
+			 mt.province=#province:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="and" property="classify">
+			 mt.classify=#classify:BIGINT#
+		</isNotNull>  
+	</select>
+	<!-- add 增加操作 -->
+	<insert id="insertMasTunnel" parameterClass="com.leadtone.delegatemas.tunnel.bean.MasTunnel">
+		insert into mbn_tunnel
+		(
+		id,name,access_number,state,corp_ext_len,
+		classify,gateway_addr,gateway_port,user,passwd,province,
+		type,description,sms_send_path,sms_receive_path,sms_report_path,
+		update_time,create_time,del_status,attribute,service_id,sms_corp_ident,protocal_version, tunnel_range
+		)
+		values
+		(
+		#id:BIGINT#,#name:VARCHAR#,#accessNumber:VARCHAR#,#state:BIGINT#,#corpExtLen:BIGINT#
+		,#classify:BIGINT#,#gatewayAddr:VARCHAR#,#gatewayPort:BIGINT#,#user:VARCHAR#
+		,#passwd:VARCHAR#,#province:VARCHAR#,#type:BIGINT#,#description:VARCHAR#
+		,#smsSendPath:VARCHAR#,#smsReceivePath:VARCHAR#,#smsReportPath:VARCHAR#
+		,#updateTime:DATETIME#,#createTime:DATETIME#,#delStatus:BIGINT#,#attribute:BIGINT#
+                ,#serviceId#,#smsCorpIdent#,#protocalVersion#, #tunnelRange:BIGINT#
+		) 
+	</insert>
+        <select id="getTunnelByMerchantPinForMas" resultMap="masTunnel" parameterClass="java.lang.Long">
+		SELECT
+			mbn_tunnel.id,mbn_tunnel.name,mbn_tunnel.access_number,
+			mbn_tunnel.state,mbn_tunnel.corp_ext_len,mbn_tunnel.classify,
+			mbn_tunnel.gateway_addr,mbn_tunnel.gateway_port,mbn_tunnel.user,
+			mbn_tunnel.passwd,mbn_tunnel.province,mbn_tunnel.type,mbn_tunnel.description,
+			mbn_tunnel.sms_send_path,mbn_tunnel.sms_receive_path,mbn_tunnel.sms_report_path,
+			mbn_tunnel.update_time,mbn_tunnel.create_time,mbn_tunnel.del_status,mbn_tunnel.attribute,
+                        mbn_tunnel.service_id,mbn_tunnel.sms_corp_ident,mbn_tunnel.protocal_version, mbn_tunnel.tunnel_range
+		from mbn_merchant_tunnel_relation mtr,mbn_tunnel where mbn_tunnel.id=mtr.tunnel_id
+			and mtr.merchant_pin=#merchantPin:VARCHAR#
+	</select>
+        <update id="updateMasTunnel" parameterClass="com.leadtone.delegatemas.tunnel.bean.MasTunnel">
+		update mbn_tunnel
+		<dynamic prepend="set">
+		<isNotNull prepend="," property="name">
+			name=#name:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="accessNumber">
+			access_number=#accessNumber:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="state">
+			state=#state:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="corpExtLen">
+			corp_ext_len=#corpExtLen:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="classify">
+			classify=#classify:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="gatewayAddr">
+			gateway_addr=#gatewayAddr:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="gatewayPort">
+			gateway_port=#gatewayPort:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="user">
+			user=#user:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="passwd">
+			passwd=#passwd:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="province">
+			province=#province:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="type">
+			type=#type:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="description">
+			description=#description:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="smsSendPath">
+			sms_send_path=#smsSendPath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="smsReceivePath">
+			sms_receive_path=#smsReceivePath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="smsReportPath">
+			sms_report_path=#smsReportPath:VARCHAR#
+		</isNotNull>
+		<isNotNull prepend="," property="updateTime">
+			update_time=#updateTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="," property="createTime">
+			create_time=#createTime:DATETIME#
+		</isNotNull>
+		<isNotNull prepend="," property="delStatus">
+			del_status=#delStatus:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="," property="attribute">
+			attribute=#attribute:BIGINT#
+		</isNotNull> 
+                <isNotNull prepend="," property="serviceId">
+			service_id=#serviceId#
+		</isNotNull> 
+                <isNotNull prepend="," property="smsCorpIdent">
+			sms_corp_ident=#smsCorpIdent#
+		</isNotNull> 
+                <isNotNull prepend="," property="protocalVersion">
+			protocal_version=#protocalVersion#
+		</isNotNull> 
+		<isNotNull prepend="," property="tunnelRange">
+			tunnel_range=#tunnelRange:BIGINT#
+		</isNotNull> 
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+        <delete id="deleteTunnelByMerchantPin" parameterClass="java.lang.Long">
+            delete tunnel from mbn_tunnel tunnel,mbn_merchant_tunnel_relation relation where tunnel.id=relation.tunnel_id and relation.merchant_pin=#merchantPin#
+        </delete>
+</sqlMap>

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="MbnSmsTaskNumber">
+	<resultMap id="mbnSmsTaskNumber" class="com.leadtone.mas.bizplug.sms.bean.MbnSmsTaskNumber">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+		<result property="operationCoding" column="operation_coding" jdbcType="VARCHAR" />
+		<result property="batchId" column="batch_id" jdbcType="BIGINT" />
+		<result property="taskNumber" column="task_number" jdbcType="VARCHAR" />
+		<result property="beginTime" column="begin_time" jdbcType="DATETIME" />
+		<result property="endTime" column="end_time" jdbcType="DATETIME" />
+		<result property="state" column="state" jdbcType="INT" />
+	</resultMap>
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="mbnSmsTaskNumber"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select 
+			id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state 
+		from  
+			mbn_sms_merchant_operation_task_number  
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select count(id)
+		from
+		mbn_sms_merchant_operation_task_number
+		 
+	</select>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnSmsTaskNumber" parameterClass="java.lang.Long">
+		select 
+			id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state 
+		from  
+			mbn_sms_merchant_operation_task_number  
+		where id = #id:BIGING#
+	</select>
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="queryByCoding" resultMap="mbnSmsTaskNumber" parameterClass="java.util.HashMap">
+		select 
+			id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state 
+		from  
+			mbn_sms_merchant_operation_task_number  
+		where merchant_pin=#merchantPin:BIGING#
+		and operation_coding=#coding:VARCHAR#
+		order by begin_time asc
+	</select>
+
+	<!-- 根据表pk，查询商户已用最大的任务码  -->
+	<select id="queryMaxInUse" resultMap="mbnSmsTaskNumber" parameterClass="java.util.HashMap">
+		select 
+			id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state 
+		from  
+			mbn_sms_merchant_operation_task_number  
+		where merchant_pin=#merchantPin:BIGING#
+		and operation_coding=#coding:VARCHAR#
+		order by task_number desc
+		limit 1
+	</select>
+	<!-- 根据表pk，查询已经过期的最小的一个  -->
+	<select id="queryExpireLastUsed" resultMap="mbnSmsTaskNumber" parameterClass="java.util.HashMap">
+		select 
+			id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state 
+		from
+			mbn_sms_merchant_operation_task_number  
+		where merchant_pin=#merchantPin:BIGING#
+		and operation_coding=#coding:VARCHAR#
+		and state=1
+		<![CDATA[ and end_time<#endTime:DATETIME#]]>
+		order by begin_time asc
+		limit 1
+	</select>
+	<!-- 根据表pk，查询未过期的最小的一个  -->
+	<select id="queryLastUsed" resultMap="mbnSmsTaskNumber" parameterClass="java.util.HashMap">
+		select 
+			id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state 
+		from
+			mbn_sms_merchant_operation_task_number  
+		where merchant_pin=#merchantPin:BIGING#
+		and operation_coding=#coding:VARCHAR#
+		order by begin_time asc
+		limit 1
+	</select>
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsTaskNumber">
+		INSERT INTO mbn_sms_merchant_operation_task_number
+			(id, merchant_pin, operation_coding, batch_id, task_number, begin_time, end_time, state  )
+		VALUES
+			(#id:BIGINT#, #merchantPin:BIGINT#,#operationCoding:VARCHAR#, #batchId:BIGINT#,
+			 #taskNumber:VARCHAR#, #beginTime:DATETIME#, #endTime:DATETIME#, #state:INT#);
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsTaskNumber">
+		update mbn_sms_merchant_operation_task_number mcs
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id" >
+					mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantPin" >
+					mcs.merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="operationCoding" >
+					mcs.operation_coding=#operationCoding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="batchId" >
+					mcs.batch_id=#batchId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="taskNumber" >
+					mcs.task_number=#taskNumber:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="beginTime" >
+					mcs.begin_time=#beginTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="endTime" >
+					mcs.end_time=#endTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="state" >
+					mcs.state=#state:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where mcs.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete"  parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsTaskNumber">
+		delete from  mbn_sms_merchant_operation_task_number mcs
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id" >
+					mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin" >
+					mcs.merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="operationCoding" >
+					mcs.operation_coding=#operationCoding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="batchId" >
+					mcs.batch_id=#batchId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="taskNumber" >
+					mcs.task_number=#taskNumber:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="beginTime" >
+					mcs.begin_time=#beginTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="endTime" >
+					mcs.end_time=#endTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="state" >
+					mcs.state=#state:DATETIME#
+			</isNotNull>
+		</dynamic>
+	</delete>
+		<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_sms_merchant_operation_task_number  where id=#id:BIGINT# 
+	</delete>
+  
+</sqlMap>

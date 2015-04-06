@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="mbnNode">
+	<typeAlias alias="node" type="com.leadtone.delegatemas.node.bean.MbnNode"/>
+	<resultMap id="mbnNode" class="node">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="password" column="password" jdbcType="VARCHAR" />
+		<result property="webServiceUrl" column="webserviceurl" jdbcType="VARCHAR" />
+		<result property="ip" column="ip" jdbcType="VARCHAR" />
+		<result property="location" column="location" jdbcType="VARCHAR" />
+		<result property="status" column="status" jdbcType="INTEGER" />
+		<result property="useWebService" column="usewebservice" jdbcType="INTEGER" />
+		<result property="createTime" column="create_time" jdbcType="TIMESTAMP" />
+		<result property="updateTime" column="update_time" jdbcType="TIMESTAMP" />
+		<result property="memo" column="memo" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnNode" parameterClass="java.lang.Long">
+		SELECT
+			id, name, password, webserviceurl, ip, location,status,
+			usewebservice, create_time, update_time, memo
+		FROM mbn_node
+		where id = #id:BIGINT#
+	</select>
+	<select id="getAll" resultMap="mbnNode">
+		SELECT
+			id, name, password, webserviceurl, ip, location,status,
+			usewebservice, create_time, update_time, memo
+		FROM mbn_node
+	</select>
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.delegatemas.node.bean.MbnNode">
+		INSERT INTO
+		mbn_node(id, name, password, webserviceurl, ip, location,status,
+			usewebservice, create_time, memo)
+		VALUES
+		(#id:BIGINT#,
+		#name:VARCHAR#, #webServiceUrl:VARCHAR#,
+		#ip:VARCHAR#,#location:VARCHAR#,#status:INTEGER#,
+		#useWebService:INTEGER#, #createTime:TIMESTAMP#, #memo:VARCHAR#)
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.delegatemas.node.bean.MbnNode">
+		update mbn_node
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				name=#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="webServiceUrl">
+				webserviceurl=#webServiceUrl:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="ip">
+				ip=#ip:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="location">
+				location=#location:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="status">
+				status=#status:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="useWebService">
+				usewebservice=#useWebService:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="updateTime">
+				update_time=#updateTime:TIMESTAMP#
+			</isNotNull>
+			<isNotNull prepend="," property="memo">
+				memo=#memo:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete" parameterClass="com.leadtone.delegatemas.node.bean.MbnNode">
+		delete mbn_node
+		where id=#id:BIGING#
+	</delete>
+	<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_node
+		where id=#id:BIGINT#
+	</delete>
+</sqlMap>

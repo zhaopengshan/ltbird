@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="security">
+	
+	<typeAlias alias="usersalias" type="com.leadtone.mas.bizplug.security.bean.Users" />
+	<typeAlias alias="rolesalias" type="com.leadtone.mas.bizplug.security.bean.Roles" />
+	<typeAlias alias="resourcessalias" type="com.leadtone.mas.bizplug.security.bean.Resources" />
+	
+	<cacheModel id="usersalias-cache" type="OSCACHE">
+		<flushInterval hours="24" />
+		<!-- <flushOnExecute statement="queryAll" /> -->
+		<property name="size" value="1000" />
+		<property name="reference-type" value="WEAK"/>
+	</cacheModel>
+	
+	<resultMap class="usersalias" id="users">
+		<result property="account" column="login_account" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="id" column="id"/>
+		<result property="password" column="login_pwd" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="roles" column="login_account" select="queryRolesByUserId"/>
+	</resultMap>
+    <select id="queryByAccount" parameterClass="java.lang.String" resultMap="users">  
+        select id,  
+        login_account,  
+        login_pwd
+        from portal_user
+        where login_account = #account#;
+    </select>  
+    <select id="queryByAccountId" parameterClass="java.lang.Long" resultMap="users">  
+        select id,  
+        login_account,  
+        login_pwd
+        from portal_user
+        where id = #id#;
+    </select>  
+	<resultMap class="rolesalias" id="roles">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="resources" column="id" select="queryResourcesByRelation"/>
+	</resultMap>
+    <select id="queryRolesByUserId" parameterClass="java.lang.String" resultMap="roles">  
+        select a.id as id,  
+        a.name as name
+        from portal_role a, portal_user b, portal_user_role_relation c
+        where a.id=c.role_id 
+        and b.id = c.user_id
+        and b.login_account = #login_account#;
+    </select>
+
+	<resultMap class="resourcessalias" id="resources">
+		<result property="id" column="id"/>
+		<result property="name" column="name"/>
+		<result property="url" column="url"/>
+		<result property="icon" column="icon"/>
+		<result property="parentId" column="pid"/>
+		<result property="orderNumber" column="position_sort"/>
+		<result property="subResources" column="id" select="querySubResources"/>
+	</resultMap>
+    <select id="queryResourcesByRelation" parameterClass="java.lang.Long" resultMap="resources">  
+        select a.id,  
+        a.name,
+        a.url,
+        a.icon,
+        a.pid,
+        a.position_sort
+        from portal_resource a, portal_role_resource_operation_relation b
+        where a.id = b.resource_id and b.role_id = #id#
+    </select>
+    <select id="queryAllResources" resultMap="resources">  
+        select id,  
+        name,
+        url,
+        icon,
+        pid,
+        position_sort
+        from portal_resource 
+    </select>
+    <select id="queryTopResources" resultMap="resources">  
+        select res.id,  
+        res.name,
+        res.url,
+        res.icon,
+        res.pid,
+        res.position_sort
+		from portal_resource res
+		where res.pid=-1
+        order by res.position_sort asc
+    </select>
+    <select id="queryTopResourcesByRoleIds" resultMap="resources">  
+        select distinct res.id,  
+        res.name,
+        res.url,
+        res.icon,
+        res.pid,
+        res.position_sort
+		from portal_resource res, portal_role role, portal_role_resource_operation_relation rel
+		where res.id=rel.resource_id
+		and role.id=rel.role_id
+		and res.pid=-1
+		<iterate property="roleIdList"
+			prepend="and role.id in " open="(" close=")" conjunction=",">
+			#roleIdList[]#
+		</iterate> 
+        order by res.position_sort asc
+    </select>
+    <select id="querySubResources" parameterClass="java.lang.Long" resultMap="resources">  
+        select id,  
+        name,
+        url,
+        icon,
+        pid,
+        position_sort
+        from portal_resource
+        where pid = #pid#  order by position_sort asc
+    </select>
+</sqlMap>

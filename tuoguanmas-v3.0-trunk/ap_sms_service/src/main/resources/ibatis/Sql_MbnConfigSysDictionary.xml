@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MbnConfigSysDictionary">
+	<resultMap id="configSysDictionary"
+		class="com.leadtone.mas.bizplug.config.bean.MbnConfigSysDictionary">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="pid" column="pid" jdbcType="BIGINT" />
+		<result property="type" column="type" jdbcType="BIGINT" />
+		<result property="coding" column="coding" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="lastModifyTime" column="last_modify_time"
+			jdbcType="DATETIME" />
+		<result property="createTime" column="create_time" jdbcType="VARCHAR" />
+		<result property="attrInfo" column="attr_info" jdbcType="VARCHAR" />
+		<result property="description" column="description" jdbcType="VARCHAR" />
+
+	</resultMap>
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="configSysDictionary"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select
+		id, pid, type , coding, name,
+		last_modify_time, create_time,
+		attr_info, description
+		from
+		mbn_config_sys_dictionary
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="type">
+				type=#type:BIGINT#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select count(id)
+		from
+		mbn_config_sys_dictionary
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="type">
+				type=#type:BIGINT#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 根据表pk，查询所有 -->
+	<select id="getByPk" resultMap="configSysDictionary"
+		parameterClass="java.lang.Long">
+		SELECT id, pid, type , coding, name,
+		last_modify_time,
+		create_time,
+		attr_info, description
+		FROM
+		mbn_config_sys_dictionary
+	</select>
+
+	<!-- 根据Coding查询 -->
+	<select id="getByCoding" resultMap="configSysDictionary" parameterClass="java.lang.String">
+		SELECT id, pid, type , coding, name,
+		last_modify_time, create_time,
+		attr_info, description
+		FROM mbn_config_sys_dictionary
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="provinceCoding">
+				coding=#provinceCoding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="type">
+				type=#type:BIGINT#
+			</isNotNull>
+		</dynamic>
+	</select>
+
+	<!-- 查询List by ids -->
+	<select id="getByPks" resultMap="configSysDictionary"
+		parameterClass="java.lang.String">
+		SELECT id, pid, type , coding, name,
+		last_modify_time,
+		create_time,
+		attr_info, description
+		FROM
+		mbn_config_sys_dictionary where
+		id in (#ids:VARCHAR#)
+	</select>
+
+	<!-- 根据商户PIN码，查询商户所有角色 此表没有pin码 -->
+	<select id="getByPin" resultMap="configSysDictionary"
+		parameterClass="java.lang.Long">
+		SELECT id, pid, type , coding, name,
+		last_modify_time,
+		create_time,
+		attr_info, description
+		FROM
+		mbn_config_sys_dictionary
+	</select>
+	<!-- 插入操作 -->
+	<insert id="insert"
+		parameterClass="com.leadtone.mas.bizplug.config.bean.MbnConfigSysDictionary">
+		INSERT INTO mbn_config_sys_dictionary
+		(id,pid,type,
+		coding,name,last_modify_time, create_time,attr_info, description )
+		VALUES
+		(#id:BIGINT#,#pid:BIGINT#, #type:BIGINT#,
+		#coding:VARCHAR#,#name:VARCHAR#,#lastModifyTime:DATETIME#
+		#createTime:DATETIME#,#attrInfo:VARCHAR#,#description:VARCHAR# );
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update"
+		parameterClass="com.leadtone.mas.bizplug.config.bean.MbnConfigSysDictionary">
+		update mbn_config_sys_dictionary mcs
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="pid">
+				mcs.pid =#pid:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="type">
+				mcs.type=#type:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="coding">
+				mcs.coding=#coding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				mcs.name=#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="lastModifyTime">
+				mcs.last_modify_time=#lastModifyTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				mcs.create_time=#createTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="attrInfo">
+				mcs. attr_info
+				=#attrInfo:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="description">
+				mcs. description
+				=#description:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where mcs.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete"
+		parameterClass="com.leadtone.mas.bizplug.config.bean.MbnConfigSysDictionary">
+		delete from mbn_config_sys_dictionary mcs
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="pid">
+				mcs.pid =#pid:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="type">
+				mcs.type=#type:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="coding">
+				mcs.coding=#coding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="name">
+				mcs.name=#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="lastModifyTime">
+				mcs.last_modify_time=#lastModifyTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="createTime">
+				mcs.create_time=#createTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="attrInfo">
+				mcs. attr_info
+				=#attrInfo:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="description">
+				mcs. description
+				=#description:VARCHAR#
+			</isNotNull>
+		</dynamic>
+	</delete>
+	<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from
+		mbn_config_sys_dictionary where id=#id:BIGINT#
+	</delete>
+
+</sqlMap>

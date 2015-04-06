@@ -1,0 +1,411 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link href="../css/css.css" rel="stylesheet" type="text/css" />
+<LINK href="../css/jquery-ui-1.8.22.custom.css" type=text/css rel=Stylesheet>
+<LINK href="../css/ui.jqgrid.css" type=text/css rel=Stylesheet>
+<LINK href="../css/leadtone.grid.css" type=text/css rel=Stylesheet>
+<SCRIPT language=javascript src="../js/jquery-1.7.2.min.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="../js/i18n/grid.locale-cn.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="../js/jquery-ui-1.8.22.custom.min.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="../js/jquery.jqGrid.src.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="../js/leadtone.LeadToneGrid.js" type=text/javascript></SCRIPT>
+<SCRIPT language=javascript src="js/data.js" type=text/javascript></SCRIPT>
+<SCRIPT>
+	$(function() {
+		var smsGridPro = {
+			data: mydata,
+			colNames:['状态图标','联系人', '短信内容', '短信长度','时间','回复','分组'],
+			colModel:[
+				{name:'id',index:'id', width:90,sortable: false, align: 'center',formatter:function(cellvalue, options, rowObject){
+						var iconSms = '<img src="../images/u1223_normal.png" width="13" height="16">';
+						switch(parseInt(cellvalue,10)%3){
+							case 1: iconSms = '<img src="../images/u1223_normal.png" width="13" height="16">'; break;
+							case 2: iconSms = '<img src="../images/ico-dingshifa.png" width="13" height="16">'; break;
+							case 0: iconSms = '<img src="../images/u16220_normal.png" width="13" height="16">'; break;
+							default: iconSms = '<img src="../images/u1223_normal.png" width="13" height="16">'; break;
+						}
+						return iconSms;
+					}},
+				{name:'invdate',index:'invdate', width:100,sortable: false, align: 'center'},
+				{name:'name',index:'name', width:250,sortable: false,formatter:function(cellvalue, options, rowObject){
+						return '<a href="#" class="grid-sms">'+cellvalue+'</a>';
+					}},
+				{name:'amount',index:'amount', width:140,sortable: false, align: 'center'},
+				{name:'tax',index:'tax', width:90,sortable: false, align: 'center'},		
+				{name:'total',index:'total', width:60,sortable: false, align: 'center',formatter:function(cellvalue, options, rowObject){
+						return '<a href="#">'+cellvalue+'条</a>';
+					}},
+				{name:'group',index:'group', width:10,sortable: false, align: 'center'},
+			],
+			pager: '#smsPage',
+			grouping:true,
+			groupingView : {
+				groupField : ['group'],
+				groupColumnShow : [false],
+				groupOrder: 'asc',
+				groupText : ['<font size="2">{0}</font> <font size="1">({1}条)</font>']
+			},
+			ondblClickRow: function(rowid, iRow, iCol, e){
+				alert(rowid);
+			},
+			buttons: [{
+				text: "删除",
+				classes: "tubh",
+				click: function(){
+					var rows = smsGrid.getSelectedItemIds();
+					if( rows.length > 0 ){
+						alert( rows );
+					}else{
+						alert("请选择");
+					}
+				}
+			},{
+				text: "转发",
+				classes: "tubh",
+				click: function(){
+					var rows = smsGrid.getSelectedItemIds();
+					if( rows.length > 0 ){
+						var row = smsGrid.getItemDetailsById(rows[0]);
+						alert( row.name );
+					}else{
+						alert("请选择");
+					}
+					
+				}
+			},{
+				text: "保存珍藏",
+				classes: "tubh",
+				click: function(){
+					alert("保存珍藏");
+				}
+			},{
+				text: "模拟查询",
+				classes: "tubh",
+				click: function(){
+					var filters = { 
+						data: mydata2
+					 };
+					 //{url:"listSubclass.action?classType=1&nameMask="
+					 //+encodeURI(encodeURI(name_mask)) + "&classId=classId",page:1}
+					smsGrid.filterGrid(filters);
+				}
+			}]
+		};
+		var smsGrid = new LeadToneGrid("smsGrid",smsGridPro);
+		smsGrid.init();
+		$("#add").bind('click',function(){
+			$.ajax({
+	            url : 'smsStatusAction/saveSmsStatus.action',
+	            type : 'post',
+	            dataType: "json",
+	            success : function(data) {
+	                if(data.resultcode == "success"){
+	                    alert("成功成功");
+	                } else {
+	                    alert("成功");
+	                }
+	            },
+	            error : function() {
+	                alert("系统提示");
+	            }
+	        }); 
+		});
+	});
+</SCRIPT>
+<title>无标题文档</title>
+
+</head>
+
+<body>
+    <div>
+    <table id="smsGrid"></table>
+    <div id="smsPage"></div>
+    <div>
+    <input id="add" type="hidden" value="添加"  />
+    <div>
+    $(function() {<br />
+		&nbsp;&nbsp;&nbsp;var smsGridPro = {<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: mydata,<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;colNames:['状态图标','联系人', '短信内容', '短信长度','时间','回复','分组']<br />,
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;colModel:[<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'id',index:'id', width:90,sortable: false, align: 'center',formatter:function(cellvalue, options, rowObject){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var iconSms = '&lt;img src="images/u1223_normal.png" width="13" height="16"&gt;';<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;switch(parseInt(cellvalue,10)%3){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 1: iconSms = '&lt;img src="images/u1223_normal.png" width="13" height="16"&gt;'; break;<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 2: iconSms = '&lt;img src="images/ico-dingshifa.png" width="13" height="16"&gt;'; break;<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case 0: iconSms = '&lt;img src="images/u16220_normal.png" width="13" height="16"&gt;'; break;<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default: iconSms = '&lt;img src="images/u1223_normal.png" width="13" height="16"&gt;'; break;<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return iconSms;<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'invdate',index:'invdate', width:100,sortable: false, align: 'center'},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'name',index:'name', width:250,sortable: false,formatter:function(cellvalue, options, rowObject){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return '&lt;a href="#" class="grid-sms"a&gt;'+cellvalue+'&lt;/a&gt;';<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'amount',index:'amount', width:140,sortable: false, align: 'center'},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'tax',index:'tax', width:90,sortable: false, align: 'center'},		<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'total',index:'total', width:60,sortable: false, align: 'center',formatter:function(cellvalue, options, rowObject){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return '&lt;a href="#"a&gt;'+cellvalue+'条&lt;/a&gt;';<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{name:'group',index:'group', width:10,sortable: false, align: 'center'},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;],<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pager: '#smsPage',<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;grouping:true,<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groupingView : {<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groupField : ['group'],<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groupColumnShow : [false],<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groupOrder: 'asc',<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;groupText : ['<font size="2">{0}</font> <font size="1">({1}条)</font>']<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ondblClickRow: function(rowid, iRow, iCol, e){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(rowid);<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;buttons: [{<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text: "删除",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classes: "tubh",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;click: function(){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var rows = smsGrid.getSelectedItemIds();<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( rows.length > 0 ){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert( rows );<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("请选择");<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},{<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text: "转发",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classes: "tubh",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;click: function(){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var rows = smsGrid.getSelectedItemIds();<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if( rows.length > 0 ){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var row = smsGrid.getItemDetailsById(rows[0]);<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert( row.name );<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}else{<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("请选择");<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},{<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text: "保存珍藏",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classes: "tubh",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;click: function(){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("保存珍藏");<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;},{<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;text: "模拟查询",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;classes: "tubh",<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;click: function(){<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var filters = { <br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data: mydata2<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; };<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//{url:"listSubclass.action?classType=1&nameMask="<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//+encodeURI(encodeURI(name_mask)) + "&classId=<%=classId %>",page:1}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;smsGrid.filterGrid(filters);<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+		&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}]<br />
+		&nbsp;&nbsp;&nbsp;};<br />
+		&nbsp;&nbsp;&nbsp;var smsGrid = new LeadToneGrid("smsGrid",smsGridPro);<br />
+		&nbsp;&nbsp;&nbsp;smsGrid.init();<br />
+	});
+    </div>
+<div>
+	<table style=" width:95%;height:auto; ">
+    	<tr style="background:#66C;">
+        	<td colspan="5">属性说明(Options)</td>
+        </tr>
+    	<tr style="background:#3CC;">
+        <th width="10%">属性</th>
+        <th width="10%">类型</th>
+        <th width="60%">描述</th>
+        <th width="10%">默认值</th>
+        <th width="10%">是否可改变</th>
+        </tr>
+        <tr style="height:25px; background: #9FC;">
+        <td>url</td>
+        <td>string</td>
+        <td>eg:'server.php?q=1'，表示数据源请求地址。The url of the file that returns the data needed to populate the grid. May be set to clientArray to manualy post data to server; see:<a target="_blank" href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:inline_editing_s_clientarray">URL</a></td>
+        <td>null</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>data</td>
+        <td>array</td>
+        <td>这里用来 做 模拟用，不做深究，详细参考：<a target="_blank" href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:options" >DATA</a></td>
+        <td>empty array</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>datatype</td>
+        <td>string</td>
+        <td>Defines in what format to expect the data that fills the grid. Valid options are xml (we expect data in xml format), xmlstring (we expect xml data as string), json (we expect data in JSON format), jsonstring (we expect JSON data as a string), local (we expect data defined at client side (array data)), javascript (we expect javascript as data), function (custom defined function for retrieving data), or clientSide to manually load data via the data array. See <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:colmodel_options" target="_blank" >colModel API </a> and <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:retrieving_data" target="_blank" >Retrieving Data</a></td>
+        <td>xml</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>colNames</td>
+        <td>array</td>
+        <td>列名。An array in which we place the names of the columns. This is the text that appears in the head of the grid (header layer). The names are separated with commas. Note that the number of elements in this array should be equal of the number elements in the colModel array.</td>
+        <td>empty array[]</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>colModel</td>
+        <td>array</td>
+        <td>列属性。Array which describes the parameters of the columns.This is the most important part of the grid. For a full description of all valid values see <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:colmodel_options" target="_blank" >colModel API</a>.</td>
+        <td>empty array</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>pager</td>
+        <td>mixed</td>
+        <td>下分页ID。为空不显示下分页。Defines that we want to use a pager bar to navigate through the records. This must be a valid HTML element; in our example we gave the div the id of "pager", but any name is acceptable. Note that the navigation layer (the "pager" div) can be positioned anywhere you want, determined by your HTML; in our example we specified that the pager will appear after the body layer. The valid settings can be (in the context of our example) pager, #pager, jQuery('#pager'). I recommend to use the second one - #pager. See <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:pager" target="_blank" >Pager</a></td>
+        <td>empty string</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>toppager</td>
+        <td>boolean</td>
+        <td>如果不需要显示上分页此值设置为false, 默认显示default: true;When enabled this option places a pager element at top of the grid, below the caption (if available). If another pager is defined, both can coexist and are kept in sync. The id of the newly created pager is the combination grid_id + "_toppager".</td>
+        <td>false</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>sortname</td>
+        <td>string</td>
+        <td>根据sortname排序，The column according to which the data is to be sorted when it is initially loaded from the server (note that you will have to use datatypes xml or json to load remote data). This parameter is appended to the url. If this value is set and the index (name) matches the name from colModel, then an icon indicating that the grid is sorted according to this column is added to the column header. This icon also indicates the sorting order - descending or ascending (see the parameter sortorder). Also see prmNames.</td>
+        <td>empty string</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>sortorder</td>
+        <td>string</td>
+        <td>设定排序是asc还是desc。The initial sorting order (ascending or descending) when we fetch data from the server using datatypes xml or json. This parameter is appended to the url - see prnNames. The two allowed values are - asc or desc.</td>
+        <td>asc</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>multiselect</td>
+        <td>boolean</td>
+        <td>是否多选，这里封装的默认为多选。If this flag is set to true a multi selection of rows is enabled. A new column at left side containing checkboxes is added. Can be used with any datatype option.</td>
+        <td>true</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>multiselectWidth</td>
+        <td>integer</td>
+        <td>checkbox占的列宽。Determines the width of the checkbox column created when the multiselect option is enabled.</td>
+        <td>30</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>width</td>
+        <td>number</td>
+        <td>Grid宽度。If this option is not set, the width of the grid is the sum of the widths of the columns defined in the colModel (in pixels). If this option is set, the initial width of each column is set according to the value of the shrinkToFit option.</td>
+        <td>900</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>height</td>
+        <td>mixed</td>
+        <td>Grid高度。The height of the grid. Can be set as number (in this case we mean pixels) or as percentage (only 100% is acceped) or value of auto is acceptable.</td>
+        <td>300</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>grouping</td>
+        <td>boolean</td>
+        <td>是否分组。Enables grouping in grid. Please refer to the <a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:grouping" target="_blank">Grouping</a> page.</td>
+        <td>false</td>
+        <td>yes</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>groupingView</td>
+        <td>mixed</td>
+        <td>分组的详细设置。参考：<a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:grouping" target="_blank">这里</a></td>
+        <td>{}</td>
+        <td>no</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>toolbar</td>
+        <td>array</td>
+        <td>工具栏显示。This option defines the toolbar of the grid. This is an array with two elements in which the first element's value enables the toolbar and the second defines the position relative to the body layer (table data). Possible values are top, bottom, and both. When we set it like toolbar: [true,"both"] two toolbars are created – one on the top of table data and the other at the bottom of the table data. When we have two toolbars, then we create two elements (div). The id of the top bar is constructed by concatenating the string "t_" and the id of the grid, like "t_" + id_of_the_grid and the id of the bottom toolbar is constructed by concatenating the string "tb_" and the id of the grid, like "tb_" + id_of_the grid. In the case where only one toolbar is created, we have the id as "t_" + id_of_the_grid, independent of where this toolbar is located (top or bottom)</td>
+        <td>封装默认：[true,"both"]</td>
+        <td>no</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>buttons</td>
+        <td>array</td>
+        <td>工具栏按钮</td>
+        <td>eg:[{text:"xxxxx",classes:"",click:function(){}},{......},{......}]</td>
+        <td>yes</td>
+        </tr>
+        <tr style="background:#66C;">
+        	<td colspan="5">方法说明(Method)</td>
+        </tr>
+    </table>
+	<table style=" width:95%;height:auto; ">
+    	<tr style="background:#3CC;">
+        <th width="10%">方法</th>
+        <th width="10%">参数</th>
+        <th width="10%">返回</th>
+        <th width="70%">描述</th>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>new LeadToneGrid(id,proes)</td>
+        <td>string id,mixed proes</td>
+        <td>no return</td>
+        <td>根据id，和设置属性proes初始化grid。</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>getSelectedItemIds</td>
+        <td>null</td>
+        <td>array</td>
+        <td>返回选中行的IDS。This options is readonly. Gives the currently selected rows when multiselect is set to true. This is a one-dimensional array and the values in the array correspond to the selected id's in the grid.例子，var tempGrid = new LeadToneGrid("sms_grid",{url:'index.php',datatype: 'json'}); tempGrid.getSelectedItemIds </td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>getItemDetailsById</td>
+        <td>int id</td>
+        <td>Object</td>
+        <td>返回指定ID，的行的详细信息</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>filterGrid</td>
+        <td>mixed arg</td>
+        <td>null</td>
+        <td>根据参数，查询满足条件的Grid列表。</td>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td colspan="4">其他接口可扩展</td>
+        </tr>
+        <tr style="background:#66C;">
+        	<td colspan="5">特殊说明(Special)</td>
+        </tr>
+    </table>
+    <table style=" width:95%;height:auto; ">
+    	<tr style="background:#3CC;">
+        <th width="40%">方法/属性</th>
+        <th width="40%">方法/属性</th>
+        <th width="20%">说明</th>
+        </tr>
+        <tr style="height:25px; background:#9FC;">
+        <td>groupText : ['&lt;font size="2"&gt;{0}&lt;/font&gt; &lt;font size="1"&gt;({<font color='red'>groupSum</font>}条)&lt;/font&gt;']</td>
+        <td>colModel:[....<br>
+        {name:'groupSum',index:'groupSum', width:0,sortable: false, align: 'center',hidden: true,<font color='red'>formatter:'number', summaryType:'max'</font>}
+        ......]
+        </td>
+        <td>
+        formatter:'number'.<br>
+        summaryType:<br>
+        	<b>sum</b> - apply the sum function to the current group value and return the result<br>
+			<b>count</b> - apply the count function to the current group value and return the result<br>
+			<b>avg</b> - apply the average function to the current group value and return the result<br>
+			<b>min</b> - apply the min function to the current group value and return the result<br>
+			<b>max</b> - apply the max function to the current group value and return the result
+		<a href="http://www.trirand.com/jqgridwiki/doku.php?id=wiki:grouping" target="_blank">详细参考</a>
+		</td>
+        </tr>
+	</table>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MbnConfigMerchant" >
+  	<resultMap id="abatorgenerated_MbnConfigMerchantResult" class="com.leadtone.mas.bizplug.openaccount.bean.MbnConfigMerchant" >
+		<result column="id" property="id" jdbcType="BIGINT" />
+		<result column="merchant_pin" property="merchantPin" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="item_value" property="itemValue" jdbcType="VARCHAR" />
+		<result column="description" property="description" jdbcType="VARCHAR" />
+		<result column="valid_flag" property="validFlag" jdbcType="BIGINT" />
+	</resultMap>
+  <select id="list" resultMap="abatorgenerated_MbnConfigMerchantResult" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnConfigMerchant" >
+    select id,merchant_pin,name,item_value,description,valid_flag from mbn_config_merchant
+    <dynamic prepend="where" >
+	<isNotNull prepend="and" property="id" >
+        id = #id:BIGINT#
+      </isNotNull>
+	<isNotNull prepend="and" property="merchantPin" >
+        merchant_pin = #merchantPin:BIGINT#
+      </isNotNull>
+	<isNotNull prepend="and" property="name" >
+        name = #name:VARCHAR#
+      </isNotNull>
+	<isNotNull prepend="and" property="itemValue" >
+        item_value = #itemValue:VARCHAR#
+      </isNotNull>
+    </dynamic>
+  </select>
+  <insert id="insert" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnConfigMerchant" >
+insert into mbn_config_merchant(id,merchant_pin,name,item_value,description,valid_flag) values(#id:BIGINT#,#merchantPin:BIGINT#,#name:VARCHAR#,#itemValue:VARCHAR#,#description:VARCHAR#,#validFlag:BIGINT#)
+  </insert>
+  <update id="update" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnConfigMerchant" >
+    update mbn_config_merchant
+    <dynamic prepend="set" >
+	<isNotNull prepend="," property="itemValue" >
+        item_value = #itemValue:VARCHAR#
+    </isNotNull>
+	<isNotNull prepend="," property="validFlag" >
+        valid_flag = #validFlag:VARCHAR#
+    </isNotNull>
+    </dynamic>
+   where merchant_pin = #merchantPin:BIGINT# and name = #name:VARCHAR#
+  </update>
+  <select id="load" resultMap="abatorgenerated_MbnConfigMerchantResult" parameterClass="java.util.Map" >
+    select id,merchant_pin ,name,item_value,description,valid_flag from mbn_config_merchant
+    where merchant_pin = #merchantPin:BIGINT#  and name = #name:VARCHAR#
+  </select>
+  <delete id="deleteConfigByMerchantPin" parameterClass="java.lang.Long">
+      delete from mbn_config_merchant where merchant_pin=#merchantPin#
+  </delete>
+</sqlMap>
+	

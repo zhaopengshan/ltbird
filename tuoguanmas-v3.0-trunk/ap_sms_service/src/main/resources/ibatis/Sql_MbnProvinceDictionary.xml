@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="MbnProvinceDictionary">
+    <resultMap class="com.leadtone.mas.bizplug.common.bean.MbnProvinceDictionary" id="mbnProvinceDictionary">
+    	<result property="id" column="id" jdbcType="BIGINT"/>
+    	<result property="provinceCoding" column="province_coding" jdbcType="VARCHAR"/>
+    	<result property="provinceName" column="province_name" jdbcType="VARCHAR"/>
+    </resultMap>
+    <!-- 初始化所有 -->
+    <select id="load" resultMap="mbnProvinceDictionary">
+    	select id,province_coding,province_name from mbn_province_dictionary
+    </select>
+      <!-- 根据id查询 -->
+     <select id="getById" resultMap="mbnProvinceDictionary">
+    	select id,province_coding,province_name from mbn_province_dictionary 
+    	where id=#id:BIGINT#
+    </select>
+      <!-- 根据Coding查询 -->
+    <select id="getByCoding" resultMap="mbnProvinceDictionary">
+    	select id,province_coding,province_name from mbn_province_dictionary 
+    	where province_coding=#provinceCoding:BIGINT#
+    </select>
+</sqlMap>

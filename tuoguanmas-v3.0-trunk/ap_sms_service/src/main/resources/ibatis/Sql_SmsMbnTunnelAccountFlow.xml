@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsMbnTunnelAccountFlow">
+	<typeAlias alias="smsMbnTunnelAccountFlow"
+		type="com.leadtone.mas.bizplug.tunnel.bean.SmsMbnTunnelAccountFlow" />
+	<resultMap class="smsMbnTunnelAccountFlow" id="mbnTunnelAccountFlow">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="tunnelId" column="tunnel_id" jdbcType="BIGINT" />
+		<result property="operationType" column="operation_type"
+			jdbcType="BIGINT" />
+		<result property="number" column="number" jdbcType="BIGINT" />
+		<result property="amount" column="amount" jdbcType="FLOAT" />
+		<result property="modifyTime" column="modify_time" jdbcType="DATETIME" />
+		<result property="modifyBy" column="modify_by" jdbcType="VARCHAR" />
+		<result property="modifyByPin" column="modify_by_pin" jdbcType="BIGINT" />
+		<result property="balanceNumber" column="balance_number" jdbcType="BIGINT" />
+	</resultMap>
+	<!-- 分页查询 -->
+	<select id="page" resultMap="mbnTunnelAccountFlow"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select
+		Id,tunnel_id,operation_type,number,
+		amount,modify_time,modify_by,modify_by_pin,balance_number
+		from
+		mbn_tunnel_account_flow
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="startDate">
+	    		<![CDATA[ modify_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       		<![CDATA[ modify_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="operationType">
+	       		<![CDATA[ operation_type = #operationType:BIGINT#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="tunnelId">
+	       		<![CDATA[ tunnel_id = #tunnelId:BIGINT#]]>
+			</isNotNull>    
+		</dynamic>
+		order by modify_time desc
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<!-- 分页总数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select
+		count(id) from
+		mbn_tunnel_account_flow
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="startDate">
+	    		<![CDATA[ modify_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       		<![CDATA[ modify_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			 <isNotNull prepend="and" property="operationType">
+	       		<![CDATA[ operation_type = #operationType:BIGINT#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="tunnelId">
+	       		<![CDATA[ tunnel_id = #tunnelId:BIGINT#]]>
+			</isNotNull> 
+		</dynamic>
+	</select>
+<!-- 根据id查询 -->
+	<select id="getByPk" resultMap="mbnTunnelAccountFlow"
+		parameterClass="java.lang.Long">
+		select
+		Id,tunnel_id,operation_type,number,
+		amount,modify_time,modify_by,modify_by_pin
+		from mbn_tunnel_account_flow,balance_number
+		where id=#id:BIGINT#
+	</select>
+	<!-- 插入 -->
+	<insert id="insert" parameterClass="smsMbnTunnelAccountFlow">
+		insert into
+		mbn_tunnel_account_flow
+		(
+		Id,tunnel_id,operation_type,number,
+		amount,modify_time,modify_by,modify_by_pin,balance_number
+		)
+		values
+		(
+		#id:BIGINT#,#tunnelId:BIGINT#,#operationType:BIGINT#,#number:BIGINT#,#amount:FLOAT#,
+		#modifyTime:DATETIME#,#modifyBy:VARCHAR#,#modifyByPin:BIGINT#,#balanceNumber:BIGINT#
+		)
+	</insert>
+<!-- 更新 -->
+	<update id="update" parameterClass="smsMbnTunnelAccountFlow">
+		update mbn_tunnel_account_flow
+		<dynamic prepend="set">
+			<isNotNull property="id" prepend=",">
+				id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull property="tunnelId" prepend=",">
+				tunnel_id=#tunnelId:BIGINT#
+			</isNotNull>
+			<isNotNull property="operationType" prepend=",">
+				operation_type=#operationType:BIGINT#
+			</isNotNull>
+			<isNotNull property="number" prepend=",">
+				number=#number:BIGINT#
+			</isNotNull>
+			<isNotNull property="amount" prepend=",">
+				amount=#number:FLOAT#
+			</isNotNull>
+			<isNotNull property="modifyTime" prepend=",">
+				modify_time=#modifyTime:DATETIME#
+			</isNotNull>
+			<isNotNull property="modifyBy" prepend=",">
+				modify_by=#modifyBy:VARCHAR#
+			</isNotNull>
+			<isNotNull property="modifyByPin" prepend=",">
+				modify_by_pin=#number:FLOAT#
+			</isNotNull>
+			<isNotNull property="balanceNumber" prepend=",">
+				balance_number=#balanceNumber:BIGINT#
+			</isNotNull>
+			where id=#id:BIGINT#
+		</dynamic>
+	</update>
+	<!-- 根据对象删除 -->
+	<delete id="delete" parameterClass="smsMbnTunnelAccountFlow">
+		delete from mbn_tunnel_account_flow
+		<dynamic prepend="where">
+			<isNotNull property="id" prepend="and">
+				id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull property="tunnelId" prepend="and">
+				tunnel_id=#tunnelId:BIGINT#
+			</isNotNull>
+			<isNotNull property="operationType" prepend="and">
+				operation_type=#operationType:BIGINT#
+			</isNotNull>
+			<isNotNull property="number" prepend="and">
+				number=#number:BIGINT#
+			</isNotNull>
+			<isNotNull property="amount" prepend="and">
+				amount=#number:FLOAT#
+			</isNotNull>
+			<isNotNull property="modifyTime" prepend="and">
+				modify_time=#modifyTime:DATETIME#
+			</isNotNull>
+			<isNotNull property="modifyBy" prepend="and">
+				modify_by=#modifyBy:VARCHAR#
+			</isNotNull>
+			<isNotNull property="modifyByPin" prepend="and">
+				modify_by_pin=#number:FLOAT#
+			</isNotNull>
+				<isNotNull property="balanceNumber" prepend="and">
+				balance_number=#balanceNumber:BIGINT#
+			</isNotNull>
+		</dynamic>
+	</delete>
+	<!-- 根据id删除 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from
+		mbn_tunnel_account_flow where id=#id:BIGINT#
+	</delete>
+</sqlMap>

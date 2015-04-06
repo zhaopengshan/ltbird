@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsGetReport">
+	<typeAlias alias="SmsGetReport" type="com.leadtone.mas.connector.domain.SmsGetReport" />
+
+	<resultMap class="SmsGetReport" id="SmsGetReportResultMap">
+		<result property="id" column="id" />
+		<result property="merchant_pin" column="merchant_pin" />
+		<result property="operation_id" column="operation_id" />
+		<result property="task_number" column="task_number" />
+		<result property="batch_id" column="batch_id" />
+		<result property="province" column="province" />
+		<result property="self_mobile" column="self_mobile" />
+		<result property="tos" column="tos" />
+		<result property="tos_name" column="tos_name" nullValue="" />
+		<result property="content" column="content" />
+		<result property="cut_apart_number" column="cut_apart_number" nullValue="0"/>
+		<result property="commit_time" column="commit_time" />
+		<result property="ready_send_time" column="ready_send_time" />
+		<result property="expire_time" column="expire_time" nullValue="0"/>
+		<result property="complete_time" column="complete_time" nullValue="1971/01/01 00:00:00"/>
+		<result property="sms_access_number" column="sms_access_number" nullValue=""/>
+		<result property="tunnel_type" column="tunnel_type" />
+		<result property="priority_level" column="priority_level" />
+		<result property="send_result" column="send_result" nullValue="1"/>
+		<result property="fail_reason" column="fail_reason" nullValue=""/>
+		<result property="description" column="description" nullValue=""/>
+		<result property="create_by" column="create_by" nullValue="0"/>
+		<result property="title" column="title" nullValue=""/>
+	</resultMap>
+
+	<select id="loadByUid" parameterClass="java.util.List"
+		resultMap="SmsGetReportResultMap">
+		SELECT
+		id,merchant_pin,operation_id,task_number,batch_id,province,
+		self_mobile,tos,tos_name,content,cut_apart_number,commit_time,
+		ready_send_time,expire_time,complete_time,sms_access_number,
+		tunnel_type,priority_level,send_result,fail_reason,description,
+		create_by,title
+		FROM
+		mbn_sms_had_send WHERE webservice = 3 
+		<iterate prepend=" and id in " open="(" close=")"
+			conjunction=",">
+			#[]#
+		</iterate> 
+	</select>
+
+	<select id="loadById" parameterClass="java.lang.Long" resultClass="SmsGetReport">
+		SELECT
+			id,merchant_pin,operation_id,task_number,batch_id,province,
+			self_mobile,tos,tos_name,content,cut_apart_number,commit_time,
+			ready_send_time,expire_time,complete_time,sms_access_number,
+			tunnel_type,priority_level,send_result,fail_reason,description,
+			create_by,title
+		FROM
+		mbn_sms_had_send WHERE id = #id:BIGINT#
+	</select>
+	<select id="loadByIdReady" parameterClass="java.lang.Long" resultClass="SmsGetReport">
+		SELECT
+			id,merchant_pin,operation_id,task_number,batch_id,province,
+			self_mobile,tos,tos_name,content,cut_apart_number,commit_time,
+			ready_send_time,expire_time,complete_time,sms_access_number,
+			tunnel_type,priority_level,send_result,fail_reason,description,
+			create_by,title
+		FROM
+		mbn_sms_ready_send WHERE id = #id:BIGINT#
+	</select>
+</sqlMap>

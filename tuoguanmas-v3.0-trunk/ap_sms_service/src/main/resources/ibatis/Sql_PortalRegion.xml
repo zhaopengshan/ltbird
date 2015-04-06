@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="PortalRegion">
+	<resultMap id="portalRegion" class="com.leadtone.mas.bizplug.security.bean.PortalRegion" >
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="name" column="name" jdbcType="varchar" />
+		<result property="code" column="code" jdbcType="varchar" />
+		<result property="parentId" column="parent_id" jdbcType="BIGINT" />
+		<result property="ipAddress" column="ip_address" jdbcType="varchar" />
+		<result property="webDomain" column="web_domain" jdbcType="varchar" />
+		<result property="activeFlag" column="active_flag" jdbcType="BIGINT" />
+		<result property="createTime" column="create_time" jdbcType="DATETIME" />
+		<result property="updateTime" column="update_time" jdbcType="DATETIME" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT" />
+		<result property="updateBy" column="update_by" jdbcType="BIGINT" />
+	</resultMap>
+ 
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="getById" resultMap="portalRegion" parameterClass="com.leadtone.mas.bizplug.security.bean.PortalRegion">
+		select id,name,code,parent_id,ip_address,web_domain,active_flag,create_time,update_time,create_by ,
+ 		update_by from  portal_region where id=#id#
+	</select>
+</sqlMap>

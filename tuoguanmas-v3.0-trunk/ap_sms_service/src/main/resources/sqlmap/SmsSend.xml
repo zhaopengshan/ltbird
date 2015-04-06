@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsSend">
+	<typeAlias alias="SmsSend" type="com.leadtone.mas.connector.domain.SmsSend" />
+
+	<resultMap class="SmsSend" id="SmsSendResultMap">
+		<result property="id" column="id" />
+		<result property="merchant_pin" column="merchant_pin" />
+		<result property="operation_id" column="operation_id" />
+		<result property="task_number" column="task_number" />
+		<result property="batch_id" column="batch_id" />
+		<result property="province" column="province" />
+		<result property="self_mobile" column="self_mobile" />
+		<result property="tos" column="tos" />
+		<result property="tos_name" column="tos_name" />
+		<result property="content" column="content" />
+		<result property="cut_apart_number" column="cut_apart_number" />
+		<result property="commit_time" column="commit_time" />
+		<result property="ready_send_time" column="ready_send_time" />
+		<result property="expire_time" column="expire_time" />
+		<result property="complete_time" column="complete_time" />
+		<result property="sms_access_number" column="sms_access_number" />
+		<result property="tunnel_type" column="tunnel_type" />
+		<result property="priority_level" column="priority_level" />
+		<result property="send_result" column="send_result" />
+		<result property="fail_reason" column="fail_reason" />
+		<result property="description" column="description" />
+		<result property="create_by" column="create_by" />
+		<result property="title" column="title" />
+		<result property="webservice" column="webservice" />
+	</resultMap>
+
+	<insert id="save" parameterClass="SmsSend">
+		INSERT INTO
+		mbn_sms_ready_send(id,merchant_pin,operation_id,task_number,batch_id,province,
+		self_mobile,tos,tos_name,content,cut_apart_number,commit_time,ready_send_time,
+		complete_time,sms_access_number,tunnel_type,priority_level,send_result,
+		fail_reason,description,create_by,title,webservice, expire_time)
+		VALUES(#id#,#merchant_pin#,#operation_id#,#task_number#,
+		#batch_id#,#province#,#self_mobile#,#tos#,#tos_name#,
+		#content#,#cut_apart_number#,#commit_time#,#ready_send_time#,
+		#complete_time#,#sms_access_number#,#tunnel_type#,
+		#priority_level#,#send_result#,#fail_reason#,#description#,#create_by#,#title#,#webservice#,#expire_time#)
+	</insert>
+	
+	<select id="loadAccessNumByMobile" parameterClass="map"
+		resultClass="String">
+		select t1.access_number from mbn_tunnel t1,mbn_merchant_tunnel_relation t2
+		where t2.merchant_pin=#merchant_pin# and t2.tunnel_id=t1.id and t1.classify=#mobileType# and t1.type=1
+	</select>
+	
+	<select id="loadMobileTypeByH3" parameterClass="String"
+		resultClass="String">
+		select corp from mbn_h3 where mobile_prefix=#mobile_prefix#
+	</select>
+</sqlMap>

@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="ZXTUser">
+	<typeAlias alias="ZXTUser" type="com.leadtone.zxt.bean.ZXTUser" />
+
+	<resultMap id="zxtUser" class="ZXTUser">
+		<result property="userid" column="userid" jdbcType="INT" />
+		<result property="account" column="account" jdbcType="VARCHAR" />
+		<result property="password" column="password" jdbcType="VARCHAR" />
+		<result property="realname" column="realname" jdbcType="VARCHAR" />
+		<result property="company" column="company" jdbcType="VARCHAR" />
+		<result property="parentuserid" column="parentuserid" jdbcType="INT" />
+		<result property="payinfo" column="payinfo" jdbcType="INT" />
+		<result property="price" column="price" jdbcType="FLOAT" />
+		<result property="createtime" column="createtime" jdbcType="DATETIME" />
+		<result property="iscall" column="iscall" jdbcType="INT" />
+		<result property="islongsms" column="islongsms" jdbcType="INT" />
+		<result property="issub" column="issub" jdbcType="INT" />
+		<result property="charge" column="charge" jdbcType="INT" />
+		<result property="isstatus" column="isstatus" jdbcType="INT" />
+		<result property="smslong" column="smslong" jdbcType="INT" />
+		<result property="usertype" column="usertype" jdbcType="INT" />
+		<result property="businessuserid" column="businessuserid"
+			jdbcType="INT" />
+		<result property="financialuserid" column="financialuserid"
+			jdbcType="INT" />
+		<result property="serviceuserid" column="serviceuserid"
+			jdbcType="INT" />
+		<result property="isaudit" column="isaudit" jdbcType="INT" />
+		<result property="isrestore" column="isrestore" jdbcType="INT" />
+		<result property="custgroupid" column="custgroupid" jdbcType="INT" />
+		<result property="extno" column="extno" jdbcType="VARCHAR" />
+		<result property="isreissue" column="isreissue" jdbcType="INT" />
+		<result property="valiipaddr" column="valiipaddr" jdbcType="INT" />
+		<result property="valiipaddruse" column="valiipaddruse"
+			jdbcType="VARCHAR" />
+		<result property="mmsprice" column="mmsprice" jdbcType="INT" />
+	</resultMap>
+
+	<insert id="addUser" parameterClass="com.leadtone.zxt.bean.ZXTUser">
+		INSERT INTO
+		tbl_user(
+		<dynamic prepend=" ">
+			<isNotEmpty prepend=", " property="userid">userid</isNotEmpty>
+			<isNotEmpty prepend=", " property="account">account</isNotEmpty>
+			<isNotEmpty prepend=", " property="password">password</isNotEmpty>
+			<isNotEmpty prepend=", " property="realname">realname</isNotEmpty>
+			<isNotEmpty prepend=", " property="company">company</isNotEmpty>
+			<isNotEmpty prepend=", " property="parentuserid">parentuserid
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="payinfo">payinfo</isNotEmpty>
+			<isNotEmpty prepend=", " property="price">price</isNotEmpty>
+			<isNotEmpty prepend=", " property="createtime">createtime</isNotEmpty>
+			<isNotEmpty prepend=", " property="iscall">iscall</isNotEmpty>
+			<isNotEmpty prepend=", " property="islongsms">islongsms</isNotEmpty>
+			<isNotEmpty prepend=", " property="issub">issub</isNotEmpty>
+			<isNotEmpty prepend=", " property="charge">charge</isNotEmpty>
+			<isNotEmpty prepend=", " property="isstatus">isstatus</isNotEmpty>
+			<isNotEmpty prepend=", " property="smslong">smslong</isNotEmpty>
+			<isNotEmpty prepend=", " property="usertype">usertype</isNotEmpty>
+			<isNotEmpty prepend=", " property="businessuserid">businessuserid
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="financialuserid">financialuserid
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="serviceuserid">serviceuserid
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="isaudit">isaudit</isNotEmpty>
+			<isNotEmpty prepend=", " property="isrestore">isrestore</isNotEmpty>
+			<isNotEmpty prepend=", " property="custgroupid">custgroupid</isNotEmpty>
+			<isNotEmpty prepend=", " property="extno">extno</isNotEmpty>
+			<isNotEmpty prepend=", " property="isreissue">isreissue</isNotEmpty>
+			<isNotEmpty prepend=", " property="valiipaddr">valiipaddr</isNotEmpty>
+			<isNotEmpty prepend=", " property="valiipaddruse">valiipaddruse
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="mmsprice">mmsprice</isNotEmpty>
+		</dynamic>
+		)
+		VALUES
+		(
+		<dynamic prepend=" ">
+			<isNotEmpty prepend=", " property="userid">#userid#</isNotEmpty>
+			<isNotEmpty prepend=", " property="account">#account#</isNotEmpty>
+			<isNotEmpty prepend=", " property="password">#password#</isNotEmpty>
+			<isNotEmpty prepend=", " property="realname">#realname#</isNotEmpty>
+			<isNotEmpty prepend=", " property="company">#company#</isNotEmpty>
+			<isNotEmpty prepend=", " property="parentuserid">#parentuserid#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="payinfo">#payinfo#</isNotEmpty>
+			<isNotEmpty prepend=", " property="price">#price#</isNotEmpty>
+			<isNotEmpty prepend=", " property="createtime">#createtime#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="iscall">#iscall#</isNotEmpty>
+			<isNotEmpty prepend=", " property="islongsms">#islongsms#</isNotEmpty>
+			<isNotEmpty prepend=", " property="issub">#issub#</isNotEmpty>
+			<isNotEmpty prepend=", " property="charge">#charge#</isNotEmpty>
+			<isNotEmpty prepend=", " property="isstatus">#isstatus#</isNotEmpty>
+			<isNotEmpty prepend=", " property="smslong">#smslong#</isNotEmpty>
+			<isNotEmpty prepend=", " property="usertype">#usertype#</isNotEmpty>
+			<isNotEmpty prepend=", " property="businessuserid">#businessuserid#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="financialuserid">#financialuserid#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="serviceuserid">#serviceuserid#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="isaudit">#isaudit#</isNotEmpty>
+			<isNotEmpty prepend=", " property="isrestore">#isrestore#</isNotEmpty>
+			<isNotEmpty prepend=", " property="custgroupid">#custgroupid#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="extno">#extno#</isNotEmpty>
+			<isNotEmpty prepend=", " property="isreissue">#isreissue#</isNotEmpty>
+			<isNotEmpty prepend=", " property="valiipaddr">#valiipaddr#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="valiipaddruse">#valiipaddruse#
+			</isNotEmpty>
+			<isNotEmpty prepend=", " property="mmsprice">#mmsprice#</isNotEmpty>
+		</dynamic>
+		);
+	</insert>
+
+	<delete id="delUserByAcount" parameterClass="com.leadtone.zxt.bean.ZXTUser">
+		delete from tbl_user
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="account">
+				account=#account:VARCHAR#
+			</isNotNull>
+		</dynamic>
+	</delete>
+
+	<select id="getIdByAccount" resultClass="java.lang.Integer"
+		parameterClass="java.lang.String">
+		select userid from tbl_user where
+		account=#account:VARCHAR#
+	</select>
+
+	<update id="updateUserByAccount" parameterClass="com.leadtone.zxt.bean.ZXTUser">
+		update tbl_user user
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="password">
+				user.password=#password:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="realname">
+				user.realname=#realname:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="company">
+				user.company=#company:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="parentuserid">
+				user.parentuserid=#parentuserid:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="payinfo">
+				user.payinfo=#payinfo:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="price">
+				user.price=#price:FLOAT#
+			</isNotNull>
+			<isNotNull prepend="," property="createtime">
+				user.createtime=#createtime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="iscall">
+				user.iscall=#iscall:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="islongsms">
+				user.islongsms=#islongsms:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="charge">
+				user.charge=#charge:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="isstatus">
+				user.isstatus=#isstatus:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="isrestore">
+				user.isrestore=#isrestore:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="smslong">
+				user.smslong=#smslong:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="usertype">
+				user.usertype=#usertype:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="businessuserid">
+				user.businessuserid=#businessuserid:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="financialuserid">
+				user.financialuserid=#financialuserid:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="serviceuserid">
+				user.serviceuserid=#serviceuserid:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="isaudit">
+				user.isaudit=#isaudit:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="custgroupid">
+				user.custgroupid=#custgroupid:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="extno">
+				user.extno=#extno:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="isreissue">
+				user.isreissue=#isreissue:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="valiipaddr">
+				user.valiipaddr=#valiipaddr:INT#
+			</isNotNull>
+			<isNotNull prepend="," property="valiipaddruse">
+				user.valiipaddruse=#valiipaddruse:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="mmsprice">
+				user.mmsprice=#mmsprice:INT#
+			</isNotNull>
+		</dynamic>
+		where user.account=#account:VARCHAR#
+	</update>
+</sqlMap>

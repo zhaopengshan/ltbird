@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="TunnelSmsMoLog">
+
+	<typeAlias alias="smsmolog" type="com.leadtone.mas.bizplug.sms.bean.SmsMoLogBean"/>
+
+	<cacheModel id="smsmolog-cache" type="OSCACHE">
+		<flushInterval hours="24" />
+		<!-- <flushOnExecute statement="queryAll" /> -->
+		<property name="size" value="1000" />
+		<property name="reference-type" value="WEAK"/>
+	</cacheModel>
+
+	<!-- 查询操作 -->
+	<resultMap id="smsmologs" class="smsmolog">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="sender" column="sender_mobile" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="content" column="content" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="receiver" column="receiver_service_id" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="createTime" column="create_time" javaType="java.sql.Timestamp" jdbcType="datetime"/>
+	</resultMap>
+    <select id="queryAll" resultMap="smsmologs">
+        select id, sender_mobile, content, receiver_service_id, create_time
+        from mbn_sms_up_comm_log;
+    </select>
+
+	<!-- 删除操作 -->
+	<delete id="delete" parameterClass="smsmolog">
+		delete from mbn_sms_up_comm_log where id = #id:BIGINT#;
+	</delete>
+
+</sqlMap>

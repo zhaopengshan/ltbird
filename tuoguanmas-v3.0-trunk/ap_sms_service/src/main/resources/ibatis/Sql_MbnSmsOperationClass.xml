@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+    
+<sqlMap namespace="MbnSmsOperationClass">
+	<resultMap id="mbnSmsOperationClass" class="com.leadtone.mas.bizplug.sms.bean.MbnSmsOperationClass">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="coding" column="coding" jdbcType="VARCHAR" />
+		<result property="expireTime" column="expire_time" jdbcType="BIGINT" />
+		<result property="priorityLevel" column="priority_level" jdbcType="BIGINT" />
+		 </resultMap>
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="mbnSmsOperationClass"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select 
+			id,coding,name,expire_time,priority_level 
+		from  
+			mbn_sms_operation_class  
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select count(id)
+		from
+		mbn_sms_operation_class
+		 
+	</select>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnSmsOperationClass" parameterClass="java.lang.Long">
+		select 
+			id,coding,name,expire_time,priority_level 
+		from  
+			mbn_sms_operation_class  
+		where id = #id:BIGING#
+	</select>
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="queryByCoding" resultMap="mbnSmsOperationClass" parameterClass="java.lang.String">
+		select 
+			id,coding,name,expire_time,priority_level 
+		from  
+			mbn_sms_operation_class  
+		where coding = upper(#coding:VARCHAR#)
+	</select>
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsOperationClass">
+		INSERT INTO mbn_sms_operation_class
+			(id,coding,name,expire_time,priority_level  )
+		VALUES
+			(#id:BIGINT#, #coding:VARCHAR#, #name:VARCHAR#, #expireTime:BIGINT#, #priorityLevel:BIGINT#);
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsOperationClass">
+		update mbn_sms_operation_class mcs
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id" >
+					mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="coding" >
+					mcs.coding=#coding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="name" >
+					mcs.name=#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="expireTime" >
+					mcs.expire_time=#expireTime:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="priorityLevel" >
+					mcs.priority_level=#priorityLevel:BIGINT#
+			</isNotNull>
+		</dynamic>
+		where mcs.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete"  parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsOperationClass">
+		delete from  mbn_sms_operation_class mcs
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id" >
+					mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="coding" >
+					mcs.coding=#coding:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="name" >
+					mcs.name=#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="expireTime" >
+					mcs.expire_time=#expireTime:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="priorityLevel" >
+					mcs.priority_level=#priorityLevel:BIGINT#
+			</isNotNull>
+		</dynamic>
+	</delete>
+		<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_sms_operation_class  where id=#id:BIGINT# 
+	</delete>
+  
+</sqlMap>

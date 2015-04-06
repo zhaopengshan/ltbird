@@ -1,0 +1,956 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="security">    
+    <!--<typeAlias alias="userRolessalias" type="com.leadtone.mas.bizplug.security.bean.UserRoleRelation"/>    
+    <typeAlias alias="pageutilalias" type="com.leadtone.mas.bizplug.common.PageUtil" />-->    
+    <!--user's map start -->
+    <typeAlias alias="usersalias" type="com.leadtone.mas.bizplug.security.bean.Users" />
+    <typeAlias alias="uservosalias" type="com.leadtone.mas.bizplug.security.bean.UserVO" />
+    <!--<resultMap class="rolealias" id="userroles">
+        <result property="id" column="role_id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="name" column="role_name" jdbcType="VARCHAR"/>
+    </resultMap>-->
+    <resultMap class="usersalias" id="user">
+    	<result property="userExtCode" column="user_ext_code" jdbcType="varchar"/>
+        <result property="id" column="user_id" jdbcType="BIGINT"/>
+        <result property="corpAccessNumber" column="corp_access_number" jdbcType="varchar"/>
+        <result property="account" column="login_account" jdbcType="varchar"/>
+        <result property="password" column="login_pwd" jdbcType="varchar"/>
+        <result property="name" column="user_name" jdbcType="varchar" />
+        <result property="gender" column="gender" jdbcType="int" />
+        <result property="mobile" column="mobile" jdbcType="varchar"/>
+        <result property="email" column="email" jdbcType="varchar"/>
+        <result property="activeFlag" column="user_active_flag" jdbcType="int" />
+        <result property="ipLimitFlag" column="ip_limit_flag" jdbcType="int" />
+        <result property="ipAddress" column="ip_address" jdbcType="varchar"/>
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT"/>
+        <result property="province" column="province" jdbcType="varchar"/>
+        <result property="city" column="city" jdbcType="varchar"/>
+        <result property="webService" column="webservice" jdbcType="int"/>
+        <result property="zxtUserId" column="zxt_user_id" jdbcType="varchar"/>
+        <result property="zxtLoginAcount" column="zxt_login_acount" jdbcType="varchar"/>
+        <result property="zxtPwd" column="zxt_pwd" jdbcType="varchar"/>
+        <result property="zxtId" column="zxt_id" jdbcType="INT"/>
+		<result property="firstLoginFlag" column="first_login_flag" jdbcType="int"/>
+		<result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+    </resultMap>
+    <resultMap class="usersalias" id="userMerchantVO">
+    	<result property="userExtCode" column="user_ext_code" jdbcType="varchar"/>
+        <result property="id" column="user_id" jdbcType="BIGINT"/>
+        <result property="account" column="login_account" jdbcType="varchar"/>
+        <result property="password" column="login_pwd" jdbcType="varchar"/>
+        <result property="name" column="user_name" jdbcType="varchar" />
+        <result property="gender" column="gender" jdbcType="int" />
+        <result property="mobile" column="mobile" jdbcType="varchar"/>
+        <result property="email" column="email" jdbcType="varchar"/>
+        <result property="activeFlag" column="user_active_flag" jdbcType="int" />
+        <result property="ipLimitFlag" column="ip_limit_flag" jdbcType="int" />
+        <result property="ipAddress" column="ip_address" jdbcType="varchar"/>
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT"/>
+        <result property="userType" column="user_type" jdbcType="int"/>
+        <result property="province" column="province" jdbcType="varchar"/>
+        <result property="city" column="city" jdbcType="varchar"/>
+        <result property="zxtUserId" column="zxt_user_id" jdbcType="varchar"/>
+        <result property="zxtLoginAcount" column="zxt_login_acount" jdbcType="varchar"/>
+        <result property="zxtPwd" column="zxt_pwd" jdbcType="varchar"/>
+        <result property="zxtId" column="zxt_id" jdbcType="INT"/>
+		<result property="firstLoginFlag" column="first_login_flag" jdbcType="int"/>
+		<result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+    </resultMap>       
+    <resultMap class="uservosalias" id="userRoleVO" groupBy="id">
+    	<result property="corpAccessNumber" column="corp_access_number" jdbcType="varchar"/>
+        <result property="id" column="user_id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="userExtCode" column="user_ext_code" jdbcType="varchar"/>
+         <result property="account" column="login_account" jdbcType="varchar"/>
+        <result property="loginType" column="login_type" jdbcType="int"/>
+        <result property="limitTryCount" column="limit_try_count" jdbcType="int"/>
+         <result property="userType" column="user_type" jdbcType="int"/>
+        <result property="password" column="login_pwd" jdbcType="varchar"/>
+        <result property="name" column="user_name" jdbcType="varchar" />
+        <result property="gender" column="gender" jdbcType="int" />
+        <result property="mobile" column="mobile" jdbcType="varchar"/>
+        <result property="email" column="email" jdbcType="varchar"/>
+        <result property="activeFlag" column="user_active_flag" jdbcType="int" />
+        <result property="ipLimitFlag" column="ip_limit_flag" jdbcType="int" />
+        <result property="ipAddress" column="ip_address" jdbcType="varchar"/>
+        <result property="province" column="province" jdbcType="varchar"/>
+        <result property="city" column="city" jdbcType="varchar"/>
+        <result property="merchantPin" column="merchant_pin" jdbcType="varchar"/>
+        <result property="zxtUserId" column="zxt_user_id" jdbcType="varchar"/>
+        <result property="zxtLoginAcount" column="zxt_login_acount" jdbcType="varchar"/>
+        <result property="zxtPwd" column="zxt_pwd" jdbcType="varchar"/>
+        <result property="zxtId" column="zxt_id" jdbcType="INT"/>
+		<result property="firstLoginFlag" column="first_login_flag" jdbcType="int"/>
+		<result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+        <result property="role" resultMap="security.role" />
+    </resultMap>
+    <resultMap class="uservosalias" id="userRoleResourceVO" groupBy="id"> 
+		<result property="userExtCode" column="user_ext_code" jdbcType="varchar"/>
+		<result property="webService" column="webservice" jdbcType="int"/>
+   		<result property="corpAccessNumber" column="corp_access_number" jdbcType="varchar"/>
+    	<result property="userType" column="user_type" jdbcType="int"/> 
+    	<result property="loginType" column="login_type" jdbcType="int"/>
+    	<result property="lockFlag" column="lock_flag" jdbcType="int"/>
+    	<result property="limitTryCount" column="limit_try_count" jdbcType="int"/>
+        <result property="id" column="user_id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="account" column="login_account" jdbcType="varchar"/>
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT"/>
+        <result property="password" column="login_pwd" jdbcType="varchar"/>
+        <result property="name" column="user_name" jdbcType="varchar" />
+        <result property="gender" column="gender" jdbcType="int" />
+        <result property="mobile" column="mobile" jdbcType="varchar"/>
+        <result property="email" column="email" jdbcType="varchar"/>
+        <result property="activeFlag" column="user_active_flag" jdbcType="int" />
+        <result property="ipLimitFlag" column="ip_limit_flag" jdbcType="int" />
+        <result property="ipAddress" column="ip_address" jdbcType="varchar"/>
+        <result property="province" column="province" jdbcType="varchar"/>
+        <result property="city" column="city" jdbcType="varchar"/>
+        <result property="zxtUserId" column="zxt_user_id" jdbcType="varchar"/>
+        <result property="zxtLoginAcount" column="zxt_login_acount" jdbcType="varchar"/>
+        <result property="zxtPwd" column="zxt_pwd" jdbcType="varchar"/>
+        <result property="zxtId" column="zxt_id" jdbcType="INT"/>
+		<result property="firstLoginFlag" column="first_login_flag" jdbcType="int"/>
+		<result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+        <result property="roles" resultMap="security.roleResourceVO" />
+    </resultMap>
+    <!--<resultMap class="uservosalias" id="users" groupBy="">
+        <result property="account" column="login_account" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="id" column="id"/>
+        <result property="password" column="login_pwd" javaType="java.lang.String" jdbcType="varchar"/>
+        <result property="merchantPin" column="merchant_pin" jdbcType="BIGINT"/>
+        <result property="roles" column="id" select="security.queryRolesByUserId"/>
+    </resultMap>
+    <resultMap class="usersalias" id="userrole">
+        <result property="account" column="login_account" jdbcType="varchar"/>
+        <result property="id" column="user_id" jdbcType="BIGINT" />
+        <result property="password" column="login_pwd" jdbcType="varchar"/>
+    </resultMap>-->
+    <!--user's map end -->
+    <!--resource's mapping start-->    
+    <typeAlias alias="resourcessalias" type="com.leadtone.mas.bizplug.security.bean.Resources" />
+    <resultMap class="resourcessalias" id="subResource">
+        <result property="id" column="sub_id"/>
+        <result property="name" column="sub_name"/>
+        <result property="url" column="sub_url"/>
+        <result property="icon" column="sub_icon"/>
+        <result property="isManagementFun" column="sub_is_management_fun"/>
+        <result property="parentId" column="sub_pid"/>
+        <result property="orderNumber" column="sub_position_sort"/>
+    </resultMap>
+    <resultMap class="resourcessalias" id="parentResource" groupBy="id">
+        <result property="id" column="parent_id"/>
+        <result property="name" column="parent_name"/>
+        <result property="url" column="parent_url"/>
+        <result property="icon" column="parent_icon"/>
+        <result property="isManagementFun" column="parent_is_management_fun"/>
+        <result property="parentId" column="parent_pid"/>
+        <result property="orderNumber" column="parent_position_sort"/>
+        <result property="subResources" resultMap="security.subResource"/>
+    </resultMap>
+    <!--<resultMap class="resourcessalias" id="resource">
+        <result property="id" column="resource_id"/>
+        <result property="name" column="resource_name"/>
+        <result property="url" column="url"/>
+        <result property="icon" column="icon"/>
+        <result property="parentId" column="resource_pid"/>
+        <result property="orderNumber" column="resource_position_sort"/>
+        <result property="subResources" resultMap="security.subResources"/>
+    </resultMap>-->
+    <!--resource's mapping end-->
+    <!--role's map start-->
+    <typeAlias alias="rolealias" type="com.leadtone.mas.bizplug.security.bean.Role" />
+    <typeAlias alias="rolevoalias" type="com.leadtone.mas.bizplug.security.bean.RoleVO" />    
+    <resultMap class="rolealias" id="role">
+        <result property="id" column="role_id" jdbcType="BIGINT"/>
+        <result property="name" column="role_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="role_create_time" jdbcType="DATETIME"/>
+        <result property="updateTime" column="role_update_time" jdbcType="DATETIME"/>
+        <result property="createBy" column="role_create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="role_update_by" jdbcType="BIGINT"/>
+        <result property="description" column="role_description" jdbcType="VARCHAR"/>
+        <result property="activeFlag" column="role_active_flag" jdbcType="INT"/>
+        <result property="merchantPin" column="role_merchant_pin" jdbcType="BIGINT"/>
+    </resultMap>
+    <resultMap class="rolevoalias" id="roleResourceVO" groupBy="id">
+        <result property="id" column="role_id" jdbcType="BIGINT"/>
+        <result property="name" column="role_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="role_create_time" jdbcType="DATETIME"/>
+        <result property="updateTime" column="role_update_time" jdbcType="DATETIME"/>
+        <result property="createBy" column="role_create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="role_update_by" jdbcType="BIGINT"/>
+        <result property="description" column="role_description" jdbcType="VARCHAR"/>
+        <result property="activeFlag" column="role_active_flag" jdbcType="INT"/>
+        <result property="merchantPin" column="role_merchant_pin" jdbcType="BIGINT"/>
+        <result property="resources" resultMap="security.parentResource"/>
+    </resultMap>
+    <resultMap class="rolevoalias" id="roleUserVO" groupBy="id">
+        <result property="id" column="role_id" jdbcType="BIGINT"/>
+        <result property="name" column="role_name" jdbcType="VARCHAR"/>
+        <result property="createTime" column="role_create_time" jdbcType="DATETIME"/>
+        <result property="updateTime" column="role_update_time" jdbcType="DATETIME"/>
+        <result property="createBy" column="role_create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="role_update_by" jdbcType="BIGINT"/>
+        <result property="description" column="role_description" jdbcType="VARCHAR"/>
+        <result property="activeFlag" column="role_active_flag" jdbcType="INT"/>
+        <result property="merchantPin" column="role_merchant_pin" jdbcType="BIGINT"/>
+        <result property="users" resultMap="security.user"/>
+    </resultMap>
+    <!--role's map end-->
+    <!--region map start-->
+    <typeAlias alias="regionalias" type="com.leadtone.delegatemas.security.bean.Region" />
+    <resultMap class="regionalias" id="region" groupBy="id">
+        <result property="id" column="region_id"/>
+        <result property="name" column="region_name"/>
+        <result property="code" column="region_code"/>
+        <result property="parentId" column="region_pid"/>
+        <result property="merchantVip" resultMap="MbnMerchantVip.abatorgenerated_MbnMerchantVipResult"/>
+    </resultMap>
+    <resultMap class="regionalias" id="subRegion" groupBy="id">
+        <result property="id" column="sub_id"/>
+        <result property="name" column="sub_name"/>
+        <result property="code" column="sub_code"/>
+        <result property="parentId" column="sub_pid"/>
+        <!--<result property="merchantVip" resultMap="MbnMerchantVip.abatorgenerated_MbnMerchantVipResult"/>-->
+    </resultMap>
+    <resultMap class="regionalias" id="parentRegion" groupBy="id">
+        <result property="id" column="parent_id"/>
+        <result property="name" column="parent_name"/>
+        <result property="code" column="parent_code"/>
+        <result property="parentId" column="parent_pid"/>
+        <result property="subRegions" resultMap="security.subRegion"/>
+        <!--<result property="merchantVip" resultMap="MbnMerchantVip.abatorgenerated_MbnMerchantVipResult"/>-->
+    </resultMap>
+    <!--region map end-->
+    <!--masuservo map start-->
+    <typeAlias alias="masuseralias" type="com.leadtone.delegatemas.security.bean.MasUserVO" />
+    <resultMap class="masuseralias" id="masuserRegion" groupBy="id"> 
+    	<result property="userType" column="user_type" jdbcType="int"/> 
+    	<result property="lockFlag" column="lock_flag" jdbcType="int"/>
+    	<result property="limitTryCount" column="limit_try_count" jdbcType="int"/>
+        <result property="id" column="user_id" jdbcType="BIGINT" javaType="java.lang.Long"/>
+        <result property="account" column="login_account" jdbcType="varchar"/>
+        <result property="merchantPin" column="user_merchant_pin" jdbcType="BIGINT"/>
+        <result property="password" column="login_pwd" jdbcType="varchar"/>
+        <result property="name" column="user_name" jdbcType="varchar" />
+        <result property="gender" column="gender" jdbcType="int" />
+        <result property="mobile" column="mobile" jdbcType="varchar"/>
+        <result property="email" column="email" jdbcType="varchar"/>
+        <result property="activeFlag" column="user_active_flag" jdbcType="int" />
+        <result property="ipLimitFlag" column="ip_limit_flag" jdbcType="int" />
+        <result property="ipAddress" column="ip_address" jdbcType="varchar"/>
+        <result property="regions" resultMap="security.region" />
+    </resultMap>
+    <!--masuservo map end-->
+    <!-- user's sql start -->
+    <!-- 查询所有的用户     有效且非锁定的  (新增角色时用)-->
+	<select id="queryAllUsers"  resultClass="usersalias">  
+        select id, login_account account, name, user_ext_code from portal_user
+        	where active_flag = 1 and lock_flag=0 and merchant_pin=#pinId#;
+    </select>
+    <!--根据用户账号查找用户及其角色资源-->
+    <select id="queryByAccount" parameterClass="java.lang.String" resultMap="userRoleResourceVO">
+        select user.user_type, user.lock_flag,user.limit_try_count,user.id as user_id,user.login_account,user.merchant_pin,
+		user.login_pwd,user.name as user_name,user.gender,user.webservice,
+        user.mobile,user.email,user.corp_access_number,user.active_flag as user_active_flag,user.ip_limit_flag,
+		user.ip_address,user.login_type,user.province,user.city,user.user_ext_code,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time,
+        role.id as role_id,role.name as role_name, role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin,
+        resource.id as parent_id,resource.name as parent_name,resource.url as parent_url,resource.is_management_fun as parent_is_management_fun,
+        resource.icon as parent_icon,
+        resource.pid as parent_pid,resource.position_sort as parent_position_sort,
+        sub_resource.id as sub_id,sub_resource.name as sub_name,sub_resource.url as sub_url,sub_resource.is_management_fun as sub_is_management_fun,
+        sub_resource.icon as sub_icon,sub_resource.pid as sub_pid,sub_resource.position_sort as sub_position_sort      
+        from portal_role role, (select user.* from portal_user user where user.login_account =  #account#   or user.mobile = #account#) user, portal_user_role_relation user_role,
+        portal_resource resource left join portal_resource sub_resource on resource.id=sub_resource.pid,portal_role_resource_operation_relation role_resource        
+        where role.id=user_role.role_id and user.id = user_role.user_id and role.id=role_resource.role_id and resource.id=role_resource.resource_id 
+    </select>
+    <!--PAN_Z_G ‎2013‎年‎1‎月‎4‎日 ‎星期五-->
+    <!--根据用户查找用户及其角色资源-->
+    <select id="queryByUserVO" parameterClass="uservosalias" resultMap="userRoleResourceVO">
+        select user.user_type, user.lock_flag,user.limit_try_count,user.id as user_id,user.login_account,user.merchant_pin,
+		user.login_pwd,user.name as user_name,user.gender,user.webservice,
+        user.mobile,user.email,user.corp_access_number,user.active_flag as user_active_flag,user.ip_limit_flag,
+		user.ip_address,user.login_type,user.province,user.city,user.user_ext_code,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time,
+        role.id as role_id,role.name as role_name, role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin,
+        resource.id as parent_id,resource.name as parent_name,resource.url as parent_url,resource.is_management_fun as parent_is_management_fun,
+        resource.icon as parent_icon,
+        resource.pid as parent_pid,resource.position_sort as parent_position_sort,
+        sub_resource.id as sub_id,sub_resource.name as sub_name,sub_resource.url as sub_url,sub_resource.is_management_fun as sub_is_management_fun,
+        sub_resource.icon as sub_icon,sub_resource.pid as sub_pid,sub_resource.position_sort as sub_position_sort      
+        from portal_role role, (select user.* from portal_user user  
+     	 where  user.login_account =  #account#   
+	         <isNotNull prepend="and" property="corpAccessNumber">
+	        		user.corp_access_number= #corpAccessNumber# 
+	         </isNotNull>  
+	        	or user.mobile = #account#
+        ) user, portal_user_role_relation user_role,
+        portal_resource resource left join portal_resource sub_resource on resource.id=sub_resource.pid,portal_role_resource_operation_relation role_resource        
+        where role.id=user_role.role_id and user.id = user_role.user_id and role.id=role_resource.role_id and resource.id=role_resource.resource_id       
+    </select>
+    <!--根据用户ID查找用户信息-->
+    <select id="queryByAccountId" parameterClass="uservosalias" resultMap="user">  
+        select user.id as user_id,user.corp_access_number,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+        user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+        user.merchant_pin,user.province,user.city,user.user_ext_code,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.webservice,user.first_login_flag,user.update_time
+        from portal_user user
+        <dynamic prepend="where">
+        	<isNotNull prepend="and" property="id">
+        		user.id = #id#
+        	</isNotNull>
+        	<isNotNull prepend="and" property="corpAccessNumber">
+        		user.corp_access_number = #corpAccessNumber#
+        	</isNotNull>
+        	<isNotNull prepend="and" property="account">
+        		user.login_account = #account#
+        	</isNotNull>
+        	<!--PAN-Z-G 添加merchantPin查询分支，用于用户唯一 性验证 -->
+        	<isNotNull prepend="and" property="merchantPin">
+        		user.merchant_pin = #merchantPin#
+        	</isNotNull>
+        	<isNotNull prepend="and" property="userExtCode">
+        		user.user_ext_code = #userExtCode#
+        	</isNotNull>
+        	<isNotNull prepend="and" property="zxtUserId">
+        		user.zxt_user_id = #zxtUserId#
+        	</isNotNull>
+			<isNotNull prepend="and" property="zxtLoginAcount">
+        		user.zxt_login_acount = #zxtLoginAcount#
+        	</isNotNull>
+			<isNotNull prepend="and" property="zxtPwd">
+        		user.zxt_pwd = #zxtPwd#
+        	</isNotNull>
+			<isNotNull prepend="and" property="zxtId">
+        		user.zxt_id = #zxtId#
+        	</isNotNull>
+			
+        </dynamic>
+    </select>
+    <!--根据用户ID查找用户信息-->
+    <select id="queryByUserId" parameterClass="java.lang.Long" resultMap="user">  
+        select user.id as user_id,user.corp_access_number,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+        user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+        user.merchant_pin,user.province,user.city,user.user_ext_code,user.webService, 
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time
+        from portal_user user
+        where user.id = #id#
+    </select>
+    <!--管理员登录一次性查找用户及其角色资源-->  
+    <select id="loginUser" parameterClass="java.util.Map" resultMap="userRoleResourceVO" >
+        select user.user_type, user.id as user_id,user.login_account,user.merchant_pin,user.login_pwd,user.name as user_name,
+		user.gender,user.login_type,user.webservice,
+        user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,user.corp_access_number,
+		user.lock_flag,user.limit_try_count,user.province,user.city,user.user_ext_code,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time,
+        role.id as role_id,role.name as role_name, role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin,
+        resource.id as parent_id,resource.name as parent_name,resource.url as parent_url,resource.is_management_fun as parent_is_management_fun,
+        resource.icon as parent_icon,         
+        resource.pid as parent_pid,resource.position_sort as parent_position_sort,
+        sub_resource.id as sub_id,sub_resource.name as sub_name,sub_resource.url as sub_url,sub_resource.is_management_fun as sub_is_management_fun,
+        sub_resource.icon as sub_icon,sub_resource.pid as sub_pid,sub_resource.position_sort as sub_position_sort      
+        from portal_role role, (select user.* from portal_user user where user.login_account =  #account#   or user.mobile = #account#) user, portal_user_role_relation user_role,
+        portal_resource resource left join portal_resource sub_resource on resource.id=sub_resource.pid,portal_role_resource_operation_relation role_resource        
+        where role.id=user_role.role_id and user.id = user_role.user_id and role.id=role_resource.role_id and resource.id=role_resource.resource_id
+        and resource.is_management_fun=#systype# and sub_resource.is_management_fun=#systype#  order by resource.position_sort,sub_resource.position_sort
+    </select>
+    <!-- 模糊查询用户 (新增右侧账号搜索，修改前Id查询)-->
+    <select id="queryLikeUser" resultMap="userRoleVO" parameterClass="usersalias">
+        select user.id as user_id,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+        user.mobile,user.email,user.user_type,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+        user.merchant_pin,user.limit_try_count,user.login_type,user.province,user.city,user.user_ext_code,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time,
+		user.corp_access_number,<!-- 2013‎年‎1‎月‎6‎日 ‎星期日 新增user_type列，用于判断用户当前权限 -->
+        role.id as role_id,role.name as role_name, role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin
+        from portal_user user, portal_user_role_relation user_role, portal_role role
+        where user.id=user_role.user_id and user_role.role_id=role.id 
+		<isNotNull prepend="and" property="merchantPin">
+			user.merchant_pin = #merchantPin#
+		</isNotNull> 
+		<isNotNull prepend="and" property="account">
+			user.login_account like CONCAT(#account#,'%');
+		</isNotNull> 
+		<isNotNull prepend="and" property="id">
+			user.id = #id#;
+		</isNotNull>
+    </select> 	
+    <!-- 新增用户 -->
+    <insert id="addPortalUser" parameterClass="usersalias" >
+        insert into portal_user(merchant_pin,id,login_account,login_pwd,name,mobile,email,department_name,duty,login_type,
+        gender,user_type,lock_flag,limit_try_count,active_flag,login_time,create_time,update_time,
+        create_by,update_by, ip_limit_flag, ip_address,province,city, user_ext_code,corp_access_number,
+		zxt_user_id,zxt_login_acount,zxt_pwd,zxt_id,first_login_flag, webservice)
+        values(#merchantPin#,#id#,#account#,#password#,#name#,#mobile#,#email#,#departmentName#,#duty#,#loginType#,#gender#,
+        #userType#,#lockFlag#,#limitTryCount#,#activeFlag#,#loginTime#,#createTime#,#updateTime#,
+        #createBy#,#updateBy#,#ipLimitFlag#, #ipAddress#,#province#, #city# , #userExtCode#,#corpAccessNumber#,
+		#zxtUserId#,#zxtLoginAcount#,#zxtPwd#,#zxtId#,#firstLoginFlag#, #webService#);
+    </insert>	
+    <!-- 修改用户信息 -->
+    <update id="updateUser" parameterClass="uservosalias">
+        update portal_user 
+        <dynamic prepend="set">  
+        <isNotNull prepend="," property="limitTryCount" >
+        		limit_try_count=#limitTryCount#
+        	</isNotNull>
+        	<isNotNull prepend="," property="lockFlag" >
+        		lock_flag=#lockFlag#
+        	</isNotNull>
+        	<isNotNull prepend="," property="webService" >
+        		webservice=#webService#
+        	</isNotNull>
+        	<isNotNull prepend="," property="loginType" >
+        		login_type=#loginType#
+        	</isNotNull>
+        	<isNotNull prepend="," property="corpAccessNumber" >
+        		corp_access_number=#corpAccessNumber#
+        	</isNotNull>
+        	<isNotNull prepend="," property="userExtCode" >
+        		user_ext_code=#userExtCode#
+        	</isNotNull>
+      		<isNotNull prepend="," property="merchantPin" >
+        		merchant_pin=#merchantPin#
+        	</isNotNull>
+        	<isNotNull prepend="," property="password" >
+        		login_pwd=#password#
+        	</isNotNull>
+        	<isNotNull prepend="," property="name" >
+        		name=#name#
+        	</isNotNull>
+        	<isNotNull prepend="," property="mobile" >
+        		mobile=#mobile#
+        	</isNotNull>
+        	<isNotNull prepend="," property="email" >
+        		email=#email#
+        	</isNotNull>
+        	<isNotNull prepend="," property="gender" >
+        		gender=#gender#
+        	</isNotNull>
+        	<isNotNull prepend="," property="activeFlag" >
+        		active_flag=#activeFlag#
+        	</isNotNull>
+        	<isNotNull prepend="," property="ipLimitFlag" >
+        		ip_limit_flag=#ipLimitFlag#
+        	</isNotNull>
+        	<isNotNull prepend="," property="ipAddress" >
+        		ip_address=#ipAddress#
+        	</isNotNull>
+        	<isNotNull prepend="," property="updateTime" >
+        		update_time=#updateTime#
+        	</isNotNull>
+        	<isNotNull prepend="," property="updateBy" >
+        		update_by=#updateBy#
+        	</isNotNull>
+        	<isNotNull prepend="," property="province" >
+        		province=#province#
+        	</isNotNull>
+        	<isNotNull prepend="," property="city" >
+        		city=#city#
+        	</isNotNull>
+        	<isNotNull prepend="," property="zxtUserId" >
+        		zxt_user_id=#zxtUserId#
+        	</isNotNull>   
+			<isNotNull prepend="," property="zxtLoginAcount">
+        		user.zxt_login_acount = #zxtLoginAcount#
+        	</isNotNull>
+			<isNotNull prepend="," property="zxtPwd">
+        		user.zxt_pwd = #zxtPwd#
+        	</isNotNull>
+			<isNotNull prepend="," property="zxtId">
+        		user.zxt_id = #zxtId#
+        	</isNotNull>
+			<isNotNull prepend="," property="firstLoginFlag" >
+        		first_login_flag=#firstLoginFlag#
+        	</isNotNull>      	
+        </dynamic>
+        where id=#id#;
+    </update>
+     <!-- 修改用户信息 -->
+    <update id="updateUserByAccount" parameterClass="uservosalias">
+        update portal_user 
+        <dynamic prepend="set"> 
+        <isNotNull prepend="," property="loginType" >
+        		login_type=#loginType#
+        	</isNotNull>
+        	<isNotNull prepend="," property="webService" >
+        		webservice=#webService#
+        	</isNotNull>
+        	<isNotNull prepend="," property="userExtCode" >
+        		user_ext_code=#userExtCode#
+        	</isNotNull>
+        	<isNotNull prepend="," property="password" >
+        		login_pwd=#password#
+        	</isNotNull>
+        	<isNotNull prepend="," property="corpAccessNumber" >
+        		corp_access_number=#corpAccessNumber#
+        	</isNotNull>
+        	<isNotNull prepend="," property="name" >
+        		name=#name#
+        	</isNotNull>
+        	<isNotNull prepend="," property="mobile" >
+        		mobile=#mobile#
+        	</isNotNull>
+        	<isNotNull prepend="," property="email" >
+        		email=#email#
+        	</isNotNull>
+        	<isNotNull prepend="," property="gender" >
+        		gender=#gender#
+        	</isNotNull>
+        	<isNotNull prepend="," property="activeFlag" >
+        		active_flag=#activeFlag#
+        	</isNotNull>
+        	<isNotNull prepend="," property="ipLimitFlag" >
+        		ip_limit_flag=#ipLimitFlag#
+        	</isNotNull>
+        	<isNotNull prepend="," property="ipAddress" >
+        		ip_address=#ipAddress#
+        	</isNotNull>
+        	<isNotNull prepend="," property="updateTime" >
+        		update_time=#updateTime#
+        	</isNotNull>
+        	<isNotNull prepend="," property="updateBy" >
+        		update_by=#updateBy#
+        	</isNotNull>
+        </dynamic>
+        <dynamic prepend="where">
+            <isNotNull prepend="and" property="account" >
+        		login_account=#account#
+            </isNotNull>
+            <isNotNull prepend="and" property="merchantPin" >
+        		merchant_pin=#merchantPin#
+            </isNotNull>
+        </dynamic>     
+    </update>
+    <!-- 用于企业销户的user变更 -->
+    <update id="updateUserActiveFlag" parameterClass="java.util.Map">
+    	update portal_user  set active_flag=#activeFlag# where merchant_pin=#merchantPin#
+    </update>
+    <!-- <update id="updatePwd" parameterClass="uservosalias">
+    	update portal_user 
+        set login_pwd=#password#, update_time=#updateTime#, update_by=#updateBy#
+        where id=#id#;
+    </update> -->
+    <!-- 删除用户 -->
+    <delete id="deleteUser" parameterClass="java.lang.Long">
+        delete from portal_user where id = #userId#;
+    </delete>
+    <!-- 新增用户角色关系  -->
+    <insert id="addUserRoles" parameterClass="java.util.Map" >
+        insert into portal_user_role_relation(id,user_id,role_id,create_time,create_by) 
+        values(#id#,#userId#,#roleId#,#createTime#,#createBy#);
+    </insert>
+    <!-- 删除用户-角色关系表 -->
+    <delete id="deleteUserRoles" parameterClass="java.lang.Long">
+        delete from portal_user_role_relation 
+        where user_id = #userId#;
+    </delete>
+    <!--用户分页查询-->
+    <select id="queryMerchantVipByCondition" parameterClass="java.util.Map" resultMap="userRoleVO">
+        select user.id as user_id,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+        user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,user.corp_access_number,
+        user.merchant_pin,user.user_type,user.limit_try_count,user.login_type,user.province,user.city,user.user_ext_code,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time,
+        role.id as role_id,role.name as role_name, role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin
+        from (select distinct sub_user.id,user_type,sub_user.login_account,sub_user.login_pwd,sub_user.name,
+        sub_user.gender,sub_user.corp_access_number,sub_user.mobile,sub_user.email,sub_user.active_flag,sub_user.ip_limit_flag,sub_user.user_ext_code,
+		sub_user.zxt_user_id,sub_user.zxt_login_acount,sub_user.zxt_pwd,sub_user.zxt_id,
+		sub_user.first_login_flag,sub_user.update_time,
+        sub_user.ip_address,sub_user.merchant_pin,sub_user.limit_try_count,sub_user.login_type,sub_user.province,sub_user.city
+        from portal_user sub_user join portal_user_role_relation user_role on sub_user.id=user_role.user_id
+        where (1=1 <!--sub_user.user_type=#userType#-->
+		<isNotNull prepend="and" property="userType">
+			(
+	        <iterate property="userType" prepend="sub_user.user_type in " open="(" close=")" conjunction=",">
+	            #userType[]:INT#
+	        </iterate> 
+			)
+        </isNotNull>
+        <isNotNull prepend="and" property="pinId">
+                sub_user.merchant_pin = #pinId#
+        </isNotNull>
+            
+        <isNotNull prepend="and" property="provArray">
+            (
+		        <iterate property="provArray" prepend="sub_user.province in " open="(" close=")" conjunction=",">
+		            #provArray[]:VARCHAR#
+		        </iterate> 
+            )
+        </isNotNull>
+	        <isNotNull prepend="and" property="cityArray">
+	            (
+			        <iterate property="cityArray" prepend="sub_user.city in " open="(" close=")" conjunction=",">
+			            #cityArray[]:VARCHAR#
+			        </iterate> 
+	            )
+	        </isNotNull>
+	    )
+            <isNotNull prepend="and" property="roleId">
+                user_role.role_id = #roleId#
+            </isNotNull>
+            <isNotNull prepend="and" property="activeFlag">
+                sub_user.active_flag = #activeFlag#
+            </isNotNull>
+            <isNotEmpty prepend="and" property="mobile">
+                sub_user.mobile like CONCAT('%',#mobile#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="account">
+                sub_user.login_account like CONCAT('%',#account#,'%')
+            </isNotEmpty>
+            <isNotEmpty prepend="and" property="email">
+                sub_user.email like CONCAT('%',#email#,'%')
+            </isNotEmpty>
+           order by sub_user.id desc
+        <dynamic prepend=" limit">
+            <isNotNull property="startPage" >
+                $startPage$,
+            </isNotNull>
+            <isNotNull property="pageSize" >
+                $pageSize$
+            </isNotNull>
+        </dynamic>
+        
+        ) user, portal_user_role_relation user_role, portal_role role
+        where user.id=user_role.user_id and user_role.role_id=role.id 
+          order by user.id desc
+    </select>
+    <!--用户分页查询统计-->	
+    <select id="pageCountUser" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+        select count(distinct user.id)
+        from portal_user user, portal_user_role_relation user_role
+        where (user.id=user_role.user_id
+        <isNotNull prepend="and" property="pinId">
+            user.merchant_pin = #pinId#
+        </isNotNull>
+        <!--<isNotNull prepend="and" property="userType">
+            user.user_type = #userType#
+        </isNotNull>-->
+		<isNotNull prepend="and" property="userType">
+			(
+	        <iterate property="userType" prepend="user.user_type in " open="(" close=")" conjunction=",">
+	            #userType[]:INT#
+	        </iterate> 
+			)
+        </isNotNull>
+        <isNotNull prepend="and" property="provArray">
+            (
+		        <iterate property="provArray" prepend="user.province in " open="(" close=")" conjunction=",">
+		            #provArray[]:VARCHAR#
+		        </iterate> 
+		        
+            )
+        </isNotNull>
+        <isNotNull prepend="and" property="cityArray">
+            (
+		        <iterate property="cityArray" prepend="user.city in " open="(" close=")" conjunction=",">
+		            #cityArray[]:VARCHAR#
+		        </iterate> 
+		       
+            )
+        </isNotNull>
+        )
+        
+        <isNotNull prepend="and" property="userRoles">
+            user_role.role_id = #roleId#
+        </isNotNull>
+        <isNotNull prepend="and" property="activeFlag">
+            user.active_flag = #activeFlag#
+        </isNotNull>
+        <isNotEmpty prepend="and" property="mobile">
+            user.mobile like CONCAT('%',#mobile#,'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="account">
+            user.login_account like CONCAT('%',#account#,'%')
+        </isNotEmpty>
+        <isNotEmpty prepend="and" property="email">
+            user.email like CONCAT('%',#email#,'%')
+        </isNotEmpty>
+    </select>
+    <!-- user's sql end -->
+    <!-- role'sql start-->
+    <!--根据角色名查找角色信息-->
+    <select id="queryRoleByNameMerchantPin" resultMap="role" parameterClass="java.util.Map">
+        select id as role_id, name as role_name, active_flag as role_active_flag,
+        create_time as role_create_time,update_time as role_update_time, create_by as role_create_by,
+        update_by as role_update_by, description as role_description,merchant_pin as role_merchant_pin
+        from portal_role
+        where active_flag=1 and name=#name# and merchant_pin=#merchantPin#
+    </select>
+    <!--<select id="queryRolesByUserId" parameterClass="java.lang.Long" resultMap="roleResourceVO">  
+        select role.id as role_id,role.name as role_name, role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,
+        resource.id,resource.name,resource.url,resource.icon,resource.pid,resource.position_sort,
+        sub_resource.id as sub_id,sub_resource.name as sub_name,sub_resource.url as sub_url,
+        sub_resource.icon as sub_icon,sub_resource.pid as sub_pid,sub_resource.position_sort as sub_position_sort      
+        from portal_role role, portal_user user, portal_user_role_relation user_role,
+        portal_resource resource left join portal_resource sub_resource on resource.id=sub_resource.pid,portal_role_resource_operation_relation role_resource        
+        where role.id=user_role.role_id and user.id = user_role.user_id and role.id=role_resource.role_id and resource.id=role_resource.resource_id
+        and user.id = #userId#; 
+    </select>-->
+    <!--取得所有角色信息-->    
+    <select id="queryAllRoles" resultMap="role">  
+        select id as role_id,name as role_name,create_time as role_create_time,
+        update_time as role_update_time,create_by as role_create_by,update_by as role_update_by,
+        description as role_description,active_flag as role_active_flag,merchant_pin as role_merchant_pin from portal_role
+    </select>
+    <!--根据商户pin码取得所有角色信息-->    
+    <select id="queryAllRolesByMerchantPin" resultMap="role" parameterClass="java.lang.Long" >  
+        select id as role_id,name as role_name,create_time as role_create_time,
+        update_time as role_update_time,create_by as role_create_by,update_by as role_update_by,
+        description as role_description,active_flag as role_active_flag,merchant_pin as role_merchant_pin from portal_role
+        where merchant_pin=#merchantPin#
+    </select>
+    <!--根据角色id取得角色资源信息-->    
+    <select id="queryRoleResource" parameterClass="java.lang.Long" resultMap="roleResourceVO">
+        select role.id as role_id,role.name as role_name,role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,role.update_by as role_update_by,
+        role.description as role_description,role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin,
+        resource.id as parent_id,resource.name as parent_name,resource.url as parent_url,resource.is_management_fun as parent_is_management_fun,
+        resource.icon as parent_icon,resource.pid as parent_pid,resource.position_sort as parent_position_sort,
+        sub_resource.id as sub_id,sub_resource.name as sub_name,sub_resource.url as sub_url,sub_resource.is_management_fun as sub_is_management_fun,
+        sub_resource.icon as sub_icon,sub_resource.pid as sub_pid,sub_resource.position_sort as sub_position_sort    
+        from portal_role role,portal_resource resource left join portal_resource sub_resource on resource.id=sub_resource.pid,
+        portal_role_resource_operation_relation role_resource
+        where role.id=role_resource.role_id and resource.id=role_resource.resource_id and role.id=#id#
+    </select>
+    <!--根据角色id取得角色用户信息-->
+    <select id="queryRoleUser" parameterClass="java.util.Map" resultMap="roleUserVO" >
+        select role.id as role_id,role.name as role_name,role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,
+        role.update_by as role_update_by,role.description as role_description,
+        role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin,
+        user.id as user_id,user.login_account,user.login_pwd,user.corp_access_number,user.name as user_name,user.gender,
+        user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+        user.merchant_pin ,user.province,user.city,user.user_ext_code,user.webservice,
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time
+        from portal_role role join portal_user_role_relation user_role on role.id=user_role.role_id 
+        join portal_user user on user.id=user_role.user_id where role.id=#roleId#
+        <!--为支持托管mas而加-->
+        <isNotNull prepend="and" property="pinId" >
+            user.merchant_pin=#pinId#
+        </isNotNull>
+    </select>
+    <!--分页计数查询-->
+    <select id="pageCountRoles" parameterClass="java.util.Map" resultClass="java.lang.Integer">
+        select count(id) from portal_role role where active_flag = 1
+        <isNotNull prepend="and" property="merchantPin" >
+            role.merchant_pin=#merchantPin#
+        </isNotNull>
+        <isNotNull prepend="and" property="roleName" >
+            role.name like CONCAT('%',#roleName#,'%')
+        </isNotNull>
+        <isNotNull prepend="and" property="roleDesc" >
+            role.description like CONCAT('%',#roleDesc#,'%')
+        </isNotNull>        
+    </select>
+    <!--角色分页查询-->   
+    <select id="pageQueryRoles" parameterClass="java.util.Map" resultMap="role">  
+        select role.id as role_id,role.name as role_name,role.create_time as role_create_time,
+        role.update_time as role_update_time,role.create_by as role_create_by,
+        role.update_by as role_update_by,role.description as role_description,
+        role.active_flag as role_active_flag,role.merchant_pin as role_merchant_pin 
+        from portal_role role where role.active_flag = 1
+        <isNotNull prepend="and" property="merchantPin" >
+            role.merchant_pin=#merchantPin#
+        </isNotNull>
+        <isNotNull prepend="and" property="roleName" >
+            role.name like CONCAT('%',#roleName#,'%')
+        </isNotNull>
+        <isNotNull prepend="and" property="roleDesc" >
+            role.description like CONCAT('%',#roleDesc#,'%')
+        </isNotNull>
+        order by role.create_time desc
+        <dynamic prepend="limit">
+            <isNotNull property="startPage" >
+                $startPage$,
+            </isNotNull>
+            <isNotNull property="pageSize" >
+                $pageSize$
+            </isNotNull>
+        </dynamic>
+    </select>
+    <!--添加角色信息-->
+    <insert id="addRole" parameterClass="rolealias">
+        insert into portal_role(id,name,create_time,create_by,description,active_flag,merchant_pin) values(#id#,#name#,#createTime#,#createBy#,#description#,1,#merchantPin#)
+    </insert>
+    <!--更新角色信息-->
+    <update id="updateRole" parameterClass="rolealias" >
+        update portal_role
+        <dynamic prepend="set" >
+            <isNotNull prepend="," property="name" >
+                name = #name#
+            </isNotNull>
+            <isNotNull prepend="," property="description" >
+                description = #description#
+            </isNotNull>
+            <isNotNull prepend="," property="updateTime" >
+                update_time = #updateTime#
+            </isNotNull>
+            <isNotNull prepend="," property="updateBy" >
+                update_by = #updateBy#
+            </isNotNull>
+        </dynamic>
+        where id=#id#
+    </update>
+    <!--删除角色信息-->
+    <delete id="removeRole" parameterClass="java.lang.Long">
+        delete from portal_role where id= #id#
+    </delete>
+    <!--添加角色资源对应关系--> 
+    <insert id="addRoleResource" parameterClass="java.util.Map">
+        insert into portal_role_resource_operation_relation(id,role_id,resource_id,
+        create_time,create_by, operation_id) 
+        values(#id#,#roleId#,#resourceId#,#createTime#,#createBy#, 1)
+    </insert>
+    <!--删除角色资源对应关系-->
+    <delete id="removeRoleResource" parameterClass="java.lang.Long">
+        delete from portal_role_resource_operation_relation where role_id= #id#
+    </delete>
+    <!--添加角色用户对应关系--> 
+    <insert id="addRoleUser" parameterClass="java.util.Map">
+        insert into portal_user_role_relation(id,role_id,user_id,create_time,create_by) 
+        values(#id#,#roleId#,#userId#,#createTime#,#createBy#)
+    </insert>
+    <!--删除角色用户对应关系-->
+    <delete id="removeRoleUser" parameterClass="java.lang.Long">
+        delete from portal_user_role_relation where role_id= #id#
+    </delete>    
+    <!--role's sql end-->
+    <!--resource's sql start-->
+    <!--查询所有资源信息-->
+    <select id="queryAllResources" resultMap="subResource">  
+        select id as sub_id,  
+        name as sub_name,
+        url as sub_url,
+        is_management_fun as sub_is_management_fun,
+        icon as sub_icon,
+        pid as sub_pid,
+        position_sort as sub_position_sort
+        from portal_resource 
+    </select>
+    <!-- 查询所有的资源的父菜单 add by dongch-->
+    <select id="queryTopResources" resultMap="subResource">  
+        select res.id as sub_id,  
+        res.name as sub_name,
+        res.url as sub_url,
+        res.is_management_fun as sub_is_management_fun,
+        res.icon as sub_icon,
+        res.pid as sub_pid,
+        res.position_sort as sub_position_sort
+        from portal_resource res
+        where res.pid=-1 and type=2
+        order by res.position_sort asc
+    </select>
+    <!--根据是否为移动菜单标志查询所有的资源的父菜单 add by dongch-->
+    <select id="queryTopResourcesByIsMobile" resultMap="subResource" parameterClass="java.util.Map" >  
+        select res.id as sub_id,  
+        res.name as sub_name,
+        res.url as sub_url,
+        res.is_management_fun as sub_is_management_fun,
+        res.icon as sub_icon,
+        res.pid as sub_pid,
+        res.position_sort as sub_position_sort
+        from portal_resource res
+        where res.pid=-1 and type=2
+        <isNotNull prepend="and" property="isMobile" >
+                is_mobile = #isMobile#
+        </isNotNull>
+		<isNotNull prepend="and" property="activeFlag" >
+                active_flag = #activeFlag#
+        </isNotNull>
+        order by res.position_sort asc
+    </select>
+    <select id="queryTopResourcesByRoleIds" resultMap="parentResource">  
+        select distinct resource.id as parent_id,  
+        resource.name as parent_name,
+        resource.url as parent_url,
+        resource.icon as parent_icon,
+        resource.is_management_fun as parent_is_management_fun,
+        resource.pid as parent_pid,
+        resource.position_sort as parent_position_sort,
+        resource.pid as parent_pid,
+        sub_resource.id as sub_id,
+        sub_resource.name as sub_name,
+        sub_resource.url as sub_url,
+        sub_resource.is_management_fun as sub_is_management_fun,
+        sub_resource.icon as sub_icon,
+        sub_resource.position_sort as sub_position_sort,
+        sub_resource.pid as sub_pid
+        from portal_resource resource left join portal_resource sub_resource on resource.id=sub_resource.pid, portal_role role, portal_role_resource_operation_relation rel
+        where resource.id=rel.resource_id
+        and role.id=rel.role_id
+        and resource.pid=-1
+        <iterate property="roleIdList" prepend="and role.id in " open="(" close=")" conjunction=",">
+            #roleIdList[]#
+        </iterate> 
+        order by resource.position_sort asc
+    </select>
+    <!--resource's sql end-->
+    <!-- masuser's sql start -->
+    <select  id="querymasuseradmincorps" resultMap="masuserRegion" parameterClass="java.lang.Long">
+        select user.user_type,user.lock_flag,user.limit_try_count,user.id as user_id,user.login_account,
+        user.merchant_pin as user_merchant_pin,user.login_pwd,user.name as user_name,user.gender,user.mobile,user.email,
+        user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,user.province,user.city,
+        region.id as region_id,region.name as region_name,region.code as region_code,
+        region.parent_id as region_pid,
+        merchant.merchant_pin,merchant.merchant_mobile,merchant.telephone,merchant.group_code,
+        merchant.ufid,merchant.address,merchant.name,merchant.sms_state,merchant.mms_state,
+        merchant.province,merchant.city,merchant.region,merchant.sms_access_number,merchant.mms_access_number,
+        merchant.fee_code,merchant.platform,merchant.key_primary,merchant.key_sub,merchant.key_other,merchant.place_id,
+        merchant.create_time,merchant.email,merchant.last_update_time
+        from portal_user user,portal_region region,portal_region_user_relation region_user,
+        mbn_merchant_vip merchant where user.id=region_user.user_id and region.id=region_user.region_id
+        and merchant.region=region.id and user.id=#id# 
+    </select>
+    <select id="queryUsersByUserType" resultMap="user" parameterClass="java.util.Map">
+        select user.id as user_id,user.corp_access_number,user.login_account,user.login_pwd,user.name as user_name,user.gender,
+        user.mobile,user.email,user.active_flag as user_active_flag,user.ip_limit_flag,user.ip_address,
+        user.merchant_pin,user.province,user.city,user.user_ext_code, user.webService, 
+		user.zxt_user_id,user.zxt_login_acount,user.zxt_pwd,user.zxt_id,user.first_login_flag,user.update_time
+        from portal_user user,mbn_merchant_vip merchant where user.merchant_pin=merchant.merchant_pin
+        <isNotNull prepend="and" property="userType">
+        	user.user_type = #userType#
+        </isNotNull>
+        <isNotNull prepend="and" property="province">
+        	cast(merchant.province as UNSIGNED) = #province#
+        </isNotNull>
+        <isNotNull prepend="and" property="city">
+        	cast(merchant.city as UNSIGNED) = #city#
+        </isNotNull>        
+    </select>
+    <!-- masuser's sql end --> 
+    <!-- region's sql start -->
+    <select  id="queryTopRegions" resultMap="subRegion">
+        select region.id as sub_id,region.name as sub_name,region.code as sub_code,
+        region.parent_id as sub_pid
+        from portal_region region
+        where parent_id=-1
+    </select>
+    <select  id="queryRegionsOfProvince" resultMap="subRegion" parameterClass="java.lang.Long">
+        select region.id as sub_id,region.name as sub_name,region.code as sub_code,
+        region.parent_id as sub_pid
+        from portal_region region where region.parent_id=#id# 
+    </select>
+    <select  id="queryRegionsByProvinceId" resultMap="subRegion" parameterClass="java.lang.Long">
+        select region.id as sub_id,region.name as sub_name,region.code as sub_code,
+        region.parent_id as sub_pid
+        from portal_region region
+        where id=#provinceId#
+    </select>
+    <select  id="countByZxtUserId" parameterClass="java.lang.String" resultClass="java.lang.Integer">
+        select count(*) from portal_user 
+        where zxt_user_id=#zxtUserId#
+    </select>
+    <!-- region's sql end -->	
+</sqlMap>

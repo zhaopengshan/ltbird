@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="GwSmsMoLog">
+
+	<typeAlias alias="smsmolog" type="com.leadtone.mas.bizplug.sms.bean.SmsMoLogBean"/>
+	<typeAlias alias="smsmologVo" type="com.leadtone.mas.bizplug.sms.bean.SmsMoLogBeanVO"/>
+	<cacheModel id="smsmolog-cache" type="OSCACHE">
+		<flushInterval hours="24" />
+		<!-- <flushOnExecute statement="queryAll" /> -->
+		<property name="size" value="1000" />
+		<property name="reference-type" value="WEAK"/>
+	</cacheModel>
+
+	<!-- 查询操作 -->
+	<resultMap id="smsmologs" class="smsmolog">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="sender" column="src_terminal_id" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="content" column="msg_content" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="receiver" column="destination_id" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="createTime" column="ih_timestamp" javaType="java.sql.Timestamp" jdbcType="datetime"/>
+	</resultMap>
+	<resultMap id="smsmologVos" class="smsmologVo" extends="smsmologs">
+		<result property="userId" column="user_id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="merchantPin" column="merchant_pin" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="cpoid" column="cpoid" javaType="java.lang.String" jdbcType="varchar"/>
+	</resultMap>
+	
+    <select id="queryByStatus" parameterClass="java.lang.Integer" resultMap="smsmologs">
+        select id, src_terminal_id, msg_content, destination_id, ih_timestamp
+        from smw_cmpp_deliver_result
+        where notice_status = #status:INT# limit 200;
+    </select>
+	<select id="queryByEmppStatus" parameterClass="java.lang.Integer" resultMap="smsmologs">
+        select id, src_terminal_id, msg_content, destination_id, ih_timestamp
+        from smw_empp_deliver_result
+        where notice_status = #status:INT# limit 200;
+    </select>
+
+	<select id="queryLtdxByStatus" parameterClass="java.lang.Integer" resultMap="smsmologs">
+        select id, src_term_id as src_terminal_id, msg_content, dest_term_id as destination_id, ih_timestamp
+        from smw_sms_deliver_result
+        where notice_status = #status:INT# limit 200;
+    </select>
+	
+	<select id="queryByQxtStatusVo" parameterClass="java.lang.Integer" resultMap="smsmologVos">
+        select id, phone as src_terminal_id, content as msg_content, "0" as destination_id, datetime as ih_timestamp,
+		user_id, merchant_pin, cpoid
+        from smw_qxt_mo
+        where proc_status = #status:INT# limit 200;
+    </select>
+	<select id="queryByQxtNewStatusVo" parameterClass="java.lang.Integer" resultMap="smsmologVos">
+        select id, phone as src_terminal_id, content as msg_content, "0" as destination_id, datetime as ih_timestamp,
+		user_id, merchant_pin, cpoid
+        from smw_qxt_new_mo
+        where proc_status = #status:INT# limit 200;
+    </select>
+	<!-- 更新操作 -->
+	<update id="updateStatus" parameterClass="smsmolog">
+		update smw_cmpp_deliver_result set notice_status = 1 where id = #id#;
+	</update>
+	<update id="updateEmppStatus" parameterClass="smsmolog">
+		update smw_empp_deliver_result set notice_status = 1 where id = #id#;
+	</update>
+	<update id="updateLtdxStatus" parameterClass="smsmolog">
+		update smw_sms_deliver_result set notice_status = 1 where id = #id#;
+	</update>
+	<update id="updateQxtStatus" parameterClass="smsmologVo">
+		update smw_qxt_mo set proc_status = 1 where id = #id#;
+	</update>
+	<update id="updateQxtNewStatus" parameterClass="smsmologVo">
+		update smw_qxt_new_mo set proc_status = 1 where id = #id#;
+	</update>
+</sqlMap>

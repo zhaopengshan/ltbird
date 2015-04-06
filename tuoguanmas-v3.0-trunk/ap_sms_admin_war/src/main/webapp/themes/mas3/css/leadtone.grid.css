@@ -1,0 +1,76 @@
+@charset "utf-8";
+/* CSS Document */
+.ui-state-default .tubh a{
+display:block;
+width:78px;/*根据图片的大小定义宽度*/
+height:23px;/*根据图片的大小定义高度*/
+float:left;
+line-height:23px;
+text-align:center;
+text-decoration:none;
+color:#163448;
+font-size:12px;
+margin-top:4px;
+margin-right:5px;
+margin-left:5px;
+background:url(../images/botton_bg1.gif) left top no-repeat; /*你开始的图片*/
+
+}
+.ui-state-default .tubh a:hover{
+	display: block;
+	width: 78px;/*根据图片的大小定义宽度*/
+	height: 23px;/*根据图片的大小定义高度*/
+	line-height: 23px;
+	float: left;
+	text-align: center;
+	text-decoration: none;
+	color: #067599;
+	background: url(../images/botton_bg2.gif) left top no-repeat;
+} 
+
+.grid-num {
+	font-size: 12px;
+}
+
+a.grid-sms{
+	font-size: 12px;
+	color: #2892A3;
+}
+div.navi-pager{
+	float:right;
+}
+.altclass {background: silver;}
+
+.ui-jqgrid .ui-jqgrid-hdiv {position: relative; margin: 0em;padding: 0em; overflow-x: hidden; overflow-y: auto; border-left: 0px none !important; border-top : 0px none !important; border-right : 0px none !important; }
+.ui-jqgrid .ui-jqgrid-htable th {height:22px;padding: 0 2px 0 2px; background: #F1F3F4;}
+
+.ui-jqgrid .ui-jqgrid-htable th div {overflow: hidden; position:relative; height:27px;}
+
+.ui-th-column, .ui-jqgrid .ui-jqgrid-htable th.ui-th-column {overflow: hidden;white-space: nowrap;text-align:center;border-top: 1px solid #B1C8D6;border-bottom: 1px solid #C3CACF; line-height: 25px; font-family: "微软雅黑";
+font-size: 12px; font-weight: bold;}
+
+.ui-th-ltr, .ui-jqgrid .ui-jqgrid-htable th.ui-th-ltr {border-left : 0px none;border-right : 1px solid #C3CACF}
+
+.ui-jqgrid .ui-th-div-ie {white-space: nowrap; zoom :1; height:27px;}
+
+.ui-jqgrid .ui-userdata {border-left: 0px none;	border-right: 0px none;	height : 31px;overflow: hidden; background: #EAF1EE; }/*padding-left: 20px;*/
+/*body*/
+/*
+
+*/
+.ui-jqgrid tr.jqgrow td {font-weight: normal; overflow: hidden; white-space: pre; height: 25px;padding: 0 2px 0 2px;border-bottom-width: 1px; border-bottom-color: #E3E5E8; border-bottom-style: solid; color: black; font-size: 12px;}
+.ui-jqgrid tr.jqgfirstrow td {padding: 0 2px 0 2px;border-right-width: 1px; border-right-style: solid;}
+.ui-jqgrid tr.jqgroup td {font-weight: bold; overflow: hidden; white-space: pre; height: 35px;padding: 0 2px 0 10px;border-bottom-width: 1px; border-bottom-color: #AECAD8; border-bottom-style: solid; font-size: 14px; color: #2D6282; }
+.ui-jqgrid tr.jqfoot td {font-weight: bold; overflow: hidden; white-space: pre; height: 22px;padding: 0 2px 0 2px;border-bottom-width: 1px; border-bottom-color: inherit; border-bottom-style: solid;}
+.ui-jqgrid tr.ui-row-ltr td {text-align:left;border-right-width: 0px none; border-right-color: none; border-right-style: none;}
+.ui-jqgrid tr.ui-row-rtl td {text-align:right;border-left-width: 0px none; border-left-color: none; border-left-style: none;}
+
+.ui-state-hover a, .ui-state-hover a:hover { color: black; text-decoration: none; }
+
+/*easy-ui css*/
+.dialog-button{
+	border-top:1px solid #eee;
+	background:#fafafa;
+	padding:5px 5px;
+	text-align:center;
+}

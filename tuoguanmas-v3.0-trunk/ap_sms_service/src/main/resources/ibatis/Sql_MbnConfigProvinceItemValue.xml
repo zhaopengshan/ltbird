@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap  PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<sqlMap namespace="MbnConfigProvinceItemValue">
+	<resultMap id="abatorgenerated_MbnProvinceConfigItemResult" class="com.leadtone.mas.bizplug.config.bean.MbnConfigProvinceItem" >
+			<result column="id" property="id" jdbcType="BIGINT" />
+				<result column="name" property="name" jdbcType="VARCHAR" />
+				<result column="item_value" property="itemValue" jdbcType="VARCHAR" />
+				<result column="type" property="type" jdbcType="INT" />
+				<result column="description" property="description" jdbcType="VARCHAR" />
+	  </resultMap>
+  <resultMap id="configProvinceItemValue" class="com.leadtone.mas.bizplug.config.bean.MbnConfigProvinceItemValue">
+            <result column="id" property="id" jdbcType="BIGINT" />
+	        <result column="item_id" property="itemId" jdbcType="BIGINT" />
+	        <result column="province" property="province" jdbcType="VARCHAR" />
+	        <result column="item_value" property="itemValue" jdbcType="VARCHAR" />
+	        <result column="description" property="description" jdbcType="VARCHAR" />
+            <result column="sort_num" property="sortNum" jdbcType="INT"/>
+  </resultMap>
+<!--   根据省查询出企业的相应配置 -->
+    <select id="queryItems" resultMap="abatorgenerated_MbnProvinceConfigItemResult" parameterClass="java.lang.String" >
+    select t.id,t.name,t.type,t.description,s.item_value as item_value 
+    from mbn_config_province_item t join mbn_config_province_item_value s on s.item_id = t.id
+    where
+        s.province = #province:VARCHAR#
+  </select>
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="configProvinceItemValue"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		SELECT id, item_id, province, item_value, sort_num,
+		description
+		FROM mbn_config_province_item_value
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select count(id)
+		from
+		mbn_config_province_item_value
+
+	</select>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="configProvinceItemValue" parameterClass="java.lang.Long">
+		SELECT id, item_id, province, item_value, sort_num,
+		description
+		FROM mbn_config_province_item_value
+	</select>
+	<!-- 查询List by ids -->
+	<select id="getByPks" resultMap="configProvinceItemValue" parameterClass="java.lang.String">
+		SELECT id, item_id, province, item_value, sort_num,
+		description
+		FROM mbn_config_province_item_value where id in (#ids:VARCHAR#)
+	</select>
+
+	<!-- 根据商户PIN码，查询商户所有角色 -->
+	<select id="getByPin" resultMap="configProvinceItemValue" parameterClass="java.lang.Long">
+		SELECT
+			id, item_id, province, item_value, sort_num, description
+		FROM
+			mbn_config_province_item_value
+	</select>
+
+	<!-- 插入操作 -->
+	<insert id="insert"
+		parameterClass="com.leadtone.mas.bizplug.config.bean.MbnConfigProvinceItemValue">
+		INSERT INTO mbn_config_province_item_value
+		(id,item_id,province,item_value, sort_num,description )
+		VALUES
+		(#id:BIGINT#, #itemId:BIGINT#, #province:VARCHAR#,
+		#itemValue:VARCHAR#,#sortNum:BIGINT#,#description:VARCHAR# );
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update"
+		parameterClass="com.leadtone.mas.bizplug.config.bean.MbnConfigProvinceItemValue">
+		update mbn_config_province_item_value mcs
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="item_id">
+				mcs.item_id=#itemId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="province">
+				mcs.province=#province:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="itemValue">
+				mcs.item_value=#itemValue:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="sortNum">
+				mcs.sort_num=#sortNum:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="description">
+				mcs.description=#description:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where mcs.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete"
+		parameterClass="com.leadtone.mas.bizplug.config.bean.MbnConfigProvinceItemValue">
+		delete from mbn_config_province_item_value mcs
+		<dynamic prepend="where">
+				<isNotNull prepend="and" property="id">
+				mcs.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="item_id">
+				mcs.item_id=#itemId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="province">
+				mcs.province=#province:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="itemValue">
+				mcs.item_value=#itemValue:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="sortNum">
+				mcs.sort_num=#sortNum:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="description">
+				mcs.description=#description:VARCHAR#
+			</isNotNull>
+		</dynamic>
+	</delete>
+	<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from
+		mbn_config_province_item_value where id=#id:BIGINT#
+	</delete>
+
+</sqlMap>

@@ -1,0 +1,605 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="SmsDati">
+   
+   <!-- 短信答题题库 -->
+   <typeAlias alias="smsDatiTiKu" type="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiTiKu"/>
+   <!-- 短信答题结果 -->
+   <typeAlias alias="smsDatiResult" type="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiResult"/>
+   <!-- 短信答题试卷 -->
+   <typeAlias alias="smsDatiShiJuan" type="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiShiJuan"/>
+   <!-- 短信答题 -->
+   <typeAlias alias="smsDati" type="com.leadtone.mas.bizplug.dati.bean.MasSmsDati"/>
+   
+   
+   <!-- <cacheModel id="smsdatitiku-cache" type="OSCACHE">
+		<flushInterval hours="24" />
+		  <flushOnExecute statement="queryAll" />
+		<property name="size" value="1000" />
+		<property name="reference-type" value="WEAK"/>
+	</cacheModel> -->
+	
+	
+	
+	<resultMap id="tikuResultMap" class="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiTiKu">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="questionNumber" column="question_number" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="question" column="question" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="answer" column="answer" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="createTime" column="create_time"  jdbcType="DATETIME"/>
+		<result property="score" column="score" javaType="java.lang.Integer" jdbcType="int"/>
+	</resultMap>
+	
+	<resultMap id="tikuResultBeanMap" class="com.leadtone.mas.bizplug.dati.pojo.MasSmsDatiResultBean">
+		<result property="id" column="mobile_id" /> 
+		<result property="mobile" column="mobile" />
+		<result property="name" column="name" />
+		<result property="sumScore" column="sum_score" />
+		
+	</resultMap> 
+	
+	
+	<resultMap id="datiMap" class="com.leadtone.mas.bizplug.dati.bean.MasSmsDati">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="tos" column="tos" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="title" column="title" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="content" column="content" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="taskNumber" column="task_number" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="commitTime" column="commit_time"  jdbcType="datetime"/>
+		<result property="beginTime" column="begin_time"  jdbcType="datetime"/>
+		<result property="endTime" column="end_time" javaType="java.sql.Timestamp" jdbcType="datetime"/>
+		<result property="score" column="score" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="dtSum" column="dt_sum" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="createBy" column="create_by" javaType="java.lang.Long" jdbcType="BIGINT"/>
+	</resultMap>
+	
+	<resultMap id="datiMapInfo" class="com.leadtone.mas.bizplug.dati.pojo.MasSmsDatiBean">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="tos" column="tos" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="title" column="title" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="content" column="content" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="taskNumber" column="task_number" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="commitTime" column="commit_time"  jdbcType="datetime"/>
+		<result property="beginTime" column="begin_time"  jdbcType="datetime"/>
+		<result property="endTime" column="end_time" javaType="java.sql.Timestamp" jdbcType="datetime"/>
+		<result property="score" column="score" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="dtSum" column="dt_sum" javaType="java.lang.Integer" jdbcType="int"/>
+		
+	</resultMap>
+	
+	<resultMap id="datiNameMapInfo" class="com.leadtone.mas.bizplug.dati.pojo.MasSmsDatiBean">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="tos" column="tos" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="title" column="title" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="content" column="content" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="taskNumber" column="task_number" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="commitTime" column="commit_time"  jdbcType="datetime"/>
+		<result property="beginTime" column="begin_time"  jdbcType="datetime"/>
+		<result property="endTime" column="end_time" javaType="java.sql.Timestamp" jdbcType="datetime"/>
+		<result property="score" column="score" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="dtSum" column="dt_sum" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="createBy" column="name" /> 
+	</resultMap>
+	
+	
+	<resultMap id="datiSJMap" class="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiShiJuan">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="dxdtId" column="dxdt_id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="orderNumber" column="order_number" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="question" column="question" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="answer" column="answer" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="score" column="score" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="createBy" column="create_by" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		
+	</resultMap>
+	
+	<resultMap id="datiResultMap" class="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiResult">
+		<result property="id" column="id" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		<result property="dxdtId" column="dxdt_id" javaType="java.lang.Long" jdbcType="BIGINT"/> 
+		<result property="mobile" column="mobile" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="name" column="name" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="question" column="question" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="answer" column="answer" javaType="java.lang.String" jdbcType="varchar"/>
+		<result property="score" column="score" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="orderNumber" column="order_number" javaType="java.lang.Integer" jdbcType="int"/>
+		<result property="createBy" column="create_by" javaType="java.lang.Long" jdbcType="BIGINT"/>
+		
+	</resultMap>
+	
+	
+	
+	<!-- 短信答题题库 开始 -->
+	<insert id="insertTiKu" parameterClass="smsDatiTiKu">
+		INSERT INTO
+			mbn_sms_duanxindati_tiku(id, question_number, question, answer, score, create_time,modify_time,create_by)
+		VALUES
+			(#id:BIGINT#, #questionNumber:INTEGER#, #question:VARCHAR#,#answer:VARCHAR#,#score:INTEGER#,#createTime:DATETIME#,#modifyTime:DATETIME#,#createBy:BIGINT#);
+	</insert>
+	
+	<update id="updateTiKuDeleteStatus" parameterClass="java.util.HashMap">
+	  update mbn_sms_duanxindati_tiku
+	  set status = -1
+	  where id=#id:BIGINT# and create_by=#createBy:BIGINT#
+	</update>
+	
+	
+	<update id="updateTiKuShortInfo" parameterClass="java.util.HashMap">
+	  update mbn_sms_duanxindati_tiku  
+	  <dynamic prepend="set">
+	     <isNotNull prepend="," property="question">
+	       question = #question:VARCHAR#
+	     </isNotNull>
+	     
+	     <isNotNull prepend="," property="answer">
+	       answer = #answer:VARCHAR#
+	     </isNotNull>
+	     
+	     <isNotNull prepend="," property="score">
+	       score = #score:INTEGER#
+	     </isNotNull>
+	     
+	     
+	     <isNotNull prepend="," property="modifyTime">
+	       modify_time = #modifyTime#
+	     </isNotNull>
+	     
+	   </dynamic>
+	   where id=#tikuId# and create_by = #createBy#
+	</update>
+	
+	
+	<update id="updateTiKu" parameterClass="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiTiKu">
+	   update mbn_sms_duanxindati_tiku 
+	   <dynamic prepend="set">
+	     <isNotNull prepend="," property="question">
+	       question = #question:VARCHAR#
+	     </isNotNull>
+	     
+	     <isNotNull prepend="," property="answer">
+	       answer = #answer:VARCHAR#
+	     </isNotNull>
+	     
+	     <isNotNull prepend="," property="score">
+	       score = #score:INTEGER#
+	     </isNotNull>
+	     
+	     
+	     <isNotNull prepend="," property="modifyTime">
+	       modify_time = #modifyTime:DATETIME#
+	     </isNotNull>
+	     
+	   </dynamic>
+	   where id=#id:BIGINT#
+	</update>
+	
+	<delete id="deleteTiKu" parameterClass="com.leadtone.mas.bizplug.dati.bean.MasSmsDatiTiKu">
+		delete from mbn_sms_duanxindati_tiku
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id=#id:BIGINT#
+			</isNotNull>
+			
+		</dynamic>
+	</delete>
+	
+	<delete id="deleteTiKuByIdAndCreator" parameterClass="java.util.HashMap" >
+		delete from mbn_sms_duanxindati_tiku
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id=#id:BIGINT# 
+			</isNotNull>
+			
+			<isNotNull prepend="and" property="createBy">
+				create_by=#createBy:BIGINT# 
+			</isNotNull>
+			
+		</dynamic>
+	</delete>
+	
+	
+    
+    <select id="queryAllTiKuByCreator" parameterClass="java.lang.Long" resultMap="tikuResultMap">  
+        select id,question_number,question,answer,create_time,score
+        from mbn_sms_duanxindati_tiku
+        where create_by = #createdBy#  and status = 0
+    </select>
+    
+    <select id="queryTiKuByCreatorAndId" parameterClass="java.util.HashMap" resultMap="tikuResultMap">  
+        select id,question_number,question,answer,create_time,score
+        from mbn_sms_duanxindati_tiku
+        where create_by = #createdBy# and id = #tikuId# and status = 0
+    </select>
+    
+    <select id="queryAllTiKuByKeyWordCreatorForPage" parameterClass="java.util.HashMap" resultMap="tikuResultMap">  
+        select id,question_number,question,answer,create_time,score
+        from mbn_sms_duanxindati_tiku
+        where create_by = #createdBy#
+        and status = 0
+        <isNotNull prepend="and" property="title" > 
+			question like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    <isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ create_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ create_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+	    order by create_time desc 
+	    <isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull> 
+        
+    </select>
+    
+    <select id="exportAllTiKuByKeyWordCreatorForPage" parameterClass="java.util.HashMap" resultMap="tikuResultMap">  
+        select id,question_number,question,answer,create_time,score
+        from mbn_sms_duanxindati_tiku
+        where create_by = #createdBy#
+        and status = 0
+        <isNotNull prepend="and" property="title" > 
+			question like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    <isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ create_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ create_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+	    order by create_time desc 
+	    
+        
+    </select>
+    
+    <select id="queryAllTiKuByCreatorSum" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		select sum(score)
+		from
+		mbn_sms_duanxindati_tiku 
+		where 
+		  create_by = #createdBy#
+		  and status = 0
+		<iterate prepend="AND"  property="tikuIdList"
+          open="(" close=")" conjunction="OR">
+          id=#tikuIdList[]#
+        </iterate>
+ 	</select>
+    
+    <select id="queryAllTiKuByKeyWordCreatorCount" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		select count(id)
+		from
+		mbn_sms_duanxindati_tiku 
+		where 
+		  create_by = #createdBy#
+		  and status = 0
+		<isNotNull prepend="and" property="title" > 
+			question like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    <isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ create_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ create_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+ 	</select>
+    
+    <!-- 短信答题题库 结束 -->
+    
+    <!-- 短信答题 开始 -->
+    <insert id="insertDT" parameterClass="smsDati">
+		INSERT INTO
+			mbn_sms_duanxindati(id, title, tos, commit_time, ready_send_time, begin_time,end_time,content,task_number,create_by,score,dt_sum)
+		VALUES
+			(#id:BIGINT#, #title:INTEGER#, #tos:VARCHAR#,#commitTime:DATETIME#,#readySendTime:DATETIME#,#beginTime:DATETIME#,#endTime:DATETIME#,#content:VARCHAR#,#taskNumber:VARCHAR#,#createBy:BIGINT#,#score#,#dtSum#);
+	</insert>
+	
+	<update id="updateDT" parameterClass="smsDati">
+	   update mbn_sms_duanxindati 
+	   <dynamic prepend="set">
+	     <isNotNull prepend="," property="title">
+	       title = #title:VARCHAR#
+	     </isNotNull>
+	     
+	     <isNotNull prepend="," property="tos">
+	       tos = #tos:VARCHAR#
+	     </isNotNull>
+	     
+	     <isNotNull prepend="," property="content">
+	       content = #content:VARCHAR#
+	     </isNotNull>
+	   </dynamic>
+	   where id=#id:BIGINT#
+	</update>
+	
+	<delete id="deleteDT" parameterClass="smsDati">
+		delete from mbn_sms_duanxindati
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id=#id:BIGINT#
+			</isNotNull>
+			
+		</dynamic>
+	</delete>
+	
+	<update id="updateDtDeleteStatus" parameterClass="java.util.HashMap">
+	  update mbn_sms_duanxindati
+	  set status = -1
+	  where status = 0 and create_by=#createBy:BIGINT#
+	  
+	  <iterate prepend="AND"  property="shiJuanIdList"
+          open="(" close=")" conjunction="OR">
+          id=#shiJuanIdList[]#
+      </iterate>
+	</update>
+	
+	<select id="queryAllDTByCreator" parameterClass="java.lang.Long" resultMap="datiMap">  
+        select id,tos,title,content,commit_time,begin_time,end_time,task_number,create_by
+        from mbn_sms_duanxindati
+        where create_by = #createBy# 
+    </select>
+    
+    <select id="queryAllDTByCreatorAndSearchInfo" parameterClass="java.util.HashMap" resultMap="datiMapInfo">  
+        select id,tos,title,content,commit_time,begin_time,end_time,task_number,score,dt_sum
+        from mbn_sms_duanxindati
+        where create_by = #create_by# 
+        and status = 0 
+        <isNotNull prepend="and" property="shiJuanId" > 
+          id = #shiJuanId#
+        </isNotNull>
+        
+    </select>
+    
+    <select id="queryAllDTByCreatorAndSearchInfoForPage" parameterClass="java.util.HashMap" resultMap="datiMap">  
+        select id,tos,title,content,commit_time,begin_time,end_time,task_number,score,dt_sum,create_by
+        from mbn_sms_duanxindati
+        where create_by = #createBy# 
+        and status = 0 
+        <isNotNull prepend="and" property="title" > 
+			title like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    
+	    
+	    <isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+    </select>
+    
+    <select id="queryAllDTAndCreatorNameByCreatorAndSearchInfoForPage" parameterClass="java.util.HashMap" resultMap="datiNameMapInfo">  
+        select dati.id,tos,title,content,commit_time,begin_time,end_time,task_number,score,dt_sum,pu.name
+        from mbn_sms_duanxindati dati left join portal_user pu on dati.create_by = pu.id
+        where dati.create_by = #createBy# 
+        and status = 0 
+        <isNotNull prepend="and" property="title" > 
+			title like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    <isNotNull prepend="and" property="createInfo" > 
+			pu.name like 
+				CONCAT('%',#createInfo:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    order by commit_time desc 
+	    
+	    <isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+    </select>
+    
+    <select id="exportAllDTAndCreatorNameByCreatorAndSearchInfoForPage" parameterClass="java.util.HashMap" resultMap="datiNameMapInfo">  
+        select dati.id,tos,title,content,commit_time,begin_time,end_time,task_number,score,dt_sum,pu.name
+        from mbn_sms_duanxindati dati left join portal_user pu on dati.create_by = pu.id
+        where dati.create_by = #createBy# 
+        and status = 0 
+        <isNotNull prepend="and" property="title" > 
+			title like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    <isNotNull prepend="and" property="createInfo" > 
+			pu.name like 
+				CONCAT('%',#createInfo:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    order by commit_time desc 
+	    
+	   
+    </select>
+    
+    <select id="queryAllDTAndCreatorNameByCreatorAndSearchInfoCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">  
+        select count(dati.id)
+        from mbn_sms_duanxindati dati left join portal_user pu on dati.create_by = pu.id
+        where dati.create_by = #createBy#
+        
+        and status = 0 
+        <isNotNull prepend="and" property="title" > 
+			dati.title like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull>
+	    
+	    <isNotNull prepend="and" property="createInfo" > 
+			pu.name like 
+				CONCAT('%',#createInfo:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    
+	    
+	    
+    </select>
+    
+    <select id="queryDTBySearchInfo" parameterClass="java.util.HashMap" resultMap="datiMap">  
+        select dati.id,tos,title,content,commit_time,begin_time,end_time,task_number,score,dt_sum,dati.create_by
+        from mbn_sms_duanxindati dati left join portal_user pu on dati.create_by = pu.id 
+        where status = 0 
+        <isNotNull prepend="and" property="mobile" > 
+			tos like 
+				CONCAT('%',#mobile:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+	    <isNotNull prepend="and" property="createdBy" > 
+			pu.merchant_pin = #pinInfo#
+	    </isNotNull>
+	    
+	    <isNotNull prepend="and" property="taskNumber" > 
+			task_number = #taskNumber#
+	    </isNotNull>
+	    
+	    
+    </select>
+    
+    <!-- 根据企业pin码来获取企业id -->
+    <select id="queryEntIdByPinInfo" parameterClass="java.lang.Long" resultClass="java.lang.Long">  
+        select id
+        from portal_user 
+        where merchant_pin = #pinInfo# 
+        
+    </select>
+    
+    <select id="queryAllDTByCreatorAndSearchInfoCount" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">  
+        select count(id)
+        from mbn_sms_duanxindati
+        where create_by = #createBy# 
+        and status = 0 
+        <isNotNull prepend="and" property="title" > 
+			title like 
+				CONCAT('%',#title:VARCHAR#,'%')
+	    </isNotNull> 
+	    
+    </select>
+    <!-- 短信答题 结束 -->
+    
+    
+    <!-- 短信答题 试卷  开始-->
+    <insert id="insertSJ" parameterClass="smsDatiShiJuan">
+		INSERT INTO
+			mbn_sms_duanxindati_shijuan(id, dxdt_id, order_number, question, answer, score,create_time,modify_time,create_by)
+		VALUES
+			(#id:BIGINT#, #dxdtId:INTEGER#, #orderNumber:INTEGER#,#question#,#answer:VARCHAR#,#score:INTEGER#,#createTime:DATETIME#,#modifyTime:DATETIME#,#createBy:BIGINT#);
+	</insert>
+	
+	<insert id="insertSJSelectTiKu" parameterClass="java.util.HashMap">
+		INSERT INTO
+			mbn_sms_duanxindati_shijuan(id, dxdt_id, order_number, question, answer, score,create_time,create_by)
+		select 
+			#id#, #dxdtId#, #orderNumber#,tiku.question,answer,score,#createTime#,create_by from mbn_sms_duanxindati_tiku tiku where tiku.id=#tiKuId# and tiku.create_by = #createBy# ;
+	</insert>
+	
+	<delete id="deleteSJ" parameterClass="smsDatiShiJuan">
+		delete from mbn_sms_duanxindati_shijuan
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id=#id:BIGINT#
+			</isNotNull>
+			
+		</dynamic>
+	</delete>
+	
+	<delete id="deleteSJByDxdtId" parameterClass="java.util.HashMap">
+		delete from mbn_sms_duanxindati_shijuan
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="dxdtId">
+				dxdt_id=#dxdtId:BIGINT#
+			</isNotNull>
+			
+			<isNotNull prepend="and" property="createBy">
+				create_by=#createBy#
+			</isNotNull>
+			
+		</dynamic>
+	</delete>
+	
+	<select id="queryAllSJByDxDtId" parameterClass="java.lang.Long" resultMap="datiSJMap">  
+        select id,dxdt_id,order_number,question,answer,score,create_by
+        from mbn_sms_duanxindati_shijuan
+        where dxdt_id = #dxdt_id# 
+    </select>
+    
+    <select id="querySJBySearchInfo" parameterClass="java.util.HashMap" resultMap="datiSJMap">  
+        select id,dxdt_id,order_number,question,answer,score,create_by
+        from mbn_sms_duanxindati_shijuan
+        where dxdt_id = #dxdtId# and order_number = #orderNumber# 
+    </select>
+	
+    <!-- 短信答题 试卷 结束 -->
+    
+    <!-- 短信答题 结果 开始 -->
+    
+    <insert id="insertResult" parameterClass="smsDatiResult">
+		INSERT INTO
+			mbn_sms_duanxindati_datijieguo(id, dxdt_id, mobile, name, question, answer,score,order_number,create_time,modify_time,create_by)
+		VALUES
+			(#id:BIGINT#, #dxdtId:BIGINT#, #mobile:VARCHAR#,#name:VARCHAR#,#question:VARCHAR#,#answer:VARCHAR#,#score:INTEGER#,#orderNumber:INTEGER#,#createTime:DATETIME#,#modifyTime:DATETIME#,#createBy:BIGINT#);
+	</insert>
+	
+	<select id="queryAllResultByDxDtIdAndMobileAndNumber" parameterClass="java.util.HashMap" resultMap="datiResultMap">  
+        select id, dxdt_id, mobile, name, question, answer,score,order_number,create_by
+        from mbn_sms_duanxindati_datijieguo
+        where  dxdt_id = #dxdtId# and mobile = #mobile# and order_number = #orderNumber# 
+    </select>
+    
+    <select id="queryAllGroupResultByDxDtId" parameterClass="java.util.HashMap" resultMap="tikuResultBeanMap">  
+        select info.mobile as mobile_id,info.mobile,info.name,info.sum_score from (select mobile,name,sum(score) as sum_score 
+        from mbn_sms_duanxindati_datijieguo where create_by = #createBy# 
+        and dxdt_id = #dxdtId# and status = 0 group by mobile) info order by info.sum_score desc 
+        <isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+    </select>
+    
+    <select id="exportAllGroupResultByDxDtId" parameterClass="java.util.HashMap" resultMap="tikuResultBeanMap">  
+        select info.mobile as mobile_id,info.mobile,info.name,info.sum_score from (select mobile,name,sum(score) as sum_score 
+        from mbn_sms_duanxindati_datijieguo where create_by = #createBy# 
+        and dxdt_id = #dxdtId# and status = 0 group by mobile) info order by info.sum_score desc 
+        
+    </select>
+    
+    <select id="queryAllGroupResultCountByDxDtId" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">  
+        select count(*) from (select mobile,name,sum(score) as sum_score 
+        from mbn_sms_duanxindati_datijieguo where create_by = #createBy#  and status = 0
+        and dxdt_id = #dxdtId# group by mobile) info order by info.sum_score desc 
+    </select>
+    
+    <select id="queryMaxNumberByMobileInfo" parameterClass="java.util.HashMap" resultClass="java.lang.Integer">  
+        select max(order_number)
+        from mbn_sms_duanxindati_datijieguo
+        where  dxdt_id = #dxdtId# and mobile = #mobile# and create_by = #createdBy# 
+    </select>
+    
+    
+    <update id="updatedTResultDeleteStatus" parameterClass="java.util.HashMap">
+	  update mbn_sms_duanxindati_datijieguo
+	  set status = -1
+	  where status = 0 and create_by=#createBy:BIGINT#
+	  and dxdt_id = #dxdtId#
+	  <iterate prepend="AND"  property="mobileList"
+          open="(" close=")" conjunction="OR">
+          mobile=#mobileList[]#
+      </iterate>
+	</update>
+    <!-- 短信答题 结果 结束 -->
+	
+</sqlMap>

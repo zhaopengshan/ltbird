@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+	
+	<bean id="baseSqlMapDao" class="com.leadtone.hostmas.smsapp.dao.SqlMapGenericDaoImpl">
+		<property name="sqlMapClient" ref="sqlMapClient">
+		</property>
+	</bean>
+	
+	<bean id="dataConfigDao" class="com.leadtone.hostmas.smsapp.dao.impl.DataConfigDaoImpl" parent="baseSqlMapDao">
+		<property name="type">
+			<value>com.leadtone.hostmas.smsapp.domain.ConfigData</value>
+		</property>
+	</bean>
+		
+</beans>

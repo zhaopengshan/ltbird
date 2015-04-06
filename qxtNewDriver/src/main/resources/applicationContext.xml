@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd ">
+	<!-- <component-scan base-package="com.xbrother.itil,com.xbrother.framework.catalog,com.xbrother.framework.im" 
+		/> -->
+	<description>Spring公共配置文件</description>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+			    <!-- <value>classpath:datasource.properties</value> -->   <!-- 从classpath中加载 -->
+			    <!-- <value>http:http://datasource.properties</value> --> <!-- 作为 URL 加载 -->
+			    <!-- <value>/driverApp/datasource.properties</value> -->  <!-- 根据 ApplicationContext 进行判断-->
+				<value>file:datasource.properties</value>                 <!-- 作为 URL 从文件系统中加载-->
+			</list>
+		</property>
+	</bean>
+	
+	<!--增加dbcp默认配置的属性，在属性文件中可以灵活配置连接属性，以达到最好性能 -->
+	<bean id="localDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<property name="url" value="${local.db.url}" />
+		<property name="username" value="${local.db.username}" />
+		<property name="password" value="${local.db.password}" />
+		<property name="initialSize" value="${local.dbcp.initialSize}" />
+		<property name="maxActive" value="${local.dbcp.maxActive}" />
+		<property name="maxIdle" value="${local.dbcp.maxIdle}" />
+		<property name="minIdle" value="${local.dbcp.minIdle}" />
+		<property name="testWhileIdle" value="${local.dbcp.testWhileIdle}" />
+		<property name="removeAbandoned" value="${local.dbcp.removeAbandoned}" />
+		<property name="poolPreparedStatements" value="${local.dbcp.poolPreparedStatements}" />
+        <property name="defaultAutoCommit" value="${local.dbcp.defaultAutoCommit}" />
+	</bean>
+	<!--
+	<bean id="mandatoryDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<property name="url" value="${mandatory.db.url}" />
+		<property name="username" value="${mandatory.db.username}" />
+		<property name="password" value="${mandatory.db.password}" />
+		<property name="initialSize" value="${mandatory.dbcp.initialSize}" />
+		<property name="maxActive" value="${mandatory.dbcp.maxActive}" />
+		<property name="maxIdle" value="${mandatory.dbcp.maxIdle}" />
+		<property name="minIdle" value="${mandatory.dbcp.minIdle}" />
+		<property name="testWhileIdle" value="${mandatory.dbcp.testWhileIdle}" />
+		<property name="removeAbandoned" value="${mandatory.dbcp.removeAbandoned}" />
+		<property name="poolPreparedStatements" value="${mandatory.dbcp.poolPreparedStatements}" />
+        <property name="defaultAutoCommit" value="${mandatory.dbcp.defaultAutoCommit}" />
+	</bean>
+	
+	<bean id="modemDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<property name="url" value="${modem.db.url}" />
+		<property name="username" value="${modem.db.username}" />
+		<property name="password" value="${modem.db.password}" />
+		<property name="initialSize" value="${modem.dbcp.initialSize}" />
+		<property name="maxActive" value="${modem.dbcp.maxActive}" />
+		<property name="maxIdle" value="${modem.dbcp.maxIdle}" />
+		<property name="minIdle" value="${modem.dbcp.minIdle}" />
+		<property name="testWhileIdle" value="${modem.dbcp.testWhileIdle}" />
+		<property name="removeAbandoned" value="${modem.dbcp.removeAbandoned}" />
+		<property name="poolPreparedStatements" value="${modem.dbcp.poolPreparedStatements}" />
+        <property name="defaultAutoCommit" value="${modem.dbcp.defaultAutoCommit}" />
+	</bean>-->
+	
+    <bean id="dataSource" class="com.leadtone.driver.dataSource.DynamicDataSource" lazy-init="true">
+        <property name="targetDataSources">
+            <map>
+                <entry key="local" value-ref="localDataSource" />
+                <!--<entry key="modem" value-ref="modemDataSource" />
+                <entry key="mandatory" value-ref="mandatoryDataSource" />-->
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="localDataSource" />
+    </bean>
+	<!-- 数据源配置:结束 -->
+
+    <bean id="beforeAdvice" class="com.leadtone.driver.dataSource.BeforeAdvice" lazy-init="true" />
+    <aop:config proxy-target-class="true">
+        <aop:aspect ref="beforeAdvice">
+            <aop:pointcut id="localOpreation" expression="execution(* com.leadtone.driver.dao.local.ISmsDao.*(..))" />
+            <aop:before method="setLocalDataSource" pointcut-ref="localOpreation" />
+        </aop:aspect>
+		<!--
+        <aop:aspect ref="beforeAdvice">
+            <aop:pointcut id="modemOpreation" expression="execution(* com.leadtone.driver.dao.modem.IModemSmsDao.*(..))" />
+            <aop:before method="setModemDataSource" pointcut-ref="modemOpreation" />
+        </aop:aspect>
+        <aop:aspect ref="beforeAdvice">
+            <aop:pointcut id="mandatoryOpreation" expression="execution(* com.leadtone.driver.dao.mandatory.ICorpDao.*(..))" />
+            <aop:before method="setMandatoryDataSource" pointcut-ref="mandatoryOpreation" />
+        </aop:aspect>
+		-->
+    </aop:config>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true" >
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <!-- DAO配置:开始 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" lazy-init="true">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="simpleTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate" lazy-init="true">
+        <constructor-arg ref="jdbcTemplate" />
+    </bean>
+	
+	<bean id="smsDao" class="com.leadtone.driver.dao.local.impl.SmsDaoImpl" lazy-init="true">
+		<property name="jt" ref="jdbcTemplate"/>
+		<property name="st" ref="simpleTemplate"/>	
+	</bean>
+	<!-- DAO配置:结束 -->
+	
+	<!-- Service配置:开始 -->
+	<bean id="smsService" name="smsService" class="com.leadtone.driver.service.impl.SmsServiceImpl" lazy-init="true">
+		<property name="smsDao" ref="smsDao"/>
+	</bean>
+	<!-- Service配置:结束 -->
+	
+	<!-- Task配置:开始 -->
+	<bean id="commonSmsSendHandler" name="commonSmsSendHandler" class="com.leadtone.driver.handler.impl.CommonSmsSendHandler" lazy-init="true" >
+		<property name="smsService" ref="smsService"/>
+	</bean>
+	<bean id="commonSmsReceiveHandler" name="commonSmsReceiveHandler" class="com.leadtone.driver.handler.impl.CommonSmsReceiveHandler" lazy-init="true" >
+		<property name="smsService" ref="smsService"/>
+	</bean>
+	<!-- Service配置:结束 -->
+</beans>

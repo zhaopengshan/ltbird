@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="lisence"> 
+    <typeAlias alias="lisence" type="com.leadtone.mas.bizplug.lisence.bean.Lisence" />
+    <resultMap class="lisence" id="lisence">
+        <result property="lisenceId" column="lisence_id" jdbcType="BIGINT"/>
+		<result property="lisenceValue" column="lisence_value" jdbcType="VARCHAR"/>
+    </resultMap>
+	<select id="list" resultMap="lisence" >
+		select lisence_id,lisence_value from mbn_lisence
+	</select>
+	<insert id="insert" parameterClass="lisence" >
+		insert into mbn_lisence(lisence_id,lisence_value) values(#lisenceId:BIGINT#,#lisenceValue:VARCHAR#)
+  	</insert>
+	<update id="update" parameterClass="lisence" >
+        update mbn_lisence
+        <dynamic prepend="set" >
+            <isNotNull prepend="," property="lisenceValue" >
+                lisence_value = #lisenceValue#
+            </isNotNull>
+        </dynamic>
+        where id=#id#
+    </update>
+	<statement id="truncateArea">
+        TRUNCATE TABLE mbn_lisence
+    </statement>
+</sqlMap>

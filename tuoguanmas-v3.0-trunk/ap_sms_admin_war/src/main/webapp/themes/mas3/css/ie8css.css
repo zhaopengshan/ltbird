@@ -1,0 +1,501 @@
+/* 
+    Document   : ie8css
+    Created on : 2012-12-17, 13:24:31
+    Author     : blueskybluesea
+    Description:
+        Purpose of the stylesheet follows.
+*/
+@charset "utf-8";
+html{
+    overflow-x: hidden;
+}
+body{
+    font-family:"宋体",Arial,Helvetica,sans-serif; 
+    font-size:12px;  
+    color: #505050;
+    background:#0078aa;
+    min-width:100%;
+    margin:0 auto;
+}
+
+table{ border-collapse: collapse;border-spacing: 0;table-layout: fixed;}
+input, textarea{
+    outline: none;
+}
+a:link,a:visited{  
+    text-decoration:none; 
+    outline:none; 
+}
+a:hover{  
+    text-decoration:none; 
+    cursor:pointer; 
+}
+ul {
+    list-style: none;
+}
+ul li{
+    display :inline;
+}
+.nav{
+    height:87px; 
+    width: 100%;
+    margin: 0 0 0 0;
+    border:1px solid #5cc7e7;
+    background: url(../images/main/bg_header.gif) repeat-x 0 0;
+}
+.main_logo{
+    width:50%;
+    height:87px;
+    background: url(../images/main/main_logo.png) no-repeat 0 0;
+    display: inline-block;
+    margin: -12px 0 0 -40px;
+}
+.shortcut_function_nav{
+    margin: -12px 20px 0 0;
+    height: 87px;
+    float:right;
+    font-size: 12px;
+    color: #fff;
+    background: url(../images/main/bg_head_right.png) no-repeat 0 0;
+}
+.function_icon{
+    background-image:url(../images/main/icon_header.png);
+}
+.function_normal{
+    margin-top: 5px;
+    margin-right: -20px;
+    float: right;
+    height: 30px;
+    background-position: -70px 0;
+}
+.shortcut_function_nav .function_normal a{    
+    display:inline-block;    
+    padding-left: 20px;
+    width: 55px;
+    color:#fff;
+}
+.shortcut_function_nav .function_normal a:visited{
+    color:#fff;
+}
+.shortcut_function_nav .function_normal a:hover{
+    color:#00fefe;
+}
+.function_often{
+    margin-top: 35px;
+}
+
+.shortcut_function_nav .function_often a{
+    display:inline-block;
+    margin-left:10px;
+    overflow:hidden;
+    color:#fff;
+}
+
+.shortcut_function_nav .function_often a.icon_txl{width:80px;height:36px;background-position:0 -29px;}
+.shortcut_function_nav .function_often a.icon_txl:hover{width:80px;height:36px;background-position:0 -154px;}
+.shortcut_function_nav .function_often a.icon_gjgl{width:93px;height:36px;background-position:-88px -29px;}
+.shortcut_function_nav .function_often a.icon_gjgl:hover{width:93px;height:36px;background-position:-88px -154px;}
+.shortcut_function_nav .function_often a.icon_lypz{width:93px;height:36px;background-position:-188px -29px;}
+.shortcut_function_nav .function_often a.icon_lypz:hover{width:93px;height:36px;background-position:-188px -154px;}
+.shortcut_function_nav .function_often a.icon_cjgl{width:93px;height:36px;background-position:-283px -29px;}
+.shortcut_function_nav .function_often a.icon_cjgl:hover{width:93px;height:36px;background-position:-283px -154px;}
+.shortcut_function_nav .function_often a.icon_home{width:47px;height:47px;background-position:-388px -25px;}
+.shortcut_function_nav .function_often a.icon_home:hover{width:47px;height:47px;background-position:-388px -148px;}
+.welcome_inf{  
+    float:left;
+    margin: 3px 0 0 -40px;
+    height:29px;
+    line-height:29px;
+    width: 103.2%;
+    background: url(../images/main/bg_nav.gif) repeat-x 0 0;
+    color:#0a6ba2;
+}
+.welcome_inf strong {
+    margin: 0 0 0 20px;
+    font-size:14px;
+    font-weight:bold;
+}
+.work_view{
+    position: relative;
+    height: 500px;
+}
+.menu_view{
+    position: absolute;
+    left: -40px;
+    background:#0078aa;
+    height: 98%;
+}
+.work_view .menu_view .title{
+    height:39px; 
+    width:202px; 
+    line-height:39px;
+    background:url(../images/main/bg_leftnav.gif) repeat-x 0 0;
+    color:#5a5a5b;
+    font-size:15px;
+    font-weight:bold;
+    display:-moz-inline-box;
+    display:inline-block;   
+}
+.work_view .menu_view .title .leftnav{
+    width:25px;
+    height:39px;
+    padding-left: 30px;
+    padding-top: 4px;
+    background-image:url(../images/main/icon_header.png);
+    background-position:-317px 0;
+    vertical-align: middle;
+    margin:0 0 0 15px;
+}
+
+.menu_items{
+    width:180px; 
+    height:82%;
+    overflow:hidden;  
+    padding:30px 30px 20px 18px; 
+    background:url(../images/main/api_leftbar.png) no-repeat 0 0; 
+    font-size:14px; 
+    color:#fff; 
+    line-height:24px; 
+    padding-bottom:5px; 
+}
+.menu_items li{
+    text-align:left;
+    display: block;
+    line-height:35px;
+    margin-top: 0;
+    padding-left:0;
+} 
+.menu_items li span{
+    cursor:pointer;
+    margin-left: 40px;
+}
+.menu_items li.xtsz{
+    background:url(../images/main/aiplist_xtsz.png) no-repeat 0 0;  
+}
+.menu_items li.txlgl{
+    background:url(../images/main/aiplist_txlgl.png) no-repeat 0 0; 
+}
+.menu_items li.sjtjfw{
+    background:url(../images/main/aiplist_sjtjfw.png) no-repeat 0 0; 
+}
+.menu_items span.api-icon{
+    width:14px; 
+    height:12px; 
+    margin-top:12px;  
+    float:right; 
+    vertical-align:middle; 
+    margin-right:10px; 
+    cursor:pointer;  
+    overflow:hidden;  
+    background:url(../images/main/api_li_icon.gif) no-repeat 4px -10px; 
+}
+.menu_items ul{
+    margin-top: 0px;
+    margin-left: -20px;
+    display:none;
+    width:125px;
+}
+.menu_items ul li a{
+    line-height:23px; 
+    height:23px; 
+    display:-moz-inline-box;
+    display:inline-block;
+    width:92px;
+    margin-top:10px;
+    margin-left: 0px;
+    font-size:12px;
+    text-align:center;
+    color:#fff;
+}
+.menu_items ul li  a:hover{
+    line-height:23px; 
+    display:-moz-inline-box;
+    display:inline-block;
+    width:92px;
+    height:23px; 
+    background:url(../images/main/aiplist_nav_a.png) no-repeat 0 0;  
+}
+.menu_items ul li a.on{
+    line-height:23px; 
+    display:-moz-inline-box;
+    display:inline-block;
+    width:92px;
+    height:23px; 
+    background:url(../images/main/aiplist_nav_a.png) no-repeat 0 0;  
+}
+.menu_items .current{
+    font-weight:bold;
+}
+.menu_items .current ul{ 
+    font-weight:normal;
+}
+.menu_items .current span.api-icon{
+    width:14px; 
+    height:10px; 
+    margin-right:10px; 
+    margin-top:14px; 
+    cursor:pointer;   
+    background:url(../images/main/api_li_icon.gif) no-repeat 0 0; 
+} 
+
+.work_view .content_view{
+    position: absolute;
+    left: 210px;
+    background:#fff;
+    width: 80%;
+    height: 96%;
+}
+.work_view .content_view .content_title{
+    display:-moz-inline-box;
+    display:inline-block;   
+    height:36px;
+    line-height:36px;
+    width: 104%;
+    background:url(../images/main/bg_mainnav.gif) repeat-x 0 0;
+    color:#5a5a5b;
+    overflow:hidden;
+    border-top:2px solid #fff;
+    border-bottom:1px solid #afb0b0;
+    font-size:13px;
+    font-weight:bold;
+    margin-left:-40px;
+    margin-right: -10px;
+}
+.work_view .content_view .content{
+    margin:0 0 0 -39px;
+    background:#d7dce2;    
+    padding:0 3px 0 0;
+    display: block;
+    width:103.5%;
+    height: 93%;
+}
+.work_view .content_view .content div{
+
+}
+.work_view .content_view .content div .gridwrapper{
+    width:78%;
+    height: 410px;
+    margin: 5px 0 0 0;
+}
+/*sunyadong add*/
+.work_view .content_view .content div .gridfullscreen{    
+    width:100%;
+    width:100%\0\9;
+    height: 420px;
+    margin: 5px 0 0 0;
+}
+.work_view .content_view .content div .gridwrapper table, .work_view .content_view .content div .gridfullscreen table {
+    width:100%;
+    border-collapse:collapse;
+}
+.work_view .content_view .content div .gridwrapper li, .work_view .content_view .content div .gridfullscreen li{
+    display: block;
+    padding: 5px 0 0 0;
+}
+.work_view .content_view .content div .gridwrapper li label, .work_view .content_view .content div .gridfullscreen li label {
+    display:-moz-inline-box;
+    display:inline-block;
+    width: 100px;
+    text-align: right;
+}
+.work_view .content_view .content div .gridwrapper li label span, .work_view .content_view .content div .gridfullscreen li label span{
+    color:  #FF0000;
+}
+.work_view .content_view .content div .gridwrapper li ul, .work_view .content_view .content div .gridfullscreen li ul{
+    display:inline-block;
+}
+.work_view .content_view .content div .gridwrapper li input[type=text],.work_view .content_view .content div .gridfullscreen li input[type=text],input[type=password] {
+    width:260px;    
+}
+.work_view .content_view .content div .gridwrapper li select, .work_view .content_view .content div .gridfullscreen li select{
+    width:180px;
+    height: 100px;
+}
+.work_view .content_view .content div .rightbox{
+    float: right; 
+    margin-top: -405px; 
+    margin-right: 10px; 
+    border: none;
+    width:150px;
+    border:5px solid #eaf1ee;
+    height: 390px;
+}
+.work_view .content_view .content div .rightbox li{
+    display: block; 
+    margin:10px 0 10px -20px;
+    color:#3b7b85;
+}
+.work_view .content_view .content div .rightbox li span{
+    font-size: 12px;
+    font-weight: bold;
+    font-family: "微软雅黑"
+}
+.work_view .content_view .content div .rightbox .title{ 
+    height:33px;
+    background:#eaf1ee; 
+    line-height:33px;
+    margin: 0 0 0 -40px;
+    color:#3b7b85; 
+    font-size:12px; 
+    font-weight:bold;
+    vertical-align: bottom;
+}
+.work_view .content_view .content div .rightbox .title span{
+    background:url(../images/user/contact_locn.png) no-repeat 0 0;
+    padding:0 0 0 20px;
+    margin: 0 0 0 30px;
+}
+
+.work_view .content_view .content div .rightbox .search_icon{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin: -20px 0 0 140px;
+    background:url(../images/user/search.gif) no-repeat 0 0;  
+}
+.work_view .content_view .content div .rightbox .search_icon_current{
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin: -20px 0 0 140px;
+    background:url(../images/user/close-on.gif) no-repeat 0 0; 
+}
+.tabContent{
+    display: none;
+}
+
+.copy{
+    padding: 10px 0 0 0;
+    height: 30px;
+    width:100%;
+    color:#fff; 
+    text-align:center;
+    font-size:13px;
+    background: url(../images/main/footer_bg.gif) repeat-x 0 0;
+}
+.input_verify_error{
+    color:red;
+    background: url(../images/user/check_error.gif) left top no-repeat; /*你开始的图片*/
+    padding-left: 16px;
+}
+.input_verify_right{
+    color:green;
+    background: url(../images/user/check_right.gif) left top no-repeat; /*你开始的图片*/
+    padding-left: 16px;
+}
+#pswdstrongshow{
+    width: 300px;    
+}
+#pswdstrongshow span{
+    margin: 0 0 0 5px;
+}
+#changepswdstrongshow{
+    width: 300px;    
+}
+#changepswdstrongshow span{
+    margin: 0 0 0 5px;
+}
+.pswd_level{
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    background-color: #FF4500;
+    width: 100px;
+    vertical-align: bottom;
+}
+.percentcur {
+    position: absolute;
+    display: inline-block;
+    height: 20px;
+    line-height: 20px;
+    vertical-align: bottom;
+    background-color: #FFA500;
+    width: 0px;
+}
+.btn{
+    margin: 0 0 0 60px;
+}
+.btn a {
+    width: 78px;/*根据图片的大小定义宽度*/
+    height: 23px;/*根据图片的大小定义高度*/
+    line-height: 23px;
+    text-align: center;
+    color: #163448;
+    font-size: 12px;
+    background: url(../images/grid/botton_bg1.gif) left top no-repeat; /*你开始的图片*/    
+    display: inline-block;
+    text-decoration: none;
+}
+.btn a:hover{
+    width: 78px;/*根据图片的大小定义宽度*/
+    height: 23px;/*根据图片的大小定义高度*/
+    line-height: 23px;
+    text-align: center;
+    color: #067599;
+    background: url(../images/grid/botton_bg2.gif) left top no-repeat;
+}
+.rolelabel{
+    margin: 50px 0 0 -40px;
+    vertical-align: top;
+}
+.unselectrolemargin {
+    margin: 0 0 0 -40px;
+}
+.roleselectmargin{
+    margin: 40px 0 0 0;
+    vertical-align: top;
+}
+.group_icon{
+	background: url(../images/address/group_list.gif) left top no-repeat;
+	padding-left: 16px;
+	cursor:pointer;
+}
+.config{ clear:both; overflow:hidden; padding:2px 5px;}
+.config_left{ width:255px; float:left; margin:15px 5px 15px 5px;}
+.config_right{ width:260px; float:right; margin:15px 10px 15px 15px;}
+.ms_config{ clear:both; overflow:hidden; zoom:1; list-style-type: none;}
+.ms_config li span.name{  width:120px; text-align:right; padding-right:1px;}
+.ms_config li span.rname{  width:120px; text-align:right; padding-right:1px;}
+.ms_config li span.lname{  width:80px; text-align:right; padding-right:1px;}
+.ms_config li span{ float:left;padding-left:1px;}
+.ms_config li input{ background-color:#fff; border:1px solid #ccc; height:16px; line-height:16px; padding:2px 1px; color:#797979; }
+.ms_config li input[type=radio],.ms_config li input[type=checkbox]{
+	width:15px;
+}
+.ms_config li input{ width:120px;}
+.tabletrhead{
+    height:25px;  
+    text-align:center; 
+    font-weight:bold; 
+    line-height:25px; 
+    font-size:12px; 
+    color:#000; 
+    padding-left:10px; 
+    border-bottom:1px solid #c3cacf; 
+    background:#f1f3f4; 
+    border-right:1px solid #c3cacf;
+    border-top:1px solid #b1c8d6;
+}
+.tableopts{
+    background:#eaf1ee; 
+    height:31px; 
+    margin-left:20px; 
+    line-height:31px;
+    font-size:12px;
+}
+.tabletrboby{
+    height:25px; 
+    line-height:25px; 
+    font-size:12px; 
+    color:#000; 
+    padding-left:10px; 
+    border-bottom:1px solid #e3e5e8;
+}
+.tableopts a{
+    color:#067599;
+}
+.welcome_page{
+    background: url(../../mas3/images/main/welcome_bg.jpg) no-repeat 0 0;
+    height: 440px;
+    width: 99.8%;
+}

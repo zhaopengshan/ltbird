@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MbnMerchantConsumeFlow" >
+	<resultMap class="com.leadtone.mas.bizplug.tunnel.bean.MbnMerchantConsumeFlow" id="MbnMerchantConsumeFlowResult">
+  		<result property="id" column="id" jdbcType="BIGINT"/>
+ 		<result property="merchantPin" column="merchant_pin" jdbcType="BIGINT"/>
+ 		<result property="tunnelId" column="tunnel_id" jdbcType="BIGINT"/>
+ 		<result property="operationType" column="operation_type" jdbcType="INTEGER"/>
+ 		<result property="number" column="number" jdbcType="BIGINT"/>
+ 		<result property="modifyTime" column="create_time" jdbcType="DATETIME"/>
+ 		<result property="remainNumber" column="remain_number" jdbcType="BIGINT"/>
+  	</resultMap>
+  <insert id="insert" parameterClass="com.leadtone.mas.bizplug.tunnel.bean.MbnMerchantConsumeFlow">
+  	insert into mbn_merchant_consume_flow
+  		(id,merchant_pin,tunnel_id,operation_type, number, create_time,remain_number)
+  		values
+  		(#id:BIGINT#,#merchantPin:BIGINT#,#tunnelId:BIGINT#,#operationType:INTEGER#,#number:BIGING#,#modifyTime:DATETIME#,#remainNumber:BIGINT#)
+  </insert>
+  <update id="update" parameterClass="com.leadtone.mas.bizplug.tunnel.bean.MbnMerchantConsumeFlow">
+  	update mbn_merchant_consume_flow
+  	<dynamic prepend="set">
+  		<isNotNull prepend="," property="id">id=#id:BIGINT#</isNotNull>
+  		<isNotNull prepend="," property="merchantPin">merchant_pin=#merchantPin:BIGINT#</isNotNull>
+  		<isNotNull prepend="," property="tunnelId">tunnel_id=#tunnelId:BIGINT#</isNotNull>
+  		<isNotNull prepend="," property="operationType">operation_type=#operationType:BIGINT#</isNotNull>
+  		<isNotNull prepend="," property="number">number=#number:BIGINT#</isNotNull>
+  		<isNotNull prepend="," property="modifyTime">create_time=#modifyTime:DATETIME#</isNotNull>
+  		<isNotNull prepend="," property="remainNumber">remain_number=#remainNumber:BIGINT#</isNotNull>
+  	</dynamic>
+  		where id=#id:BIGINT#
+  </update>
+  <delete id="delete" parameterClass="java.lang.Long">
+  	delete from mbn_merchant_consume_flow where id=#id:BIGINT#
+  </delete>
+  <select id="findByPin" resultMap="MbnMerchantConsumeFlowResult" parameterClass="java.lang.Long">
+  	select id,merchant_pin,tunnel_id,operation_type, number, create_time,remain_number
+  	from mbn_merchant_consume_flow
+  	where merchant_pin=#merchantPin:BIGINT#
+  </select>
+  <!-- 根据id查询 -->
+  <select id="findByTunnelId" resultMap="MbnMerchantConsumeFlowResult"  parameterClass="java.util.HashMap">
+  	select id,merchant_pin,tunnel_id,operation_type, number, create_time,remain_number
+  	from mbn_merchant_consume_flow
+  	where merchant_pin=#merchantPin:BIGINT#
+  	and tunnel_id=#tunnelId:BIGINT#
+  </select>
+  <!-- 分页查询 -->
+	<select id="page" resultMap="MbnMerchantConsumeFlowResult"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select 
+		id,merchant_pin,tunnel_id,operation_type, number, create_time,remain_number
+  	from mbn_merchant_consume_flow
+		where merchant_pin=#merchantPin:BIGINT#
+			<isNotNull prepend="and " property="startDate">
+	    		<![CDATA[ create_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and " property="endDate">
+	       		<![CDATA[ create_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and " property="operationType">
+	       		<![CDATA[ operation_type = #operationType:BIGINT#]]>
+			</isNotNull>  
+		order by create_time desc
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<!-- 分页总数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select
+		count(id) from
+		mbn_merchant_consume_flow
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="startDate">
+	    		<![CDATA[ create_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       		<![CDATA[ create_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			 <isNotNull prepend="and" property="operationType">
+	       		<![CDATA[ operation_type = #operationType:BIGINT#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin">
+	       		<![CDATA[ merchant_pin = #merchantPin:BIGINT#]]>
+			</isNotNull> 
+		</dynamic>
+	</select>
+</sqlMap>
+	

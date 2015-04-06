@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+
+<beans>
+
+	<bean id="configBean"
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath:properties/smw.properties</value>
+			</list>
+		</property>
+		<property name="ignoreUnresolvablePlaceholders" ><value>true</value></property>
+	</bean>
+	
+	<!--增加dbcp默认配置的属性，在属性文件中可以灵活配置连接属性，以达到最好性能-->
+	<!-- 
+	<bean id="dataSource2" class="com.mchange.v2.c3p0.ComboPooledDataSource"	destroy-method="close">
+		<property name="driverClass">
+			<value>${hbsproxy.driver}</value>
+		</property>
+		<property name="jdbcUrl">
+			<value>${hbsproxy.url}</value>
+		</property>
+		<property name="user">
+			<value>${hbsproxy.user}</value>
+		</property>
+		<property name="password">
+			<value>${hbsproxy.password}</value>
+		</property>
+		<property name="minPoolSize">
+			<value>1</value>
+		</property>
+		<property name="maxPoolSize">
+			<value>20</value>
+		</property>
+		<property name="maxIdleTime">
+			<value>1800</value>
+		</property>
+		<property name="acquireIncrement">
+			<value>2</value>
+		</property>
+		<property name="maxStatements">
+			<value>0</value>
+		</property>
+		<property name="preferredTestQuery">
+			<value>select 1=1</value>
+		</property>
+		<property name="idleConnectionTestPeriod">
+			<value>60</value>
+		</property>
+	</bean>
+	 -->
+	 
+	<!--数据源	-->
+	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource"
+		destroy-method="close">
+		<property name="driverClassName" value="${hbsproxy.driver}"></property>
+		<property name="url" value="${hbsproxy.url}"></property>
+		<property name="username" value="${hbsproxy.user}"></property>
+		<property name="password" value="${hbsproxy.password}"></property>
+		<property name="initialSize" value="5"></property>
+		<property name="maxActive" value="100"></property>
+		<property name="maxIdle" value="30"></property>
+		<property name="minIdle" value="20"></property>
+		<property name="maxWait" value="500"></property>
+		<property name="validationQuery" value="SELECT 1=1"></property>
+		<!-- testOnBorrow的意思是从数据库连接池中取得连接时，对其的有效性进行检查 -->
+		<property name="testOnBorrow" value="true"></property>
+	</bean>
+	
+	<bean id="sqlMapClient"
+		class="org.springframework.orm.ibatis.SqlMapClientFactoryBean">
+		<property name="configLocation">
+			<value>sqlmap/sqlMapConfig.xml</value>
+		</property>
+		<property name="dataSource">
+			<ref bean="dataSource" />
+		</property>
+	</bean>
+	
+	
+	
+	
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+	
+	<bean id="baseTransactionProxyFactoryBean"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+		abstract="true">
+		<property name="transactionManager" ref="transactionManager" />
+		<property name="transactionAttributes">
+			<props>
+				<prop key="save*">PROPAGATION_REQUIRED</prop>
+				<prop key="insert*">PROPAGATION_REQUIRED</prop>
+				<prop key="update*">PROPAGATION_REQUIRED</prop>
+				<prop key="del*">PROPAGATION_REQUIRED</prop>
+				<prop key="increase*">PROPAGATION_REQUIRED</prop>
+				<prop key="bat*">PROPAGATION_REQUIRED</prop>
+				<prop key="add*">PROPAGATION_REQUIRED</prop>
+				<prop key="count*">PROPAGATION_REQUIRED</prop>
+				<prop key="*">PROPAGATION_REQUIRED,readOnly</prop>
+			</props>
+		</property>
+		
+	</bean>
+	
+	<!-- 加载相关资源配置 -->
+	
+	<import resource="classpath:spring/hostmas-smsapp-dao.xml"/>
+	<import resource="classpath:spring/hostmas-smsapp-service.xml"/>	
+</beans>

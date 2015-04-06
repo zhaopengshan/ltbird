@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target/classes" path="src/main/java"/>
+	<classpathentry excluding="**" kind="src" output="target/classes" path="src/main/resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry kind="con" path="org.maven.ide.eclipse.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/var/lib/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/aspectjrt-1.6.6.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/aspectjweaver-1.6.6.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/avalon-framework-4.1.3.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/cglib-nodep-2.2.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-collections-2.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-dbcp-1.2.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-discovery-0.4.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-io-2.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-lang-2.6.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-logging-1.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/commons-pool-1.2.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/expect4j-1.0.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/gegw-2.12P4.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/ibatis-sqlmap-2.3.4.726.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/javassist-3.8.0.GA.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/jsch-0.1.7.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/junit-3.8.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/log4j-1.2.14.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/logkit-1.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/mail-1.4.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/mysql-connector-java-5.1.15.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/oro-2.0.8.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/slf4j-api-1.6.0-RC0.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/slf4j-log4j12-1.6.0-RC0.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/spring-2.5.6.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/SSI2-1.0.4.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/urlrewrite-3.2.0.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/xerces-2.0.2.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/xercesImpl-2.6.2.jar"/>
+	<classpathentry kind="lib" path="D:/var/lib/xml-apis-1.0.b2.jar"/>
+	<classpathentry kind="output" path="target/classes"/>
+</classpath>

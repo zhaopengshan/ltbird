@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="Lottery">
+	<typeAlias alias="smsLottery" type="com.leadtone.mas.bizplug.lottery.bean.MasSmsLottery"/>
+	<typeAlias alias="SmsAward" type="com.leadtone.mas.bizplug.lottery.bean.MasSmsAward"/>
+	<typeAlias alias="smsLotteryUpshot" type="com.leadtone.mas.bizplug.lottery.bean.MasSmsLotteryUpshot"/>
+
+
+	<insert id="addSmsLottery"  parameterClass="smsLottery">
+		INSERT INTO mbn_sms_duanxinchoujiang(id,title,tos,commit_time,ready_send_time,begin_time,end_time,content,create_by,reply_code) 
+		VALUE(#id:BIGINT#,#title:VARCHAR#,#tos:MEDIUMTEXT#,#commitTime:DATETIME#,#readySendTime:DATETIME#,#beginTime:DATETIME#,#endTime:DATETIME#,#content:VARCHAR#,#createBy:BIGINT#,#replyCode:VARCHAR#)
+	</insert>
+	
+	<delete id="deleteSmsLottery">
+		DELETE FROM  mbn_sms_duanxinchoujiang where id in (<iterate  conjunction=",">#[]#</iterate>)
+	</delete>
+	
+	<select id="querySmsLotteryById"  resultClass="smsLottery">
+		select * FROM  mbn_sms_duanxinchoujiang where id =#id#
+	</select>
+	
+	<update id="updateSmsLottery">
+		UPDATE mbn_sms_duanxinchoujiang
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="title">
+				title=#title:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="tos">
+				tos=#tos:MEDIUMTEXT#
+			</isNotNull>
+			<isNotNull prepend="," property="commitTime">
+				commit_time=#commitTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="readySendTime">
+				ready_send_time=#readySendTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="beginTime">
+				begin_time=#beginTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="endTime">
+				end_time=#endTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				content=#content:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by=#createBy:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="state">
+				state=#state#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	
+	<select id="moSms" resultClass="smsLottery">
+		SELECT * FROM mbn_sms_duanxinchoujiang  WHERE reply_code=#taskNumber#
+	</select>
+	
+	<update id="updateReplyLottery">
+		UPDATE mbn_sms_duanxinchoujiang SET valid_tos=concat(ifnull(valid_tos,''),concat(',',#ReplyNum#)) WHERE id=#id#
+	</update>
+	
+	<resultMap id="smsLotteryMap" 
+		class="com.leadtone.mas.bizplug.lottery.bean.MasSmsLottery" >
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="title" column="title" jdbcType="VARCHAR" />
+		<result property="tos" column="tos" jdbcType="LONGVARCHAR" />
+		<result property="commitTime" column="commit_time" jdbcType="DATETIME" />
+		<result property="readySendTime" column="ready_send_time" jdbcType="DATETIME" />
+		<result property="beginTime" column="begin_time" jdbcType="DATETIME" />
+		<result property="endTime" column="end_time" jdbcType="DATETIME" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT" />
+		<result property="validTos" column="valid_tos" jdbcType="LONGVARCHAR" />
+		<result property="replyCode" column="reply_code" jdbcType="VARCHAR" />
+		<result property="loginAccount" column="login_account" jdbcType="VARCHAR" />
+		<result property="state" column="state" jdbcType="INT" />
+	</resultMap>
+	<select id="selesctNoSendLottery" parameterClass="java.util.HashMap" resultMap="smsLotteryMap">
+	SELECT L.*,U.login_account FROM mbn_sms_duanxinchoujiang L,portal_user U
+	WHERE 
+	L.id IN (SELECT batch_id FROM mbn_sms_ready_send WHERE operation_id=6)
+	AND U.id=L.create_by 
+	and L.create_by=#id# 
+	ORDER BY L.commit_time DESC
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<select id="selesctIsSendLottery" parameterClass="java.util.HashMap"  resultMap="smsLotteryMap">
+	SELECT L.*,U.login_account FROM mbn_sms_duanxinchoujiang L,portal_user U
+	WHERE 
+	L.id IN (SELECT batch_id FROM mbn_sms_had_send WHERE operation_id=6)
+	AND U.id=L.create_by 
+	and L.create_by=#id#
+	ORDER BY L.commit_time DESC
+			<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<select id="selesctIsLottery" parameterClass="java.util.HashMap" resultMap="smsLotteryMap">
+	SELECT L.*,U.login_account FROM mbn_sms_duanxinchoujiang L,portal_user U    WHERE   L.state=2 AND U.id=L.create_by  and L.create_by=#id#
+	ORDER BY L.commit_time DESC
+			<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	
+	<select id="filterNoSendLottery" resultMap="smsLotteryMap">
+	SELECT L.*,U.login_account FROM mbn_sms_duanxinchoujiang L,portal_user U
+	WHERE 
+	L.id IN (SELECT batch_id FROM mbn_sms_ready_send WHERE operation_id=6)
+	AND U.id=L.create_by 
+		<isNotNull prepend="AND" property="title">
+		(L.title like '%$title$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="loginAccount">
+		(U.login_account LIKE '%$loginAccount$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="tos">
+		(L.tos LIKE '%$tos$%')
+		</isNotNull>
+		ORDER BY L.commit_time DESC
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<select id="filterIsSendLottery" resultMap="smsLotteryMap" parameterClass="java.util.Map">
+SELECT L.*,U.login_account FROM mbn_sms_duanxinchoujiang L,portal_user U
+	WHERE 
+	L.id IN (SELECT batch_id FROM mbn_sms_had_send WHERE operation_id=6)
+	AND U.id=L.create_by 
+		<!-- and L.create_by=#id：BIGINT#  -->
+ 		<isNotNull prepend="AND" property="title">
+		(L.title like '%$title$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="loginAccount">
+		(U.login_account LIKE '%$loginAccount$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="tos">
+		(L.tos LIKE '%$tos$%')
+		</isNotNull>
+		ORDER BY L.commit_time DESC
+					<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	<select id="filterIsLottery" resultMap="smsLotteryMap">
+		SELECT L.*,U.login_account FROM mbn_sms_duanxinchoujiang L,portal_user U    WHERE   L.state=2 AND U.id=L.create_by
+		<isNotNull prepend="AND" property="title">
+		(L.title like '%$title$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="loginAccount">
+		(P.login_account LIKE '%$loginAccount$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="tos">
+		(L.tos LIKE '%$tos$%')
+		</isNotNull>
+		ORDER BY L.commit_time DESC
+					<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	
+	
+	
+	<insert id="addSmsAward" parameterClass="SmsAward">
+		INSERT INTO mbn_sms_duanxinchoujiang_jiangxiangshezhi(id,dxcj_id,grade_level_name,award_content,order_number,quota_of_people,create_time,modify_time,create_by)
+		VALUE(#id:bigint#,#dxcjId:bigint#,#gradeLevelName:varchar#,#awardContent:varchar#,#orderNumber:int#,#quotaOfPeople:int#,#createTime:datetime#,#modifyTime:datetime#,#createBy:bigint#)
+	</insert>
+	
+	<delete id="deleteSmsAward">
+		DELETE FROM  mbn_sms_duanxinchoujiang_jiangxiangshezhi where id in (<iterate  conjunction=",">#[]#</iterate>)
+	</delete>
+	
+	<update id="updateSmsAward" parameterClass="smsAward">
+		UPDATE mbn_sms_duanxinchoujiang_jiangxiangshezhi
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="dxcjId">
+				dxcj_id=#dxcjId:bigint#
+			</isNotNull>
+			<isNotNull prepend="," property="gradeLevelName">
+				grade_level_name=#gradeLevelName:varchar#
+			</isNotNull>
+			<isNotNull prepend="," property="awardContent">
+				award_content=#awardContent:varchar#
+			</isNotNull>
+			<isNotNull prepend="," property="orderNumber">
+				order_number=#orderNumber:int#
+			</isNotNull>
+			<isNotNull prepend="," property="quotaOfPeople">
+				quota_of_people=#quotaOfPeople:int#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				create_time=#createTime:datetime#
+			</isNotNull>
+			<isNotNull prepend="," property="modifyTime">
+				modify_time=#modifyTime:datetime#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by=#createBy:bigint#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	
+	<resultMap id="smsAwardMap" 
+		class="SmsAward" >
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="dxcjId" column="dxcj_id" jdbcType="bigint" />
+		<result property="gradeLevelName" column="grade_level_name" jdbcType="varchar" />
+		<result property="awardContent" column="award_content" jdbcType="varchar" />
+		<result property="orderNumber" column="order_number" jdbcType="INT" />
+		<result property="quotaOfPeople" column="quota_of_people" jdbcType="INT" />
+		<result property="createTime" column="create_time" jdbcType="datetime" />
+		<result property="modifyTime" column="modify_time" jdbcType="datetime" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT" />
+	</resultMap>
+	
+	<select id="selesctSmsAward" resultMap="smsAwardMap">
+		SELECT * from mbn_sms_duanxinchoujiang_jiangxiangshezhi WHERE dxcj_id=#dxcjId#
+	</select>
+	
+	<insert id="addSmsLotteryUpshot"  parameterClass="com.leadtone.mas.bizplug.lottery.bean.MasSmsLotteryUpshot">
+		INSERT INTO mbn_sms_duanxinchoujiang_choujiangjieguo(id,dxcj_id,grade_level_name,award_content,name,mobile,state,create_time,create_by)
+		VALUE(#id:BIGINT#,#dxcjId:BIGINT#,#gradeLevelName:VARCHAR#,#awardContent:VARCHAR#,#name:VARCHAR#,
+		#mobile:VARCHAR#,#state:INT#,#createTime:DATETIME#,#createBy:BIGINT#)
+	</insert>
+	
+ 	<delete id="deleteSmsLotteryUpshot">
+		DELETE FROM  mbn_sms_duanxinchoujiang_choujiangjieguo where id in (<iterate  conjunction=",">#[]#</iterate>)
+	</delete>
+	
+	<update id="updateSmsLotteryUpshot" parameterClass="smsLotteryUpshot">
+		UPDATE mbn_sms_duanxinchoujiang_choujiangjieguo
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="dxcjId">
+				dxcj_id=#dxcjId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="gradeLevelName">
+				grade_level_name=#gradeLevelName:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="awardContent">
+				award_content=#awardContent:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				name=#name:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="mobile">
+				mobile=#mobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="state">
+				state=#state:int#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				create_time=#createTime:datetime#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by=#createBy:bigint#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	
+	<resultMap id="smsLotteryUpshotMap" 
+		class="com.leadtone.mas.bizplug.lottery.bean.MasSmsLotteryUpshot" >
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="dxcjId" column="dxcj_id" jdbcType="BIGINT" />
+		<result property="gradeLevelName" column="grade_level_name" jdbcType="BIGINT" />
+		<result property="awardContent" column="award_content" jdbcType="VARCHAR" />
+		<result property="name" column="name" jdbcType="VARCHAR" />
+		<result property="mobile" column="mobile" jdbcType="VARCHAR" />
+		<result property="state" column="state" jdbcType="int" />
+		<result property="createTime" column="create_time" jdbcType="DATETIME" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT" />
+	</resultMap>
+	<select id="selesctSmsLotteryUpshot" resultMap="smsLotteryUpshotMap">
+		SELECT * FROM mbn_sms_duanxinchoujiang_choujiangjieguo where dxcj_id=#id#
+		<isNotNull prepend="AND" property="gradeLevelName">
+		(grade_level_name like '%$gradeLevelName$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="mobile">
+		(mobile LIKE '%$mobile$%')
+		</isNotNull>
+		<isNotNull prepend="AND" property="createTime">
+		(create_time LIKE '%$createTime$%')
+		</isNotNull>
+		ORDER BY create_time DESC
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+	
+</sqlMap>
+
+
+
+
+
+
+
+
+
+
+

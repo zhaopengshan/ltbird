@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsReceive">
+	<typeAlias alias="SmsReceive" type="com.leadtone.mas.connector.domain.SmsReceive" />
+
+	<resultMap class="SmsReceive" id="SmsReceiveResultMap">
+		<result property="id" column="id" />
+		<result property="sender_mobile" column="sender_mobile" />
+		<result property="content" column="content" nullValue=""/>
+		<result property="receiver_access_number" column="receiver_access_number" />
+		<result property="create_time" column="create_time" />
+		<result property="status" column="status" />
+	</resultMap>
+
+	<select id="loadByUid" parameterClass="java.util.HashMap"
+		resultMap="SmsReceiveResultMap">
+		select id,sender_mobile,content,receiver_access_number,
+		create_time,status
+		from mbn_sms_up_comm_log
+		where webstatus = 0
+		<isNotNull prepend="and" property="accessNumber">
+				receiver_access_number like CONCAT('',#accessNumber#,'%')
+		</isNotNull>
+		<!--<iterate prepend="and receiver_access_number in " open="(" close=")"
+			conjunction=",">
+			#[]#
+		</iterate>-->
+		limit 10
+	</select>
+	<select id="loadByQxtUserId" parameterClass="java.lang.Integer"
+		resultMap="SmsReceiveResultMap">
+		select id,sender_mobile,content,receiver_access_number,
+		create_time,status
+		from mbn_sms_up_comm_log
+		where webstatus = 0 and user_id = #userId#
+		limit 10
+	</select>
+
+	<select id="loadAccByUid" parameterClass="java.lang.String"
+		resultClass="java.lang.String">
+		select access_number
+		from mbn_merchant_tunnel_relation 
+		where merchant_pin = #Uid#
+	</select>
+
+	<update id="update" parameterClass="java.lang.String">
+		UPDATE mbn_sms_up_comm_log SET webstatus=1
+		WHERE id=#Uid#
+	</update>
+	
+	<select id="loadDbSyncSms" parameterClass="java.util.List"
+		resultMap="SmsReceiveResultMap">
+		select id,sender_mobile,content,receiver_access_number,
+		create_time,status
+		from mbn_sms_up_comm_log
+		where db_sync_status = 0
+		<iterate prepend="and receiver_access_number in " open="(" close=")"
+			conjunction=",">
+			#[]#
+		</iterate>
+		limit 1000
+	</select>
+	<select id="loadDbSyncSmsByAccessNumber"  parameterClass="map"
+		resultMap="SmsReceiveResultMap">
+		select id,sender_mobile,content,receiver_access_number,
+		create_time,status
+		from mbn_sms_up_comm_log
+		where db_sync_status = 0 and type=#type#
+		<isNotNull prepend="and" property="accessNumber">
+			receiver_access_number like CONCAT('',#accessNumber#,'%')
+		</isNotNull>
+		limit 100
+	</select>
+	<select id="loadDbSyncSmsByUid"  parameterClass="map"
+		resultMap="SmsReceiveResultMap">
+		select id,sender_mobile,content,receiver_access_number,
+		create_time,status
+		from mbn_sms_up_comm_log
+		where db_sync_status = 0 and type = #type# and user_id = #userId#
+		limit 100
+	</select>
+	<update id="updateDbSyncSmsStatus" parameterClass="java.lang.Long">
+		UPDATE mbn_sms_up_comm_log SET db_sync_status=1
+		WHERE id=#id:BIGINT#
+	</update>
+	
+</sqlMap>

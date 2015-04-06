@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsInboxDbIntf">
+	<typeAlias alias="SmsInboxDbIntf" type="com.leadtone.mas.connector.domain.SmsInboxDbIntf" />
+
+<!--
+	private String masSmsId;
+	private String extCode;
+	private String sourceAddr;
+	private Date receiveTime;
+	private String messageContent;
+	private Integer msgFmt;
+	private Date requestTime;
+	private String applicationId;
+	private Long merchantPin;
+ 
+ -->
+	<resultMap class="SmsInboxDbIntf" id="SmsInboxMap">
+		<result column="MASSMSID" property="masSmsId" jdbcType="VARCHAR" />
+		<result column="EXTCODE" property="extCode" jdbcType="VARCHAR" />
+		<result column="SOURCEADDR" property="sourceAddr" jdbcType="VARCHAR" />
+		<result column="RECEIVETIME" property="receiveTime" jdbcType="DATETIME" />
+		<result column="MESSAGECONTENT" property="messageContent" jdbcType="VARCHAR" />
+		<result column="MSGFMT" property="msgFmt" jdbcType="INTEGER" />
+		<result column="REQUESTTIME" property="requestTime" jdbcType="DATETIME" />
+		<result column="APPLICATIONID" property="applicationId" jdbcType="VARCHAR" />
+		<result column="MERCHANT_PIN" property="merchantPin" jdbcType="BIGINT" />
+	</resultMap>
+
+	<select id="loadAll" resultMap="SmsInboxMap">
+		select MASSMSID,EXTCODE,SOURCEADDR,RECEIVETIME,
+			MESSAGECONTENT,MSGFMT,REQUESTTIME,
+			APPLICATIONID,MERCHANT_PIN
+		from sms_inbox
+		order by MERCHANT_PIN,REQUESTTIME asc
+	</select>
+	
+	<insert id="insert" parameterClass="SmsInboxDbIntf">
+		INSERT INTO sms_inbox
+			(MASSMSID,EXTCODE,SOURCEADDR,RECEIVETIME,
+			MESSAGECONTENT,MSGFMT,REQUESTTIME,APPLICATIONID,MERCHANT_PIN)
+		VALUES
+			(#masSmsId:VARCHAR#,#extCode:VARCHAR#,#sourceAddr:VARCHAR#,#receiveTime:DATETIME#,
+			#messageContent:VARCHAR#,#msgFmt:INTEGER#,#requestTime:DATETIME#,#applicationId:VARCHAR#,
+			#merchantPin:BIGINT#);
+	</insert>
+	
+	<delete id="deleteByPk" parameterClass="java.lang.String">
+		delete from sms_inbox where MASSMSID = #masSmsId:VARCHAR#
+	</delete>
+	<delete id="deleteByTime" parameterClass="java.util.Date">
+		delete from sms_inbox
+		<![CDATA[ 
+		where REQUESTTIME < #requestTime:DATETIME#
+		]]>
+	</delete>
+</sqlMap>

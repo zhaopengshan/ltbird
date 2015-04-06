@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+
+<?xml-stylesheet type="text/xsl" href="SpecialDB.xslt"?>
+<sqlMap namespace="operation">
+	<typeAlias alias="operationalias" type="com.leadtone.delegatemas.operation.bean.PortalOperation" />
+	<typeAlias alias="operationvoalias" type="com.leadtone.delegatemas.operation.bean.PortalOperationVO" />
+	<resultMap class="operationalias" id="operation">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+        <result property="name" column="name" jdbcType="varchar"/>
+        <result property="operation" column="operation" jdbcType="INTEGER"/>
+        <result property="type" column="type" jdbcType="INTEGER" />
+        <result property="createTime" column="create_time" jdbcType="DATETIME" />
+        <result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+		<result property="createBy" column="create_by" jdbcType="BIGINT" />
+        <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+        <result property="description" column="description" jdbcType="varchar"/>
+    </resultMap>
+	<typeAlias alias="operationrelationalias" type="com.leadtone.delegatemas.operation.bean.UserOperationRelation" />
+	<typeAlias alias="operationrelationvoalias" type="com.leadtone.delegatemas.operation.bean.UserOperationRelationVO" />
+	<resultMap class="operationrelationalias" id="operationRelation">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+		<result property="userId" column="user_id" jdbcType="BIGINT"/>
+		<result property="operationId" column="operation_id" jdbcType="BIGINT" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="DATETIME" />
+        <result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+    </resultMap>
+	<resultMap class="operationrelationvoalias" id="operationRelationVO">
+        <result property="id" column="id" jdbcType="BIGINT"/>
+		<result property="userId" column="user_id" jdbcType="BIGINT"/>
+		<result property="operationId" column="operation_id" jdbcType="BIGINT" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT"/>
+        <result property="updateBy" column="update_by" jdbcType="BIGINT"/>
+        <result property="createTime" column="create_time" jdbcType="DATETIME" />
+        <result property="updateTime" column="update_time" jdbcType="DATETIME"/>
+		<result property="operations" column="operations" select="operation.queryByUserId" />
+    </resultMap>
+<!-- operationrelation -->
+	<insert id="operationRelationInsert" parameterClass="operationrelationalias" >
+		insert into portal_user_operation_relation_mas(id,user_id,operation_id,create_by,update_by,create_time,update_time) values
+		(#id#,#userId#,#operationId#,#createBy#,#updateBy#,#createTime#,#updateTime#)
+  	</insert>
+	<delete id="operationRelationDeleteById" parameterClass="java.lang.Long" >
+	    delete from portal_user_operation_relation_mas where id= #id:BIGINT#
+  	</delete>
+	<delete id="operationRelationDeleteByUserId" parameterClass="java.lang.Long" >
+	    delete from portal_user_operation_relation_mas where user_id= #userId:BIGINT#
+  	</delete>
+	<update id="operationRelationUpdate" parameterClass="operationalias">
+		update portal_user_operation_relation_mas
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id#
+			</isNotNull>
+			<isNotNull prepend="," property="userId">
+				user_id = #userId#
+			</isNotNull>
+			<isNotNull prepend="," property="operationId">
+				operation_id = #operationId#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="," property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="," property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="operationRelationLoadById" resultMap="operationRelation"
+		parameterClass="java.lang.Long">
+		select id,user_id,operation_id,create_by,update_by,create_time,update_time
+		from portal_user_operation_relation_mas
+		where id = #id:BIGINT#
+	</select>
+	<select id="operationRelationVoLoadById" resultMap="operationRelationVO"
+		parameterClass="java.lang.Long">
+		select id,user_id,operation_id,create_by,update_by,create_time,update_time, operation_id as operations
+		from portal_user_operation_relation_mas
+		where id = #id:BIGINT#
+	</select>
+	<select id="operationRelationSelect" resultMap="operationRelationVO" parameterClass="java.util.Map">
+		select id,user_id,operation_id,create_by,update_by,create_time,update_time, operation_id as operations
+		from portal_user_operation_relation_mas
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id#
+			</isNotNull>
+			<isNotNull prepend="and" property="userId">
+				user_id = #userId#
+			</isNotNull>
+			<isNotNull prepend="and" property="operationId">
+				operation_id = #operationId#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+		</dynamic>
+	</select>
+<!-- operation -->
+	<insert id="operationInsert" parameterClass="operationalias" >
+		insert into portal_operation(id,name,operation,type,create_by,update_by,create_time,update_time,description) values
+		(#id#,#name#,#operation#,#type#,#createBy#,#updateBy#,#createTime#,#updateTime#,#description#)
+  	</insert>
+	<delete id="operationDeleteById" parameterClass="java.lang.Long" >
+	    delete from portal_operation where id= #id:BIGINT#
+  	</delete>
+	<update id="operationUpdate" parameterClass="operationalias">
+		update portal_operation
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				id = #id#
+			</isNotNull>
+			<isNotNull prepend="," property="name">
+				name = #name#
+			</isNotNull>
+			<isNotNull prepend="," property="operation">
+				operation = #operation#
+			</isNotNull>
+			<isNotNull prepend="," property="type">
+				type = #type#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="," property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="," property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+			<isNotNull prepend="," property="description">
+				description = #description#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<select id="operationLoadById" resultMap="operation"
+		parameterClass="java.lang.Long">
+		select id,name,operation,type,create_by,update_by,create_time,update_time,description
+		from portal_operation
+		where id = #id:BIGINT#
+	</select>
+	<select id="operationSelect" resultMap="operation" parameterClass="java.util.Map">
+		select id,name,operation,type,create_by,update_by,create_time,update_time,description
+		from portal_operation
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				id = #id#
+			</isNotNull>
+			<isNotNull prepend="and" property="name">
+				name = #name#
+			</isNotNull>
+			<isNotNull prepend="and" property="operation">
+				operation = #operation#
+			</isNotNull>
+			<isNotNull prepend="and" property="type">
+				type = #type#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateBy">
+				update_by = #updateBy#
+			</isNotNull>
+			<isNotNull prepend="and" property="createTime">
+				create_time = #createTime#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateTime">
+				update_time = #updateTime#
+			</isNotNull>
+			<isNotNull prepend="and" property="description">
+				description = #description#
+			</isNotNull>
+		</dynamic>
+	</select>
+</sqlMap>

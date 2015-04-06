@@ -1,0 +1,19 @@
+###########renew
+#短信轮询线程池大小
+sms.thread.poolSize=2
+sms.sendTask.handler.common.impl=commonSmsSendHandler
+sms.sendReceive.handler.common.impl=commonSmsReceiveHandler
+
+#新的资信通的地址。
+#on=true off=false
+sms.http.newqxtup=true
+sms.http.newqxt.send.url=http://115.29.249.207:18002/send.do
+sms.http.newqxt.rpt.url=http://115.29.249.207:18008/getrpt.do
+sms.http.newqxt.mo.url=http://115.29.249.207:18008/getrpt.do
+
+sms.one.user.one.account=true
+
+sms.http.send.qxt.account.info=8143025701038333855:tj_ltdx,243352,1141493385976423690;
+#494:syd0308,yadong0308,1141493385976423690; 486:wxltadmin,88888888,1141493385976423690;
+#wxltadmin,88888888,486;
+#############################

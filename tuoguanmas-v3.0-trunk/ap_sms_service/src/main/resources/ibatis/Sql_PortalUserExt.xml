@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="portalUserExt">
+<typeAlias alias="userExt" type="com.leadtone.mas.bizplug.security.bean.PortalUserExtBean"/>
+	<resultMap id="portalUserExt" class="userExt">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="smsLimit" column="sms_limit" jdbcType="INTEGER" />
+		<result property="smsLimitPeriod" column="sms_limit_period" jdbcType="INTEGER" />
+		<result property="smsLimitCount" column="sms_limit_count" jdbcType="INTEGER" />
+		<result property="smsPriority" column="sms_priority" jdbcType="INTEGER" />
+		<result property="smsSendCount" column="sms_send_count" jdbcType="INTEGER" />
+		<result property="countTime" column="count_time" jdbcType="DATETIME" />
+		<result property="memo" column="memo" jdbcType="VARCHAR" />
+		<result property="smsMobile" column="sms_mobile" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="portalUserExt" parameterClass="java.lang.Long">
+		SELECT
+		id, sms_limit, sms_limit_period, sms_limit_count,
+		sms_priority, sms_send_count, count_time, memo, sms_mobile
+		FROM
+		portal_user_ext
+		where id = #id:BIGINT#
+	</select>
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.security.bean.PortalUserExtBean">
+		INSERT INTO
+		portal_user_ext(id, sms_limit, sms_limit_period, sms_limit_count,
+		sms_priority, sms_send_count, count_time, memo, sms_mobile)
+		VALUES
+		(#id:BIGINT#,
+		#smsLimit:INTEGER#, #smsLimitPeriod:INTEGER#,
+		#smsLimitCount:INTEGER#,#smsPriority:INTEGER#,#smsSendCount:INTEGER#,
+		#countTime:DATETIME#, #memo:VARCHAR#, #smsMobile:VARCHAR#)
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.security.bean.PortalUserExtBean">
+		update portal_user_ext pue
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				pue.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="smsLimit">
+				pue.sms_limit=#smsLimit:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="smsLimitPeriod">
+				pue.sms_limit_period=#smsLimitPeriod:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="smsLimitCount">
+				pue.sms_limit_count=#smsLimitCount:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="smsPriority">
+				pue.sms_priority=#smsPriority:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="smsSendCount">
+				pue.sms_send_count=#smsSendCount:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="countTime">
+				pue.count_time=#countTime:INTEGER#
+			</isNotNull>
+			<isNotNull prepend="," property="memo">
+				pue.memo=#memo:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="smsMobile">
+				pue.sms_mobile=#smsMobile:VARCHAR#
+			</isNotNull>
+		</dynamic>
+		where pue.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete" parameterClass="com.leadtone.mas.bizplug.security.bean.PortalUserExtBean">
+		delete portal_user_ext
+		where id=#id:BIGING#
+	</delete>
+	<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from portal_user_ext
+		where id=#id:BIGINT#
+	</delete>
+</sqlMap>

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="MbnSmsKeywords">
+	<resultMap id="mbnSmsKeywords" class="com.leadtone.mas.bizplug.sms.bean.MbnSmsKeywords">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+		<result property="keywords" column="keywords" jdbcType="VARCHAR" />
+		<result property="createBy" column="create_by" jdbcType="BIGINT" />
+		<result property="createTime" column="create_time" jdbcType="DATETIME" />
+		<result property="updateBy" column="update_by" jdbcType="BIGINT" />
+		<result property="updateTime" column="update_time" jdbcType="DATETIME" />
+	</resultMap>
+
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="mbnSmsKeywords"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select
+		id, merchant_pin, keywords, create_by, create_time, update_by, update_time
+		from mbn_sms_keywords
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ create_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ create_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+		</dynamic>
+		order by create_time desc
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit #startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select count(id)
+		from
+		mbn_sms_keywords
+		<dynamic prepend="where">
+			<!-- 根据时间段查询条件 -->
+			<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ create_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ create_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+		</dynamic>
+	</select>
+	
+	
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnSmsKeywords" parameterClass="java.lang.Long">
+		select
+		id, merchant_pin, keywords, create_by, create_time, update_by, update_time
+		FROM mbn_sms_keywords where id=#id:BIGINT#
+	</select>
+
+	<!-- 根据商户PIN码，查询商户所有角色 -->
+	<select id="getByPin" resultMap="mbnSmsKeywords" parameterClass="java.lang.Long">
+		SELECT
+		id, merchant_pin, keywords, create_by, create_time, update_by, update_time
+		FROM mbn_sms_keywords 
+		where (merchant_pin is null or merchant_pin= #merchant_pin:BIGINT#) 
+		ORDER BY 'create_time' desc
+	</select>
+
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsKeywords">
+		INSERT INTO mbn_sms_keywords(id, merchant_pin, keywords, create_by,create_time)
+		VALUES
+		(#id:BIGINT#, #merchantPin:BIGINT#,
+		#keywords:VARCHAR#,#createBy:BIGINT#,#createTime:DATETIME#);
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsKeywords">
+		update mbn_sms_keywords mss
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id" >
+					mss.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantPin" >
+					mss.merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="keywords" >
+					mss.keywords=#keywords:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="createBy" >
+					mss.create_by=#createBy:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="createTime" >
+					mss.create_time=#createTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="updateBy" >
+					mss.update_by=#updateBy:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="updateTime" >
+					mss.update_time=#updateTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where mss.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsKeywords">
+		delete mbn_sms_keywords mss
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id" >
+					mss.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin" >
+					mss.merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="keywords" >
+					mss.keywords=#keywords:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy" >
+					mss.create_by=#createBy:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="createTime" >
+					mss.create_time=#createTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateBy" >
+					mss.update_by=#updateBy:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="updateTime" >
+					mss.update_time=#updateTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+	</delete>
+		<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_sms_keywords   where id=#id:BIGINT# 
+	</delete>
+</sqlMap>

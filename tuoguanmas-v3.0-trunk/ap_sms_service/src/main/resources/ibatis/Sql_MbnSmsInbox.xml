@@ -1,0 +1,646 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="MbnSmsInbox">
+<typeAlias alias="inbox" type="com.leadtone.mas.bizplug.sms.bean.MbnSmsInbox"/>
+<typeAlias alias="inboxVO" type="com.leadtone.mas.bizplug.sms.bean.MbnSmsInboxVO"/>
+
+	<resultMap id="mbnSmsInbox" class="inbox">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="status" column="status" jdbcType="BIGINT" />
+		<result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+		<result property="senderMobile" column="sender_mobile"
+			jdbcType="VARCHAR" />
+		<result property="receiverAccessNumber" column="receiver_access_number"
+			jdbcType="VARCHAR" />
+		<result property="serviceCode" column="task_number" jdbcType="VARCHAR" />
+		<result property="operationId" column="operation_coding"
+			jdbcType="VARCHAR" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="receiveTime" column="receive_time" jdbcType="DATETIME" />
+		<result property="senderName" column="sender_name" jdbcType="VARCHAR" />
+		<result property="webService" column="webservice" jdbcType="int"/>
+		<result property="replyBatchId" column="reply_batch_id" jdbcType="BIGINT"/>
+		<result property="classify" column="classify" jdbcType="int"/>
+	</resultMap>
+	<resultMap extends="mbnSmsInbox"
+		class="com.leadtone.mas.bizplug.sms.bean.MbnSmsInboxVO" id="mbnSmsInboxVO">
+		<result property="customerName" column="sender_name" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 信息导出 -->
+	<resultMap id="exportAll" class="inboxVO">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="status" column="status" jdbcType="BIGINT" />
+		<result property="senderMobile" column="sender_mobile" jdbcType="VARCHAR" />
+		<result property="content" column="content" jdbcType="VARCHAR" />
+		<result property="receiveTime" column="receive_time" jdbcType="DATETIME" />
+		<result property="senderName" column="sender_name" jdbcType="VARCHAR" />
+	</resultMap>
+
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="pageVO" resultMap="mbnSmsInboxVO"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		<!--SELECT
+			id,status,merchant_pin,sender_mobile,receiver_access_number,
+			task_number,operation_coding,content,
+			receive_time,sender_name,webservice,reply_batch_id
+		FROM mbn_sms_inbox
+		where webservice=1
+		and ( ifnull(operation_coding,'HD')=(select coding from mbn_sms_operation_class where id=#operationId:BIGINT#)
+			 or operation_coding not in (select coding from mbn_sms_operation_class)) -->
+			 
+		SELECT 
+		inBox.id,inBox.status,inBox.merchant_pin,inBox.sender_mobile,inBox.receiver_access_number,
+		inBox.task_number,inBox.operation_coding, inBox.content, 
+		inBox.receive_time,bookMember.name as sender_name,inBox.webservice,inBox.reply_batch_id, inBox.classify
+		FROM mbn_sms_inbox inBox 
+		LEFT JOIN 
+			(SELECT mobile,create_by,address_book_id,name,COUNT(DISTINCT mobile) FROM mbn_address_book_member 
+			WHERE address_book_id = #merchantPin:BIGINT# 
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy:BIGINT#
+			</isNotNull>
+			GROUP BY mobile) bookMember  
+			ON inBox.merchant_pin = bookMember.address_book_id AND inBox.sender_mobile = bookMember.mobile 
+		WHERE 
+		inBox.merchant_pin = #merchantPin:BIGINT#
+		<isNotNull prepend="and" property="createBy">
+		inBox.reply_batch_id IN (SELECT batch_id FROM mbn_sms_had_send readySend WHERE readySend.merchant_pin = #merchantPin:BIGINT# 
+			and readySend.create_by = #createBy:BIGINT#)
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+    	<![CDATA[ inBox.receive_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+       	<![CDATA[ inBox.receive_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="contactName">
+			(inBox.sender_name like
+			CONCAT('%',#contactName:VARCHAR#,'%') || inBox.sender_mobile like
+			CONCAT('%',#contactName:VARCHAR#,'%') )
+		</isNotNull>
+		order by inBox.receive_time desc
+ 		<isNotEqual property="column3" compareValue="export">
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit
+					#startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+		</isNotEqual>
+		
+		<!--
+		SELECT 
+		inBox.id,inBox.status,inBox.merchant_pin,inBox.sender_mobile,inBox.receiver_access_number,
+		inBox.task_number,inBox.operation_coding,
+		inBox.content,inBox.receive_time,bookMember.name as sender_name,inBox.webservice,inBox.reply_batch_id
+		FROM 
+		mbn_sms_inbox inBox,mbn_address_book_member bookMember
+		WHERE 
+		inBox.merchant_pin = bookMember.address_book_id
+		AND inBox.webservice = 1
+			<isNotNull prepend="and" property="merchantPin">
+				inBox.merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+			( inBox.reply_batch_id IN (SELECT batch_id FROM mbn_sms_ready_send readySend 
+			 WHERE readySend.merchant_pin = #merchantPin:BIGINT# AND readySend.create_by = #createBy:BIGINT#) );
+			</isNotNull>
+			<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ inBox.receive_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ inBox.receive_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="contactName">
+				(inBox.sender_name like
+				CONCAT('%',#contactName:VARCHAR#,'%') || inBox.sender_mobile like
+				CONCAT('%',#contactName:VARCHAR#,'%') )
+			</isNotNull>
+			
+ 		order by inBox.receive_time desc
+ 		<isNotEqual property="column3" compareValue="export">
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit
+					#startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+		</isNotEqual>-->
+	</select>
+	
+	
+	<!-- 信息导出 -->
+	<select id="export" resultMap="exportAll"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		<!--SELECT
+		id,
+		status,sender_mobile,webservice
+		,content,receive_time,sender_name
+		FROM
+		mbn_sms_inbox
+		where webservice=1 and
+		ifnull(operation_coding,'HD')=(select coding from mbn_sms_operation_class where id=#operationId:BIGINT#)-->
+		SELECT 
+		inBox.id,inBox.status,inBox.sender_mobile,
+		inBox.content,inBox.receive_time,bookMember.name as sender_name
+		FROM mbn_sms_inbox inBox 
+		LEFT JOIN 
+			(SELECT mobile,create_by,address_book_id,name,COUNT(DISTINCT mobile) FROM mbn_address_book_member 
+			WHERE address_book_id = #merchantPin:BIGINT# 
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy:BIGINT#
+			</isNotNull>
+			GROUP BY mobile) bookMember  
+			ON inBox.merchant_pin = bookMember.address_book_id AND inBox.sender_mobile = bookMember.mobile 
+		WHERE 
+		inBox.merchant_pin = #merchantPin:BIGINT#
+		<isNotNull prepend="and" property="createBy">
+		inBox.reply_batch_id IN (SELECT batch_id FROM mbn_sms_ready_send readySend WHERE readySend.merchant_pin = #merchantPin:BIGINT# 
+			readySend.create_by = #createBy:BIGINT#)
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ inBox.receive_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+       	<![CDATA[ inBox.receive_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="contactName">
+			(inBox.sender_name like
+			CONCAT('%',#contactName:VARCHAR#,'%') || inBox.sender_mobile like
+			CONCAT('%',#contactName:VARCHAR#,'%') )
+		</isNotNull>
+ 		order by inBox.receive_time desc
+		<!--
+		
+		SELECT 
+		inBox.id,inBox.status,inBox.sender_mobile,
+		inBox.content,inBox.receive_time,bookMember.name as sender_name
+		FROM 
+		mbn_sms_inbox inBox,mbn_address_book_member bookMember
+		WHERE 
+		inBox.merchant_pin = bookMember.address_book_id
+		AND inBox.webservice = 1
+			<isNotNull prepend="and" property="merchantPin">
+				inBox.merchant_pin =
+				#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+			( inBox.reply_batch_id IN (SELECT batch_id FROM mbn_sms_ready_send readySend 
+			 WHERE readySend.merchant_pin = #merchantPin:BIGINT# AND readySend.create_by = #createBy:BIGINT#) );
+			</isNotNull>
+			<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ inBox.receive_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ inBox.receive_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="contactName">
+				(inBox.sender_name like
+				CONCAT('%',#contactName:VARCHAR#,'%') || inBox.sender_mobile like
+				CONCAT('%',#contactName:VARCHAR#,'%') )
+			</isNotNull>
+ 		order by inBox.receive_time desc
+		-->
+	</select>
+	
+	
+	<!-- 查询分页/模糊查询分页 -->
+	<select id="page" resultMap="mbnSmsInbox"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		SELECT
+			id,status,merchant_pin,sender_mobile,receiver_access_number,task_number,
+			operation_coding,content,receive_time,sender_name,webservice,reply_batch_id, classify
+		FROM
+		mbn_sms_inbox 
+		where webservice=1 
+			and ifnull(operation_coding,'HD')=(select coding from mbn_sms_operation_class where id= #operationId:BIGINT#) 
+			<isNotNull prepend="and" property="operationId">
+				operation_coding = upper(#operationId:VARCHAR#)
+			</isNotNull> 
+			<isNotNull prepend="and" property="merchantPin">
+				merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ receive_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ receive_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+ 		order by receive_time desc
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit
+				#startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		<!--select count(id)
+		from
+		mbn_sms_inbox
+		where webservice=1 
+		and ( ifnull(operation_coding,'HD')=(select coding from mbn_sms_operation_class where id=#operationId:BIGINT#)
+			 or operation_coding not in( select coding from mbn_sms_operation_class))-->
+		SELECT 
+		count( inBox.id )
+		FROM mbn_sms_inbox inBox 
+		LEFT JOIN 
+			(SELECT mobile,create_by,address_book_id,name,COUNT(DISTINCT mobile) FROM mbn_address_book_member 
+			WHERE address_book_id = #merchantPin:BIGINT# 
+			<isNotNull prepend="and" property="createBy">
+				create_by = #createBy:BIGINT#
+			</isNotNull>
+			GROUP BY mobile) bookMember  
+			ON inBox.merchant_pin = bookMember.address_book_id AND inBox.sender_mobile = bookMember.mobile 
+		WHERE 
+		inBox.merchant_pin = #merchantPin:BIGINT#
+		<isNotNull prepend="and" property="createBy">
+		inBox.reply_batch_id IN (SELECT batch_id FROM mbn_sms_had_send readySend WHERE readySend.merchant_pin = #merchantPin:BIGINT# 
+			and readySend.create_by = #createBy:BIGINT#)
+		</isNotNull>
+		<!-- 根据时间段查询条件 -->
+		<isNotNull prepend="and" property="startDate">
+    	<![CDATA[ inBox.receive_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+       	<![CDATA[ inBox.receive_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="contactName">
+			(inBox.sender_name like
+			CONCAT('%',#contactName:VARCHAR#,'%') || inBox.sender_mobile like
+			CONCAT('%',#contactName:VARCHAR#,'%') )
+		</isNotNull>
+					 
+		<!-- 
+		SELECT 
+		count( inBox.id )
+		FROM 
+		mbn_sms_inbox inBox,mbn_address_book_member bookMember
+		WHERE 
+		inBox.merchant_pin = bookMember.address_book_id
+		AND inBox.webservice = 1
+			<isNotNull prepend="and" property="merchantPin">
+				inBox.merchant_pin = #merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="createBy">
+			( inBox.reply_batch_id IN (SELECT batch_id FROM mbn_sms_ready_send readySend 
+			 WHERE readySend.merchant_pin = #merchantPin:BIGINT# AND readySend.create_by = #createBy:BIGINT#) );
+			</isNotNull>
+			<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ inBox.receive_time >= #startDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ inBox.receive_time <= #endDate:DATETIME#]]>
+			</isNotNull>
+			<isNotNull prepend="and" property="contactName">
+				(inBox.sender_name like
+				CONCAT('%',#contactName:VARCHAR#,'%') || inBox.sender_mobile like
+				CONCAT('%',#contactName:VARCHAR#,'%') )
+			</isNotNull>
+			<isNotNull prepend="and" property="commCondition">
+				(
+				<iterate conjunction="or " property="commCondition">
+					receiver_access_number like CONCAT(#commCondition[]#,'%')
+				</iterate>
+				)
+			</isNotNull>
+		-->
+ 	</select>
+
+	<!-- 根据时间查询 上一页，下一页 -->
+	<select id="followPage" resultMap="mbnSmsInbox" parameterClass="java.util.HashMap">
+		select
+		id,status,merchant_pin,sender_mobile,receiver_access_number,task_number,
+		operation_coding,content,receive_time,sender_name,webservice,reply_batch_id, classify
+		from
+		mbn_sms_inbox where webservice=1
+			<isNotNull prepend="and" property="operationId">
+				operation_coding =
+				#operationId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin">
+				merchant_pin =
+				#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="frontPage">
+	    		<![CDATA[ id > #frontPage:BIGINT#]]>
+				order by id asc
+			</isNotNull>
+			<isNotNull prepend="and" property="nextPage">
+	       		<![CDATA[ id < #nextPage:BIGINT#]]>
+				order by id desc
+			</isNotNull>
+		limit 1
+	</select>
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnSmsInbox" parameterClass="java.lang.Long">
+		SELECT
+		id,status,merchant_pin,sender_mobile,receiver_access_number,webservice,
+		task_number,operation_coding,content,receive_time,sender_name,reply_batch_id, classify
+		FROM
+		mbn_sms_inbox
+		where <!--webservice=1 and -->id=#id:BIGINT# ORDER BY receive_time desc
+	</select>
+	<!-- 查询List by ids -->
+	<select id="getByPks" resultMap="mbnSmsInbox">
+		SELECT
+		id,status,merchant_pin,sender_mobile,receiver_access_number,
+		task_number,operation_coding,content,receive_time,sender_name
+		FROM
+		mbn_sms_inbox 
+		<iterate prepend="where id in " open="(" close=")"
+			conjunction=",">
+			#[]#
+		</iterate>
+	</select>
+
+	<!-- 根据商户PIN码，查询商户所有角色 -->
+	<select id="getByPin" resultMap="mbnSmsInbox" parameterClass="java.lang.Long">
+		SELECT
+		id,status,merchant_pin,sender_mobile,receiver_access_number,task_number,
+		operation_coding,content,receive_time,sender_name,webservice,reply_batch_id, classify
+		FROM
+		mbn_sms_inbox
+		where webservice=1 and merchant_pin=
+		#merchant_pin:BIGINT# and operation_coding=(select coding from mbn_sms_operation_class where id=#operationId:BIGINT#) ORDER BY
+		'receive_time' desc
+	</select>
+
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsInbox">
+		INSERT INTO
+		mbn_sms_inbox(id,status,merchant_pin,sender_mobile,
+		receiver_access_number,
+		task_number,operation_coding,content,receive_time,sender_name,webservice,reply_batch_id, classify)
+		VALUES
+		(#id:BIGINT#,
+		#status:BIGINT#, #merchantPin:BIGINT#,
+		#senderMobile:VARCHAR#,#receiverAccessNumber:VARCHAR#,#serviceCode:VARCHAR#,
+		#operationId:VARCHAR#, #content:VARCHAR#, #receiveTime:DATETIME#,
+		#senderName:VARCHAR#,#webService:int#,#replyBatchId:BIGINT#,#classify:int# );
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsInbox">
+		update mbn_sms_inbox msi
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="id">
+				msi.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="status">
+				msi.status=#status:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantPin">
+				msi.merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="senderMobile">
+				msi.sender_mobile=#senderMobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="receiverAccessNumber">
+				msi.receiver_access_number=#receiverAccessNumber:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="serviceCode">
+				msi.task_number=#serviceCode:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="operationId">
+				msi.operation_coding=#operationId:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				msi.content=#content:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="senderName">
+				msi.sender_name=#senderName:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="content">
+				msi.content=#content:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="senderName">
+				msi.sender_name=#senderName:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="," property="replyBatchId">
+				msi.reply_batch_id=#replyBatchId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="classify">
+				msi.classify=#classify:int#
+			</isNotNull>
+		</dynamic>
+		where msi.id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete" parameterClass="com.leadtone.mas.bizplug.sms.bean.MbnSmsInbox">
+		delete mbn_sms_inbox msi
+		<dynamic prepend="where">
+			<isNotNull prepend="and" property="id">
+				msi.id=#id:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="status">
+				msi.status=#status:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="merchantPin">
+				msi.merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="and" property="senderMobile">
+				msi.sender_mobile=#senderMobile:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="receiverAccessNumber">
+				msi.receiver_access_number=#receiverAccessNumber:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="serviceCode">
+				msi.task_number=#serviceCode:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="operationId">
+				msi.operation_coding=#operationId:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="content">
+				msi.content=#content:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="and" property="receiveTime">
+				msi.receive_time=#receiveTime:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="senderName">
+				msi.sender_name=#senderName:DATETIME#
+			</isNotNull>
+			<isNotNull prepend="and" property="webService">
+				msi.webservice=#webService:int#
+			</isNotNull>
+			<isNotNull prepend="and" property="replyBatchId">
+				msi.reply_batch_id=#replyBatchId:BIGINT#
+			</isNotNull>		
+			<isNotNull prepend="and" property="classify">
+				msi.classify=#classify:int#
+			</isNotNull>		
+		</dynamic>
+	</delete>
+	<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_sms_inbox
+		where id=#id:BIGINT#
+	</delete>
+
+	<!-- 根据批次号分页查询回复信息 -->
+	<select id="replyPage" resultMap="mbnSmsInboxVO"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		SELECT
+		msi.id,shs.tos_name as name,msi.webservice,
+		msi.status,msi.merchant_pin,msi.sender_mobile,msi.receiver_access_number,
+		msi.task_number,msi.operation_coding,msi.content,
+		(select count(t2.id) from mbn_sms_inbox t2 where shs.batch_id=t2.reply_batch_id) as replyCount,
+		msi.receive_time,msi.sender_name,msi.reply_batch_id, msi.classify
+		From
+		mbn_sms_had_send shs ,
+		mbn_sms_inbox msi
+		where shs.merchant_pin=msi.merchant_pin
+		and msi.webservice=1
+		and shs.batch_id=msi.reply_batch_id
+		<isNotNull prepend="and" property="batchId">
+			shs.batch_id = #batchId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="replyName">
+			msi.sender_name like
+			CONCAT('%',#replyName#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="replyMobile">
+			msi.sender_mobile like
+			CONCAT('%',#replyMobile#,'%')
+			</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+	    		<![CDATA[ msi.receive_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+	     	  	<![CDATA[ msi.receive_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="contactName">
+			(msi.sender_name like
+			CONCAT('%',#contactName:VARCHAR#,'%') || msi.sender_mobile like
+			CONCAT('%',#contactName:VARCHAR#,'%') )
+		</isNotNull>
+		<isNotNull prepend="and" property="smsTitle">
+			shs.title like
+			CONCAT('%',#smsTitle:VARCHAR#,'%')
+		</isNotNull>
+		group by msi.id
+		order by shs.commit_time desc
+		<isNotEqual property="column3" compareValue="export">
+			<isNotNull prepend="" property="startPage">
+				<isNotNull prepend="" property="pageSize">
+					limit
+					#startPage:INTEGER#,#pageSize:INTEGER#
+				</isNotNull>
+			</isNotNull>
+		</isNotEqual>
+
+	</select>
+
+
+	<!-- 根据批次号分页查询回复信息 count -->
+	<select id="replyPageCount" resultClass="java.lang.Integer"
+		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">
+		select
+		count(distinct shs.id)
+		From
+		mbn_sms_had_send shs , mbn_sms_inbox msi
+		where shs.merchant_pin=msi.merchant_pin
+		and shs.webservice=1
+		and shs.batch_id=msi.reply_batch_id		
+		<isNotNull prepend="and" property="batchId">
+			shs.batch_id = #batchId:BIGINT#
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+	    	<![CDATA[ receive_time >= #startDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+	       	<![CDATA[ receive_time <= #endDate:DATETIME#]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="contactName">
+			(msi.sender_name like
+			CONCAT('%',#contactName:VARCHAR#,'%') || msi.sender_mobile like
+			CONCAT('%',#contactName:VARCHAR#,'%') )
+		</isNotNull>
+		<isNotNull prepend="and" property="smsTitle">
+			shs.title like
+			CONCAT('%',#smsTitle:VARCHAR#,'%')
+		</isNotNull>
+	</select>
+	<select id="getIndoxBycoding" resultMap="mbnSmsInbox" parameterClass="java.lang.String">
+		SELECT id,STATUS,merchant_pin,sender_mobile,sender_name,
+		receiver_access_number,task_number,operation_coding,content,
+		receive_time,webservice, reply_batch_id,classify <!--reply_box_id -->
+		FROM mbn_sms_inbox
+		WHERE webservice=1 and operation_coding=#operation_coding# and status=0
+	</select>
+	
+	<select id="getIndoxAllInfo" resultMap="mbnSmsInbox" parameterClass="java.lang.String">
+		SELECT id,STATUS,merchant_pin,sender_mobile,sender_name,
+		receiver_access_number,task_number,operation_coding,content,
+		receive_time,webservice, reply_batch_id,classify <!--reply_box_id --> 
+		FROM mbn_sms_inbox
+		WHERE webservice=1 and status=0
+	</select>
+        <!--add by guo-->
+        	<!-- 查询分页/模糊查询分页 -->
+	<select id="pageSummary" resultMap="mbnSmsInbox"
+		parameterClass="java.util.HashMap">
+		SELECT	id,status,merchant_pin,sender_mobile,receiver_access_number,
+			task_number,operation_coding,content,receive_time,
+			sender_name,webservice, reply_batch_id,classify <!--reply_box_id --> 
+		FROM mbn_sms_inbox where merchant_pin = #merchantPin:BIGINT# 			
+		<isNotNull prepend="and" property="tos">
+			sender_mobile=#tos#		
+		</isNotNull>
+		<isNotNull prepend="and" property="startDate">
+     		<![CDATA[ date_format(receive_time,'%Y-%m-%d') >= date_format(#startDate#,'%Y-%m-%d')]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+			<![CDATA[ date_format(receive_time,'%Y-%m-%d') <= date_format(#endDate#,'%Y-%m-%d')]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="classify">
+			classify = #classify#
+		</isNotNull>
+		<isNotNull prepend="and" property="accessNumber">
+			<!--receiver_access_number=#accessNumber#-->
+			receiver_access_number like CONCAT('',#accessNumber#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="webService">
+			webservice=#webService:INTEGER#
+		</isNotNull>
+		order by receive_time desc
+		<isNotNull prepend="" property="startPage">
+			<isNotNull prepend="" property="pageSize">
+				limit #startPage:INTEGER#,#pageSize:INTEGER#
+			</isNotNull>
+		</isNotNull>
+	</select>
+
+	<!-- 查询分页/模糊查询分页 计算总结果数 -->
+	<select id="pageCountSummary" resultClass="java.lang.Integer"
+		parameterClass="java.util.HashMap">
+		select count(id)
+		from mbn_sms_inbox where merchant_pin = #merchantPin:BIGINT# 
+		<isNotNull prepend="and" property="tos">
+                    sender_mobile=#tos#		
+		</isNotNull>
+		<!-- 根据时间段查询条件 -->
+		<isNotNull prepend="and" property="startDate">
+        	<![CDATA[ date_format(receive_time,'%Y-%m-%d') >= date_format(#startDate#,'%Y-%m-%d')]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="endDate">
+        	<![CDATA[ date_format(receive_time,'%Y-%m-%d') <= date_format(#endDate#,'%Y-%m-%d')]]>
+		</isNotNull>
+		<isNotNull prepend="and" property="classify">
+			classify = #classify#
+		</isNotNull>
+		<isNotNull prepend="and" property="accessNumber">
+			<!--receiver_access_number=#accessNumber#-->
+			receiver_access_number like CONCAT('',#accessNumber#,'%')
+		</isNotNull>
+		<isNotNull prepend="and" property="webService">
+			webservice=#webService:INTEGER#
+		</isNotNull>
+ 	</select>
+        
+</sqlMap>

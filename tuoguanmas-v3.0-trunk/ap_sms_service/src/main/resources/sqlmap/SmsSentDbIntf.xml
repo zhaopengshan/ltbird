@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="SmsSentDbIntf">
+	<typeAlias alias="SmsSentDbIntf" type="com.leadtone.mas.connector.domain.SmsSentDbIntf" />
+<!-- 
+	private String masSmsId;
+	private String gwSmsId;
+	private String siSmsId;
+	private String extCode;
+	private String destAddr;
+	private Date requestTime;
+	private Date sentTime;
+	private Integer sentResult;
+	private String smsStatus;
+	private Date statusTime;
+	private String applicationId;
+	private Long merchantPin;
+	private Long readySendId;
+ -->
+	<resultMap class="SmsSentDbIntf" id="SmsSentMap">
+		<result column="MASSMSID" property="masSmsId" jdbcType="VARCHAR" />
+		<result column="GWSMSID" property="gwSmsId" jdbcType="VARCHAR" />
+		<result column="SISMSID" property="siSmsId" jdbcType="VARCHAR" />
+		<result column="EXTCODE" property="extCode" jdbcType="VARCHAR" />
+		<result column="DESTADDR" property="destAddr" jdbcType="INTEGER" />
+		<result column="REQUESTTIME" property="requestTime" jdbcType="DATETIME" />
+		<result column="SENTTIME" property="sentTime" jdbcType="DATETIME" />
+		<result column="SENTRESULT" property="sentResult" jdbcType="INTEGER" />
+		<result column="SMSSTATUS" property="smsStatus" jdbcType="VARCHAR" />
+		<result column="STATUSTIME" property="statusTime" jdbcType="DATETIME" />
+		<result column="APPLICATIONID" property="applicationId" jdbcType="VARCHAR" />
+		<result column="MERCHANT_PIN" property="merchantPin" jdbcType="BIGINT" />
+		<result column="READY_SEND_ID" property="readySendId" jdbcType="BIGINT" />
+	</resultMap>
+	<select id="getWaitRptList" resultMap="SmsSentMap">
+		select MASSMSID,GWSMSID,SISMSID,EXTCODE,DESTADDR,REQUESTTIME,SENTTIME,
+			SENTRESULT,SMSSTATUS,STATUSTIME,APPLICATIONID,MERCHANT_PIN,READY_SEND_ID
+		from sms_sent
+		where SENTRESULT=0 or SENTRESULT=1
+	</select>
+	<insert id="insert" parameterClass="SmsSentDbIntf">
+		INSERT INTO sms_sent
+			(MASSMSID,GWSMSID,SISMSID,EXTCODE,DESTADDR,
+			REQUESTTIME,SENTTIME,SENTRESULT,SMSSTATUS,STATUSTIME,
+			APPLICATIONID,MERCHANT_PIN,READY_SEND_ID)
+		VALUES
+			(#masSmsId:VARCHAR#,#gwSmsId:VARCHAR#,#siSmsId:VARCHAR#,#extCode:VARCHAR#,
+			#destAddr:VARCHAR#,#requestTime:DATETIME#,#sentTime:DATETIME#,#sentResult:INTEGER#,
+			#smsStatus:VARCHAR#,#statusTime:DATETIME#,#applicationId:VARCHAR#,
+			#merchantPin:BIGINT#,#readySendId:BIGINT#);
+	</insert>
+	<update id="updateStatus" parameterClass="SmsSentDbIntf">
+		update sms_sent
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="sentResult">
+				SENTRESULT=#sentResult:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="smsStatus">
+				SMSSTATUS=#smsStatus:VARCHAR#
+			</isNotNull>
+			<isNotNull prepend="," property="statusTime">
+				STATUSTIME=#statusTime:DATETIME#
+			</isNotNull>
+		</dynamic>
+		where READY_SEND_ID = #readySendId:BIGINT#
+	</update>
+
+	<delete id="deleteByPk" parameterClass="java.lang.String">
+		delete from sms_sent where MASSMSID = #masSmsId:VARCHAR#
+	</delete>
+	
+	<delete id="deleteByTime" parameterClass="java.util.Date">
+		delete from sms_sent
+		<![CDATA[ 
+		where SENTTIME < #sentTime:DATETIME#
+		]]>
+	</delete>
+</sqlMap>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE sqlMap PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN" "http://ibatis.apache.org/dtd/sql-map-2.dtd" >
+<sqlMap namespace="MbnMerchantSmsMmsLimit" >
+    <resultMap id="MbnMerchantSmsMmsLimitResult" class="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantSmsMmsLimit" >
+        <result column="merchant_pin" property="merchantPin" jdbcType="BIGINT" />
+        <result column="sms_gateway_daily" property="smsGatewayDaily" jdbcType="INT" />
+        <result column="sms_gateway_month" property="smsGatewayMonth" jdbcType="INT" />
+        <result column="sms_td_daily" property="smsTdDaily" jdbcType="INT" />
+        <result column="sms_td_hour" property="smsTdHour" jdbcType="INT" />
+        <result column="sms_receipt" property="smsReceipt" jdbcType="INT"/>
+        <result column="sms_gateway_intraday" property="smsGatewayIntraday" jdbcType="INT" />
+        <result column="sms_gateway_current_month" property="smsGatewayCurrentMonth" jdbcType="INT" />
+        <result column="sms_td_current_hour" property="smsTdCurrentHour" jdbcType="INT" />
+        <result column="sms_td_current_daily" property="smsTdCurrentDaily" jdbcType="INT" />
+        <result column="mms_gateway_daily" property="mmsGatewayDaily" jdbcType="INT" />
+        <result column="mms_gateway_month" property="mmsGatewayMonth" jdbcType="INT" />        
+        <result column="mms_td_hour" property="mmsTdHour" jdbcType="INT" />
+        <result column="mms_td_month" property="mmsTdMonth" jdbcType="INT" />
+        <result column="mms_gateway_intraday" property="mmsGatewayIntraday" jdbcType="INT" />
+        <result column="mms_gateway_current_month" property="mmsGatewayCurrentMonth" jdbcType="INT" />        
+        <result column="mms_td_current_hour" property="mmsTdCurrentHour" jdbcType="INT" />
+        <result column="mms_td_current_month" property="mmsTdCurrentMonth" jdbcType="INT" />
+        <result column="modify_time" property="modifyTime" jdbcType="DATETIME" />
+        <result column="gateway_modify_time" property="gatewayModifyTime" jdbcType="DATETIME"/>
+    </resultMap>
+    <insert id="insert" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantSmsMmsLimit" >
+        insert into mbn_merchant_sms_mms_limit(merchant_pin,sms_gateway_daily,sms_gateway_month,sms_td_hour,
+        										sms_td_daily,sms_gateway_intraday,sms_gateway_current_month,
+        										sms_td_current_hour,sms_td_current_daily,mms_gateway_daily,
+        										mms_gateway_month,mms_td_hour,mms_td_month,
+        										mms_gateway_intraday,mms_gateway_current_month,mms_td_current_hour,
+        										mms_td_current_month,modify_time,sms_receipt,gateway_modify_time)
+         values(#merchantPin:BIGINT#,#smsGatewayDaily:INT#,#smsGatewayMonth:INT#,
+         		#smsTdHour:INT#,#smsTdDaily:INT#,#smsGatewayIntraday:INT#,
+         		#smsGatewayCurrentMonth:INT#,#smsTdCurrentHour:INT#,#smsTdCurrentDaily:INT#,
+         		#mmsGatewayDaily:INT#,#mmsGatewayMonth:INT#,#mmsTdHour:INT#,
+         		#mmsTdMonth:INT#,#mmsGatewayIntraday:INT#,#mmsGatewayCurrentMonth:INT#,
+         		#mmsTdCurrentHour:INT#,#mmsTdCurrentMonth:INT#,#modifyTime:DATETIME#,
+         		#smsReceipt:INT#,#gatewayModifyTime:DATETIME#)
+    </insert>
+    <update id="update" parameterClass="com.leadtone.mas.bizplug.openaccount.bean.MbnMerchantSmsMmsLimit" >
+        update mbn_merchant_sms_mms_limit
+        <dynamic prepend="set">
+            <isNotNull prepend="," property="smsGatewayDaily" >
+                sms_gateway_daily = #smsGatewayDaily:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="smsGatewayMonth" >
+                sms_gateway_month = #smsGatewayMonth:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="smsTdDaily" >
+                sms_td_daily = #smsTdDaily:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="smsTdHour" >
+                sms_td_hour = #smsTdHour:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="smsGatewayIntraday" >
+                sms_gateway_intraday = #smsGatewayIntraday:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="smsGatewayCurrentMonth" >
+                sms_gateway_current_month = #smsGatewayCurrentMonth:INT#
+            </isNotNull>            
+            <isNotNull prepend="," property="smsTdCurrentHour" >
+                sms_td_current_hour = #smsTdCurrentHour:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="smsTdCurrentDaily" >
+                sms_td_current_daily = #smsTdCurrentDaily:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="mmsGatewayDaily" >
+                mms_gateway_daily = #mmsGatewayDaily:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="mmsGatewayMonth" >
+                mms_gateway_month = #mmsGatewayMonth:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="mmsTdHour" >
+                mms_td_hour = #mmsTdHour:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="mmsTdMonth" >
+                mms_td_month = #mmsTdMonth:INT#
+            </isNotNull>            
+            <isNotNull prepend="," property="mmsGatewayIntraday" >
+                mms_gateway_intraday = #mmsGatewayIntraday:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="mmsGatewayCurrentMonth" >
+                mms_gateway_current_month = #mmsGatewayCurrentMonth:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="mmsTdCurrentHour" >
+                mms_td_current_hour = #mmsTdCurrentHour:INT#
+            </isNotNull>
+            <isNotNull prepend="," property="modifyTime" >
+                modify_time = #modifyTime:DATETIME#
+            </isNotNull>
+            <isNotNull prepend="," property="modifyTime" >
+                gateway_modify_time = #gatewayModifyTime:DATETIME#
+            </isNotNull>
+            <isNotNull prepend="," property="smsReceipt" >
+                sms_receipt = #smsReceipt:DATETIME#
+            </isNotNull>
+        </dynamic>
+        where merchant_pin=#merchantPin:BIGINT#
+    </update>  
+   <select id="loadByMerhcantPin" resultMap="MbnMerchantSmsMmsLimitResult" parameterClass="java.lang.Long" >
+    select merchant_pin,sms_gateway_daily,sms_gateway_month,sms_td_hour,
+            sms_td_daily,sms_gateway_intraday,sms_gateway_current_month,
+            sms_td_current_hour,sms_td_current_daily,mms_gateway_daily,
+            mms_gateway_month,mms_td_hour,mms_td_month,
+            mms_gateway_intraday,mms_gateway_current_month,mms_td_current_hour,
+            mms_td_current_month,modify_time,sms_receipt,gateway_modify_time 
+    from mbn_merchant_sms_mms_limit where merchant_pin = #merchantPin:BIGINT#
+  </select>
+</sqlMap>
+

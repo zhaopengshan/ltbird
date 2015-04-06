@@ -1,0 +1,41 @@
+@charset "utf-8";
+/* CSS Document */
+ul,li,p,div{margin:0px; padding:0px;}
+a{ color:#067599;  text-decoration: none;}
+.content{ background-color:#fff;padding:10px; text-align:left;  }
+.search_cer{clear:both; overflow:hidden; zoom:1; margin-top:2px; padding:10px 5px 0px;}
+.graybg{ background-color:#F1F8FF;padding:5px; margin-bottom:5px;line-height:26px; height:26px;}
+.graybg span{float:left;}
+.search_cer li{ float:left; height:35px; line-height:25px;padding-right:15px;}
+.search_cer li span{ padding-right:5px; float:left;}
+.search_cer li span.name{ text-align:right; padding-right:0px; width:60px; }
+.search_cer li select{ height:22px;}
+.search_cer li a,.graybg a{ background: url("../themes/mas3admin/images/smshd/busbtn.gif") no-repeat scroll left top transparent;
+    color: #fff;
+    display: block;
+    float: left;
+    font-size: 14px;
+    height: 28px;
+    line-height: 28px;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 1px;
+    text-align: center;
+    text-decoration: none;
+    width: 98px;}
+
+
+.Wdate {background: url("datePicker.gif") no-repeat right center #FFFFFF; border: 1px solid #A9B0BB;color:#999999;height: 20px;line-height: 20px;width: 130px;padding:1px 20px 1px 5px;}
+.textW{border: 1px solid #A9B0BB;color:#000;height: 20px;line-height: 20px;width: 105px;padding:1px 5px;}
+.maintable .show{line-height:24px; margin-bottom:5px; height:24px; color:#CC0000;}
+.float_l{ float:left;}
+.page{ text-align:right; line-height:30px; height:30px;}
+.querytable{ border-collapse: collapse; border-spacing: 0;table-layout: fixed;}
+.querytable td,.querytable th{  border: 1px solid #C3CACF;color: #000000;font-size: 12px; height: 20px;line-height: 20px;padding: 5px 10px; text-align: center; }
+.querytable th{ background: none repeat scroll 0 0 #F1F3F4;}
+.countlist{clear:both; overflow:hidden; zoom:1; }
+.countlist li{ line-height:35px; height:35px; margin-bottom:5px; }
+.countlist li span{ float:left; padding-right:3px;}
+.countlist li span.textname{ width:120px; font-weight:bold; text-align:right;}
+.countlist li span.con{ width:300px;}
+.countlist li span.ex{color:#999999}

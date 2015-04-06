@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMap
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map 2.0//EN"
+    "http://ibatis.apache.org/dtd/sql-map-2.dtd">
+<sqlMap namespace="mbnNodeMerchantRelation">
+	<typeAlias alias="mbnNodeMerchantRelation" type="com.leadtone.delegatemas.node.bean.MbnNodeMerchantRelation"/>
+	<resultMap id="mbnNodeMerchantRelation" class="mbnNodeMerchantRelation">
+		<result property="id" column="id" jdbcType="BIGINT" />
+		<result property="nodeId" column="node_id" jdbcType="BIGINT" />
+		<result property="merchantPin" column="merchant_pin" jdbcType="BIGINT" />
+	</resultMap>
+
+	<!-- 根据表pk，查询商户所有角色 -->
+	<select id="getByPk" resultMap="mbnNodeMerchantRelation" parameterClass="java.lang.Long">
+		SELECT
+			id, node_id, merchant_pin
+		FROM mbn_node_merchant_relation
+		where id = #id:BIGINT#
+	</select>
+	<select id="getAll" resultMap="mbnNodeMerchantRelation">
+		SELECT
+			id, node_id, merchant_pin
+		FROM mbn_node_merchant_relation
+	</select>
+	<select id="getByNodeId" resultMap="mbnNodeMerchantRelation" parameterClass="java.lang.Long">
+		SELECT
+			id, node_id, merchant_pin
+		FROM mbn_node_merchant_relation
+		where node_id = #nodeId:BIGINT#
+	</select>
+	<select id="getByMerchantPin" resultMap="mbnNodeMerchantRelation" parameterClass="java.lang.Long">
+		SELECT
+			id, node_id, merchant_pin
+		FROM mbn_node_merchant_relation
+		where merchant_pin = #merchantPin:BIGINT#
+	</select>
+	<!-- 插入操作 -->
+	<insert id="insert" parameterClass="com.leadtone.delegatemas.node.bean.MbnNodeMerchantRelation">
+		INSERT INTO
+		mbn_node_merchant_relation(id, node_id, merchant_pin)
+		VALUES
+		(#id:BIGINT#,#nodeId:BIGINT#,#merchantPin:BIGINT#)
+	</insert>
+	<!-- 修改操作 -->
+	<update id="update" parameterClass="com.leadtone.delegatemas.node.bean.MbnNodeMerchantRelation">
+		update mbn_node_merchant_relation
+		<dynamic prepend="set">
+			<isNotNull prepend="," property="nodeId:BIGINT">
+				node_id=#nodeId:BIGINT#
+			</isNotNull>
+			<isNotNull prepend="," property="merchantPin:BIGINT">
+				merchant_pin=#merchantPin:BIGINT#
+			</isNotNull>
+		</dynamic>
+		where id=#id:BIGINT#
+	</update>
+	<!-- 删除操作 -->
+	<delete id="delete" parameterClass="com.leadtone.delegatemas.node.bean.MbnNodeMerchantRelation">
+		delete mbn_node_merchant_relation
+		where id=#id:BIGING#
+	</delete>
+	<!-- 删除操作 -->
+	<delete id="deleteById" parameterClass="java.lang.Long">
+		delete from mbn_node_merchant_relation
+		where id=#id:BIGINT#
+	</delete>
+</sqlMap>

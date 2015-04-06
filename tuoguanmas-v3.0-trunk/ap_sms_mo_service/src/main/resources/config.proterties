@@ -1,0 +1,12 @@
+#是否通过扩展码来区分事务。
+#true-->扩展码区分；false-->ZX001内容区分
+sms.up.distbyext=true
+#########################################
+
+#短信轮询线程池大小
+sms.thread.poolSize=2
+#用户扩展
+sms.access.user.ext=2
+#业务扩展
+sms.access.biz.ext=2
+#########################################

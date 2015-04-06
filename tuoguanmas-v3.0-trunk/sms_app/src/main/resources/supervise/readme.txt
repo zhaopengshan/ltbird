@@ -1,0 +1,1 @@
+说明：部署在he，作为托管mas时，schedule直接进入{sms-app}路径，执行supervise/run脚本，并传递参数给smsapp，短信服务不再被supervise监管，有schedule监管。supervise目录下中的smsApp-*子目录，当通过/etc/init.d/smsapp2脚本启动时，会调用此子目录，同时，被supervise监管。

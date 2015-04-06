@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+                        http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+                        http://www.springframework.org/schema/context
+                        http://www.springframework.org/schema/context/spring-context-2.5.xsd
+                        http://www.springframework.org/schema/aop
+                        http://www.springframework.org/schema/aop/spring-aop-2.5.xsd ">
+	<!-- <component-scan base-package="com.xbrother.itil,com.xbrother.framework.catalog,com.xbrother.framework.im" 
+		/> -->
+	<description>Spring公共配置文件</description>
+
+	<bean
+		class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+			    <!-- <value>classpath:datasource.properties</value> -->   <!-- 从classpath中加载 -->
+			    <!-- <value>http:http://datasource.properties</value> --> <!-- 作为 URL 加载 -->
+			    <!-- <value>/senderApp/datasource.properties</value> -->  <!-- 根据 ApplicationContext 进行判断-->
+				<value>file:datasource.properties</value>                 <!-- 作为 URL 从文件系统中加载-->
+			</list>
+		</property>
+	</bean>
+	
+	<!--增加dbcp默认配置的属性，在属性文件中可以灵活配置连接属性，以达到最好性能 -->
+	<bean id="localDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<!--<property name="url" value="jdbc:mysql://localhost:3306/mbn?useUnicode=true&#38;characterEncoding=UTF-8&#38;zeroDateTimeBehavior=convertToNull" /> -->
+		<property name="url" value="${local.db.url}" />
+		<property name="username" value="${local.db.username}" />
+		<property name="password" value="${local.db.password}" />
+		<property name="initialSize" value="${local.dbcp.initialSize}" />
+		<property name="maxActive" value="${local.dbcp.maxActive}" />
+		<property name="maxIdle" value="${local.dbcp.maxIdle}" />
+		<property name="minIdle" value="${local.dbcp.minIdle}" />
+		<property name="testWhileIdle" value="${local.dbcp.testWhileIdle}" />
+		<property name="removeAbandoned" value="${local.dbcp.removeAbandoned}" />
+		<property name="poolPreparedStatements" value="${local.dbcp.poolPreparedStatements}" />
+        <property name="defaultAutoCommit" value="${local.dbcp.defaultAutoCommit}" />
+	</bean>
+	
+	<bean id="mandatoryDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<!-- <property name="url" value="jdbc:mysql://192.168.5.30:3306/mandatorymas?useUnicode=true&#38;characterEncoding=UTF-8&#38;zeroDateTimeBehavior=convertToNull" /> -->
+		<property name="url" value="${mandatory.db.url}" />
+		<property name="username" value="${mandatory.db.username}" />
+		<property name="password" value="${mandatory.db.password}" />
+		<property name="initialSize" value="${mandatory.dbcp.initialSize}" />
+		<property name="maxActive" value="${mandatory.dbcp.maxActive}" />
+		<property name="maxIdle" value="${mandatory.dbcp.maxIdle}" />
+		<property name="minIdle" value="${mandatory.dbcp.minIdle}" />
+		<property name="testWhileIdle" value="${mandatory.dbcp.testWhileIdle}" />
+		<property name="removeAbandoned" value="${mandatory.dbcp.removeAbandoned}" />
+		<property name="poolPreparedStatements" value="${mandatory.dbcp.poolPreparedStatements}" />
+        <property name="defaultAutoCommit" value="${mandatory.dbcp.defaultAutoCommit}" />
+	</bean>
+	
+	<bean id="modemDataSource" class="org.apache.commons.dbcp.BasicDataSource" lazy-init="true"
+		destroy-method="close">
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="validationQuery" value="${dbcp.validationQuery}" />
+		<!--<property name="url" value="jdbc:mysql://192.168.5.30:3306/mbn3?useUnicode=true&#38;characterEncoding=UTF-8&#38;zeroDateTimeBehavior=convertToNull" /> -->
+		<property name="url" value="${modem.db.url}" />
+		<property name="username" value="${modem.db.username}" />
+		<property name="password" value="${modem.db.password}" />
+		<property name="initialSize" value="${modem.dbcp.initialSize}" />
+		<property name="maxActive" value="${modem.dbcp.maxActive}" />
+		<property name="maxIdle" value="${modem.dbcp.maxIdle}" />
+		<property name="minIdle" value="${modem.dbcp.minIdle}" />
+		<property name="testWhileIdle" value="${modem.dbcp.testWhileIdle}" />
+		<property name="removeAbandoned" value="${modem.dbcp.removeAbandoned}" />
+		<property name="poolPreparedStatements" value="${modem.dbcp.poolPreparedStatements}" />
+        <property name="defaultAutoCommit" value="${modem.dbcp.defaultAutoCommit}" />
+	</bean>
+	
+    <bean id="dataSource" class="com.leadtone.sender.dataSource.DynamicDataSource" lazy-init="true">
+        <property name="targetDataSources">
+            <map>
+                <entry key="local" value-ref="localDataSource" />
+                <entry key="modem" value-ref="modemDataSource" />
+                <entry key="mandatory" value-ref="mandatoryDataSource" />
+            </map>
+        </property>
+        <property name="defaultTargetDataSource" ref="localDataSource" />
+    </bean>
+	<!-- 数据源配置:结束 -->
+
+    <bean id="beforeAdvice" class="com.leadtone.sender.dataSource.BeforeAdvice" lazy-init="true" />
+    <aop:config proxy-target-class="true">
+        <aop:aspect ref="beforeAdvice">
+            <aop:pointcut id="localOpreation" expression="execution(* com.leadtone.sender.dao.local.ISmsDao.*(..))" />
+            <aop:before method="setLocalDataSource" pointcut-ref="localOpreation" />
+        </aop:aspect>
+        <aop:aspect ref="beforeAdvice">
+            <aop:pointcut id="modemOpreation" expression="execution(* com.leadtone.sender.dao.modem.IModemSmsDao.*(..))" />
+            <aop:before method="setModemDataSource" pointcut-ref="modemOpreation" />
+        </aop:aspect>
+        <aop:aspect ref="beforeAdvice">
+            <aop:pointcut id="mandatoryOpreation" expression="execution(* com.leadtone.sender.dao.mandatory.ICorpDao.*(..))" />
+            <aop:before method="setMandatoryDataSource" pointcut-ref="mandatoryOpreation" />
+        </aop:aspect>
+    </aop:config>
+
+	<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager" lazy-init="true" >
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+    <!-- DAO配置:开始 -->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate" lazy-init="true">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <bean id="simpleTemplate" class="org.springframework.jdbc.core.simple.SimpleJdbcTemplate" lazy-init="true">
+        <constructor-arg ref="jdbcTemplate" />
+    </bean>
+	
+	<bean id="smsDao" class="com.leadtone.sender.dao.local.impl.SmsDaoImpl" lazy-init="true">
+		<property name="jt" ref="jdbcTemplate"/>
+		<property name="st" ref="simpleTemplate"/>	
+	</bean>
+	<bean id="merchantDao" class="com.leadtone.sender.dao.local.impl.MerchantDaoImpl" lazy-init="true">
+		<property name="jt" ref="jdbcTemplate"/>
+		<property name="st" ref="simpleTemplate"/>	
+	</bean>
+	<bean id="corpDao" class="com.leadtone.sender.dao.mandatory.impl.CorpDaoImpl" lazy-init="true">
+		<property name="jt" ref="jdbcTemplate"/>
+		<property name="st" ref="simpleTemplate"/>	
+	</bean>
+	<bean id="modemSmsDao" class="com.leadtone.sender.dao.modem.impl.SmsDaoImpl" lazy-init="true">
+		<property name="jt" ref="jdbcTemplate"/>	
+		<property name="st" ref="simpleTemplate"/>	
+	</bean>
+	<!-- DAO配置:结束 -->
+	
+	<!-- Service配置:开始 -->
+	<bean id="merchantService" class="com.leadtone.sender.service.impl.MerchantService" lazy-init="true">
+		<property name="merchantDao" ref="merchantDao"/>
+	</bean>
+	<bean id="smsService" name="smsService" class="com.leadtone.sender.service.impl.SmsServiceImpl" lazy-init="true">
+		<property name="smsDao" ref="smsDao"/>
+		<property name="modemSmsDao" ref="modemSmsDao"/>
+	</bean>
+    <bean id="smsLimitService" name="smsLimitService" class="com.leadtone.sender.service.impl.SmsLimitService" lazy-init="true">
+		<property name="smsDao" ref="smsDao"/>	
+		<property name="merchantDao" ref="merchantDao"/>	
+	</bean>
+	<bean id="smsPacketService" name="smsPacketService" class="com.leadtone.sender.service.impl.SmsPacketService" lazy-init="true"></bean>
+	<bean id="smsPriorityLevelService" name="smsPriorityLevelService" class="com.leadtone.sender.service.impl.SmsPriorityLevelService" lazy-init="true">
+		<property name="smsDao" ref="smsDao"/>	
+	</bean>
+	<bean id="corpService" class="com.leadtone.sender.service.impl.CorpService" lazy-init="true">
+		<property name="corpDao" ref="corpDao"/>
+	</bean>
+	<!-- Service配置:结束 -->
+	
+	<!-- Handler配置:开始 -->
+	<bean id="gatewaySmsHandler" name="gatewaySmsHandler" class="com.leadtone.sender.handler.impl.GatewaySmsHandler" lazy-init="true">
+	    <property name="smsService" ref="smsService"/>
+		<property name="smsLimitService" ref="smsLimitService"/>	
+		<property name="smsPacketService" ref="smsPacketService"/>
+		<property name="merchantService" ref="merchantService"/>
+		<property name="corpService" ref="corpService"/>
+		<!--  <property name="smsPriorityLevelService" ref="smsPriorityLevelService"/> -->
+	</bean>
+	<bean id="modemSmsHandler" name="modemSmsHandler" class="com.leadtone.sender.handler.impl.ModemSmsHandler" lazy-init="true">
+	    <property name="smsService" ref="smsService"/>
+		<property name="smsLimitService" ref="smsLimitService"/>	
+		<property name="smsPacketService" ref="smsPacketService"/>
+		<property name="merchantService" ref="merchantService"/>
+		<!--  <property name="smsPriorityLevelService" ref="smsPriorityLevelService"/> -->
+	</bean>
+	<bean id="qxtSmsHandler" name="qxtSmsHandler" class="com.leadtone.sender.handler.impl.QxtSmsHandler" lazy-init="true">
+	    <property name="smsService" ref="smsService"/>
+		<property name="smsLimitService" ref="smsLimitService"/>	
+		<property name="smsPacketService" ref="smsPacketService"/>
+		<property name="merchantService" ref="merchantService"/>
+		<!--  <property name="smsPriorityLevelService" ref="smsPriorityLevelService"/> -->
+	</bean>
+	<bean id="zxtSmsHandler" name="zxtSmsHandler" class="com.leadtone.sender.handler.impl.ZxtSmsHandler" lazy-init="true">
+	    <property name="smsService" ref="smsService"/>
+		<property name="smsLimitService" ref="smsLimitService"/>	
+		<property name="smsPacketService" ref="smsPacketService"/>
+		<property name="merchantService" ref="merchantService"/>
+		<!--  <property name="smsPriorityLevelService" ref="smsPriorityLevelService"/> -->
+	</bean>
+	<bean id="pukerSmsHandler" name="pukerSmsHandler" class="com.leadtone.sender.handler.impl.PukerSmsHandler" lazy-init="true">
+	    <property name="smsService" ref="smsService"/>
+		<property name="smsLimitService" ref="smsLimitService"/>	
+		<property name="smsPacketService" ref="smsPacketService"/>
+		<property name="merchantService" ref="merchantService"/>
+		<!--  <property name="smsPriorityLevelService" ref="smsPriorityLevelService"/> -->
+	</bean>
+    <!-- Handler配置:结束 -->
+	
+	<!-- Task配置:开始 -->
+	<bean id="gatewaySmsTask" name="gatewaySmsTask" class="com.leadtone.sender.task.GatewaySmsTask" lazy-init="true" />
+	<bean id="gatewaySmsTaskXj" name="gatewaySmsTaskXj" class="com.leadtone.sender.task.GatewaySmsTaskXj" lazy-init="true" />
+	
+	<bean id="modemSmsTask" name="modemSmsTask" class="com.leadtone.sender.task.ModemSmsTask" lazy-init="true" />
+	<bean id="zxtSmsTask" name="zxtSmsTask" class="com.leadtone.sender.task.ZxtSmsTask" lazy-init="true" />
+	<bean id="qxtSmsTask" name="qxtSmsTask" class="com.leadtone.sender.task.QxtSmsTask" lazy-init="true" />
+	<bean id="pukerSmsTask" name="pukerSmsTask" class="com.leadtone.sender.task.PukerSmsTask" lazy-init="true" />
+	
+	<bean id="commonSmsSendHandler" name="commonSmsSendHandler" class="com.leadtone.sender.handler.impl.CommonSmsSendHandler" lazy-init="true" >
+		<property name="smsService" ref="smsService"/>
+		<property name="smsLimitService" ref="smsLimitService"/>	
+		<property name="smsPacketService" ref="smsPacketService"/>
+		<property name="merchantService" ref="merchantService"/>
+		<property name="corpService" ref="corpService"/>
+	</bean>
+	<!-- Service配置:结束 -->
+	<!-- yali ceshi -->
+	<bean id="mbnSmsReadySendDao" class="com.leadtone.readysend.dao.impl.MbnSmsReadySendDaoImpl" lazy-init="true">
+		<property name="jt" ref="jdbcTemplate"/>
+		<property name="st" ref="simpleTemplate"/>	
+	</bean>
+	<bean id="mbnSmsReadySendService" class="com.leadtone.readysend.service.impl.MbnSmsReadySendServiceImpl" lazy-init="true">
+		<property name="mbnSmsReadySendDao" ref="mbnSmsReadySendDao"/>	
+	</bean>
+</beans>

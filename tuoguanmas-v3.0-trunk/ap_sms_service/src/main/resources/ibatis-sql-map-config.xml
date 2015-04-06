@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE sqlMapConfig
+    PUBLIC "-//ibatis.apache.org//DTD SQL Map Config 2.0//EN"
+    "sql-map-config-2.dtd">
+
+<sqlMapConfig>
+	<settings maxRequests="256" maxSessions="64" maxTransactions="16"
+		enhancementEnabled="true" lazyLoadingEnabled="true" cacheModelsEnabled="true" useStatementNamespaces="true"/>
+		<!-- 开销户 -->
+		<sqlMap resource="ibatis/sqlmap_mbnMerchantVip.xml" />
+		<sqlMap resource="ibatis/sqlmap_mbnMerchantSmsMmsLimit.xml" />
+		<sqlMap resource="ibatis/sqlmap_mbnConfigMerchant.xml" />
+                <!-- 通讯录 -->
+                <sqlMap resource="ibatis/Sql_Contact.xml"/>
+		<!--PAN-Z-G 短信已发箱 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsHadSend.xml"/>
+		<!--PAN-Z-G 短信收件箱 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsInbox.xml"/>
+		<!-- 短信草稿箱 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsDraft.xml"/>
+		<!-- 短信珍藏箱 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsSelected.xml"/>
+		<!--PAN-Z-G 短信待发箱 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsReadySend.xml"/>
+		<!-- 用户权限 -->
+		<sqlMap resource="ibatis/sqlmap_security.xml"/>
+		<!--PAN-Z-G 系统配置 -->
+		<sqlMap resource="ibatis/Sql_MbnConfigSys.xml"/>
+		<!-- 上行短信 -->
+		<sqlMap resource="ibatis/sqlmap_sms_mo_log.xml"/>
+		<!-- 周期任务 -->
+		<!-- <sqlMap resource="ibatis/spring-periodic.xml"/>-->
+		
+		<sqlMap resource="ibatis/Sql_MbnConfigSysDictionary.xml"/>
+
+		<sqlMap resource="ibatis/Sql_MbnConfigProvinceItemValue.xml"/>
+
+		<sqlMap resource="ibatis/Sql_MbnSmsKeywords.xml"/>
+		<!--PAN-Z-G 通道 -->
+		<sqlMap resource="ibatis/Sql_SmsMbnTunnel.xml"/>
+		<!--PAN-Z-G 商户通道关联表 -->
+		<sqlMap resource="ibatis/Sql_SmsMbnTunnelAccountFlow.xml"/> 
+		<!--PAN-Z-G 省份表映射 -->
+		<sqlMap resource="ibatis/Sql_MbnProvinceDictionary.xml"/>
+		<!--PAN-Z-G 通道帐户表映射 -->
+		<sqlMap resource="ibatis/Sql_SmsTunnelAccount.xml"/>
+		<!-- 3位 7位H码表 -->
+		<sqlMap resource="ibatis/Sql_MbnH3.xml"/>
+		<sqlMap resource="ibatis/Sql_MbnH7.xml"/>
+		<!-- 商户通道关联表 -->
+		<sqlMap resource="ibatis/sqlmap_mbnMerchantTunnelRelation.xml"/>
+		<!-- 商户通道消费表 -->
+		<sqlMap resource="ibatis/sqlmap_mbnMerchantConsome.xml"/>
+		<sqlMap resource="ibatis/sqlmap_mbnMerchantConsomeFlow.xml"/>
+		
+		<!-- 操作类型定义 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsOperationClass.xml"/>
+		<!-- 短信回复编码表 -->
+		<sqlMap resource="ibatis/Sql_MbnSmsMerchantOperationTaskNumber.xml"/>
+		<!-- 彩信操作 -->
+		<sqlMap resource="ibatis/sqlmap_mms.xml"/>
+                <sqlMap resource="ibatis/Sql_Schedule_Mapping.xml"/>
+         
+         
+         <!-- 短信答题题库 -->
+         <sqlMap resource="ibatis/sqlmap_sms_duanxindati_tiku.xml"/>
+                
+        <!-- 投票调查 -->
+        <sqlMap resource="ibatis/Sql_MbnSmsToupiaotiaocha.xml"/> 
+		
+		<sqlMap resource="ibatis/Sql_SmsLottery.xml"/>
+		
+		<!-- 日历周期任务 -->
+		<sqlMap resource="ibatis/Sql_Mbn_periodc_task_sms.xml"/>
+		<sqlMap resource="ibatis/Sql_Mbn_periodc_task.xml"/>
+		<sqlMap resource="ibatis/Sql_Mbn_sms_duanxinrili.xml"/>
+		
+		<sqlMap resource="sqlmap/SmsSend.xml" />
+		<sqlMap resource="sqlmap/SmsReceive.xml" />
+		<sqlMap resource="sqlmap/SmsGetReport.xml" />
+		<sqlMap resource="sqlmap/PortalUser.xml" />
+		<!-- 数据库接口 -->
+		<sqlMap resource="sqlmap/SmsInboxDbIntf.xml" />
+		<sqlMap resource="sqlmap/SmsOutboxDbIntf.xml" />
+		<sqlMap resource="sqlmap/SmsSentDbIntf.xml" />
+		
+		<!-- lisence 配置 -->
+		<sqlMap resource="ibatis/sqlmap_lisence.xml" />
+		<!-- 用户扩展信息 -->
+		<sqlMap resource="ibatis/Sql_PortalUserExt.xml" />
+		<sqlMap resource="ibatis/Sql_MbnNode.xml" />
+		<sqlMap resource="ibatis/Sql_MbnNodeMerchantRel.xml" />
+</sqlMapConfig>
