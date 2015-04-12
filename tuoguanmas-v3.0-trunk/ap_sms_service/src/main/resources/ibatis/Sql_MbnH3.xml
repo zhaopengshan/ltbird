@@ -16,6 +16,13 @@
 			mbn_h3  
 	</select>
 
+	<select id="queryAll" resultMap="mbnThreeHCode">
+		select 
+			id, mobile_prefix, corp
+		from  
+			mbn_h3  
+	</select>
+
 	<!-- 查询分页/模糊查询分页 计算总结果数 -->
 	<select id="pageCount" resultClass="java.lang.Integer"
 		parameterClass="com.leadtone.mas.bizplug.common.PageUtil">

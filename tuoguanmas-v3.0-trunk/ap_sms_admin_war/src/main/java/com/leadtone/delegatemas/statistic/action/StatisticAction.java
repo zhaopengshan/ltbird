@@ -125,7 +125,7 @@ public class StatisticAction extends BaseAction {
     }
     
     private String[][] listToArr(List<SmQueryResult> smQueryResult) {
-		String[][] billsInArr = new String[smQueryResult.size()][10];
+		String[][] billsInArr = new String[smQueryResult.size()][11];
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		for (int j = 0; j < smQueryResult.size(); j++) {
 			SmQueryResult queryResult = smQueryResult.get(j);
@@ -138,7 +138,28 @@ public class StatisticAction extends BaseAction {
 			billsInArr[j][6] = String.valueOf( queryResult.getSmSegments() );
 			billsInArr[j][7] = queryResult.getResult();
 			billsInArr[j][8] = queryResult.getFailurReason();
-			billsInArr[j][9] = queryResult.getContent();
+//			billsInArr[j][9] = queryResult.getContent();
+			
+			switch(queryResult.getTunnelType()){
+				case 1: 
+				case 2: billsInArr[j][9]="移动"; break;//移动
+				case 3: 
+				case 4: billsInArr[j][9]="联通"; break;//联通
+				case 5: 
+				case 6: billsInArr[j][9]="电信"; break;//电信
+				case 7: billsInArr[j][9]="全网"; break;//全网
+				case 8: billsInArr[j][9]="短信猫"; break;//短信猫
+				case 9: billsInArr[j][9]="TD话机"; break;//TD话机
+				case 10: billsInArr[j][9]="资信通"; break;//资信通
+				case 11: billsInArr[j][9]="企信通"; break;//企信通//
+				case 12: billsInArr[j][9]="铺客"; break;//铺客
+				case 13: billsInArr[j][9]="移动异网"; break;//移动异网
+				case 14: billsInArr[j][9]="新企信通"; break;//新企信通//
+				case 15: billsInArr[j][9]="empp接入方式"; break;//empp接入方式
+				default: billsInArr[j][9]="未知"; break;
+			}
+			
+			billsInArr[j][10] = queryResult.getContent();
 		}
 
 		return billsInArr;
@@ -156,7 +177,7 @@ public class StatisticAction extends BaseAction {
 			String exportFile = "";
 
 			String[] cols = { "发送用户", "短信时间", "通信方式", "短信类型", "发送接口", "对方号码", "拆分条数",
-					"发送结果", "失败原因", "短信内容"};
+					"发送结果", "失败原因", "通道类型", "短信内容"};
 			String[][] contents = this.listToArr(smQueryResults);
 
 			// 获取应用的绝对路径

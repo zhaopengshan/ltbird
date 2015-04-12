@@ -19,6 +19,10 @@ public class MbnThreeHCodeServiceImpl implements MbnThreeHCodeService {
 	@Resource
 	private MbnThreeHCodeDao mbnThreeHCodeDao;
 
+	public List<MbnThreeHCode> queryAll(){
+		return mbnThreeHCodeDao.queryAll();
+	}
+	
 	@Override
 	public Integer batchDeleteByList(List<MbnThreeHCode> entitys) {
 

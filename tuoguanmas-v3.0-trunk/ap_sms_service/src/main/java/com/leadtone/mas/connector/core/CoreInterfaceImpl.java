@@ -31,6 +31,7 @@ import com.leadtone.delegatemas.security.bean.Region;
 import com.leadtone.delegatemas.security.service.IRegionService;
 import com.leadtone.delegatemas.tunnel.bean.MasTunnel;
 import com.leadtone.mas.bizplug.config.bean.MbnSevenHCode;
+import com.leadtone.mas.bizplug.config.bean.MbnThreeHCode;
 import com.leadtone.mas.bizplug.config.service.MbnSevenHCodeService;
 import com.leadtone.mas.bizplug.openaccount.bean.MbnConfigMerchant;
 import com.leadtone.mas.bizplug.openaccount.service.MbnConfigMerchantIService;
@@ -43,6 +44,7 @@ import com.leadtone.mas.bizplug.tunnel.service.MbnMerchantConsumeService;
 import com.leadtone.mas.bizplug.tunnel.service.MbnMerchantTunnelRelationService;
 import com.leadtone.mas.bizplug.tunnel.service.SmsMbnTunnelService;
 import com.leadtone.mas.bizplug.util.BizUtils;
+import com.leadtone.mas.bizplug.util.H3MapSingleton;
 import com.leadtone.mas.bizplug.util.SmsNumberArithmetic;
 import com.leadtone.mas.connector.dao.PortalUserDao;
 import com.leadtone.mas.connector.dao.SmsGetReportDao;
@@ -105,6 +107,8 @@ public class CoreInterfaceImpl implements CoreInterface{
 	private MbnSmsTaskNumberService mbnSmsTaskNumberService;
 	 @Autowired
 	private MbnConfigMerchantIService mbnConfigMerchantIService;
+	 @Resource
+	 private H3MapSingleton h3MapSingleton; 
 	 
 	@Override
 	public String toString() {
@@ -213,57 +217,92 @@ public class CoreInterfaceImpl implements CoreInterface{
 		return parameters;
 	}
 	
-	private Map<String,Object> parseXmlBody(String xmlDoc,Map<String,String> xmHead){
-		final Map<String,Object> parameters=new HashMap<String, Object>();
-		Document xmlBodyDoc = XmlUtils.parseText(xmlDoc);
-		String body = XmlUtils.getText(xmlBodyDoc, "//Body");
-		
-		if(logger.isDebugEnabled())
-			logger.debug("the xml body is:{}",body);
-		//通过pinID找到id,id做为加密的密钥
-		//PortalUser portaluser = portalUserDao.loadbyUid(PinID);
-		PortalUser portaluser = portalUserDao.loadbyUserNameAndPwd(
-				xmHead.get(ACCOUNT_ID), 
-				xmHead.get(ACCOUNT_PWD), 
-				xmHead.get(MERCHANT_PIN));
-		if(logger.isDebugEnabled())
-			logger.debug("the DES KEY is:{}",portaluser.getId());
-		
-		//记录用户对象
-		parameters.put(PORTAILUSER, portaluser);
-		String decodedbody = null;
-		try {
-			decodedbody = Decode(body,portaluser.getId()+"");
-			parameters.put("version", true);
-		} catch (Exception e) {
-			logger.error("decodedbody error will do decode old methord");
+	private boolean parseXmlBody(String xmlDoc,Map<String,String> xmHead, final Map<String,Object> parameters){
+//		final Map<String,Object> parameters=new HashMap<String, Object>();
+		try{
+			Document xmlBodyDoc = XmlUtils.parseText(xmlDoc);
+			String body = XmlUtils.getText(xmlBodyDoc, "//Body");
+			
+			if(logger.isDebugEnabled())
+				logger.debug("the xml body is:{}",body);
+			//通过pinID找到id,id做为加密的密钥
+			//PortalUser portaluser = portalUserDao.loadbyUid(PinID);
+			PortalUser portaluser = portalUserDao.loadbyUserNameAndPwd(
+					xmHead.get(ACCOUNT_ID), 
+					xmHead.get(ACCOUNT_PWD), 
+					xmHead.get(MERCHANT_PIN));
+			if(portaluser==null){
+				parameters.put("errorCode", "0003");
+				parameters.put("errorMessage", "帐号密码错误");
+				return false;
+			}else{
+				if(logger.isDebugEnabled()){
+					try{
+						logger.debug("the DES KEY is:{}",portaluser.getId());
+					}catch(Exception e){
+						parameters.put("errorCode", "9999");
+						parameters.put("errorMessage", "系统处理异常错误");
+						return false;
+					}
+				}
+			}
+			//记录用户对象
+			parameters.put(PORTAILUSER, portaluser);
+			String decodedbody = null;
 			try {
-				decodedbody = DecodeOld(body,portaluser.getId()+"");
-				parameters.put("version", false);
-			} catch (Exception e1) {
-				logger.error("decodedbody error:"+e1.toString());
+				decodedbody = Decode(body,portaluser.getId()+"");
+				parameters.put("version", true);
+			} catch (Exception e) {
+				logger.error("decodedbody error will do decode old methord");
+				try {
+					decodedbody = DecodeOld(body,portaluser.getId()+"");
+					parameters.put("version", false);
+				} catch (Exception e1) {
+					logger.error("decodedbody error:"+e1.toString());
+					parameters.put("errorCode", "0002");
+					parameters.put("errorMessage", "解密报文错误");
+					return false;
+				}
 			}
+			if(logger.isDebugEnabled())
+				logger.debug("the decoded xml body is:{}",decodedbody);
+			//记录密钥
+			parameters.put(DESDE_KEY, portaluser.getId()+"");
+	
+			// 带修正解析
+			Document xmlBody = parseTextWithFix(decodedbody);//XmlUtils.parseText(decodedbody);
+			
+			XmlUtils.selectNodes(xmlBody.getRootElement(), "//BODY/*", new Nodelet<Object>() {
+				@Override
+				public Object processNode(Node node) {
+					String _nodeName = node.getName();
+					parameters.put(_nodeName, node.getText());
+					if(logger.isDebugEnabled())
+						logger.debug("key:{},value:{}",_nodeName,node.getText());
+					return null;
+				}
+			});
+		}catch(Exception e){
+			logger.debug("parseXmlBody exception >>"+e.toString());
+			parameters.put("errorCode", "9999");
+			parameters.put("errorMessage", "系统处理异常错误");
+			return false;
 		}
-		if(logger.isDebugEnabled())
-			logger.debug("the decoded xml body is:{}",decodedbody);
-		//记录密钥
-		parameters.put(DESDE_KEY, portaluser.getId()+"");
-
-		// 带修正解析
-		Document xmlBody = parseTextWithFix(decodedbody);//XmlUtils.parseText(decodedbody);
-		
-		XmlUtils.selectNodes(xmlBody.getRootElement(), "//BODY/*", new Nodelet<Object>() {
-			@Override
-			public Object processNode(Node node) {
-				String _nodeName = node.getName();
-				parameters.put(_nodeName, node.getText());
-				if(logger.isDebugEnabled())
-					logger.debug("key:{},value:{}",_nodeName,node.getText());
-				return null;
-			}
-		});
-		
-		return parameters;
+		return true;
+	}
+	
+	private String failCode(Map<String,Object> xmlBodyMap,String PINID){
+		Document responseXmlDoc = DocumentHelper.createDocument();
+//		xmlBodyMap.put("errorCode", "0009");
+//		xmlBodyMap.put("errorMessage", "接口错误");
+		Element responseXmlRootElement = responseXmlDoc.addElement("Root");
+		responseXmlRootElement.addElement("Result").setText(String.valueOf(xmlBodyMap.get("errorCode")));
+//		Boolean version = (boolean) xmlBodyMap.get("version");
+//		if(version==null||version){
+		return responseXmlDoc.asXML();
+//		}else{
+//			return responseXmlDoc.asXML();
+//		}
 	}
 	
 	/*
@@ -271,21 +310,27 @@ public class CoreInterfaceImpl implements CoreInterface{
 	@Override
 	public String processAPRequest(String requestType,String message,Map<String,String> xmlHead){
 		String PINID = xmlHead.get(MERCHANT_PIN);
-		Map<String,Object> xmlBodyMap = parseXmlBody(message,xmlHead);
-		if("smsgetreport".equalsIgnoreCase(requestType)){
-			return processSmsGetReport(xmlBodyMap,PINID);
+		Map<String,Object> xmlBodyMap = new HashMap<String,Object>();
+//		boolean parseBool = parseXmlBody(message,xmlHead, responseXmlDoc, xmlBodyMap);
+		if(parseXmlBody(message,xmlHead, xmlBodyMap)){
+			if("smsgetreport".equalsIgnoreCase(requestType)){
+				return processSmsGetReport(xmlBodyMap,PINID);
+			}
+			else if("smsreceive".equalsIgnoreCase(requestType)){
+				return processSmsReceive(xmlBodyMap,PINID);
+			}
+			else if("smssend".equalsIgnoreCase(requestType)){
+				return processSmsSend(xmlBodyMap,PINID);
+			}
+			else{
+				logger.info("未知的请求类型{}",requestType);
+				xmlBodyMap.put("errorCode", "0009");
+				xmlBodyMap.put("errorMessage", "请求接口类型错误");
+				return failCode(xmlBodyMap,PINID);
+			}
+		}else{
+			return failCode(xmlBodyMap,PINID);
 		}
-		else if("smsreceive".equalsIgnoreCase(requestType)){
-			return processSmsReceive(xmlBodyMap,PINID);
-		}
-		else if("smssend".equalsIgnoreCase(requestType)){
-			return processSmsSend(xmlBodyMap,PINID);
-		}
-		else{
-			logger.info("未知的请求类型{}",requestType);
-		}
-		//加密返回
-		return "";
 	}
 	
 	/**
@@ -323,6 +368,8 @@ public class CoreInterfaceImpl implements CoreInterface{
 			SmsMbnTunnelVO tunnel, Long batchId, String smsSign){
 		String taskNumber = "";
 		int tunnel_type=0;//默认
+		tunnel_type =tunnel.getClassify();
+		msg.setTunnel_type(tunnel_type);
 		if(tunnel.getClassify() == 6||tunnel.getClassify() == 5||tunnel.getClassify() == 4||tunnel.getClassify() == 3
 				||tunnel.getClassify() == 2||tunnel.getClassify() == 1||tunnel.getClassify() == 13||tunnel.getClassify() == 15){
 			// 根据用户来生成2位扩展码
@@ -339,60 +386,60 @@ public class CoreInterfaceImpl implements CoreInterface{
 			num.setState(1);
 			taskNumber = num.getTaskNumber();
 			mbnSmsTaskNumberService.addTaskNumber(num);
-				if( tunnel.getClassify() == 1 ){
-					MbnSevenHCode code = mbnSevenHCodeService.queryByBobilePrefix(StringUtil.getLongPrefix(mobile));
-					if( code == null || !provCode.equalsIgnoreCase(code.getProvinceCoding())){//非本省号码走资信通
+				if( tunnel.getClassify() == 1||tunnel.getClassify() == 2 ){
+//					MbnSevenHCode code = mbnSevenHCodeService.queryByBobilePrefix(StringUtil.getLongPrefix(mobile));
+//					if( code == null || !provCode.equalsIgnoreCase(code.getProvinceCoding())){//非本省号码走资信通
 //						tunnel_type =0;
-					} else{
-						tunnel_type =1;
-						msg.setTunnel_type(tunnel_type);
-						msg.setSms_access_number(ProcessAccessNum(xmlBodyMap,mobile,PINID, tunnel, user.getUser_ext_code(), taskNumber));
-						return;
-					}
-				}else if(tunnel.getClassify() == 2){
-					tunnel_type =2;
-					msg.setTunnel_type(tunnel_type);
+//					} else{
+//						tunnel_type =1;
+//						msg.setTunnel_type(tunnel_type);
+//						msg.setSms_access_number(ProcessAccessNum(xmlBodyMap,mobile,PINID, tunnel, user.getUser_ext_code(), taskNumber));
+//						return;
+//					}
+//				}else if(tunnel.getClassify() == 2){
+//					tunnel_type =2;
+//					msg.setTunnel_type(tunnel_type);
 					msg.setSms_access_number(ProcessAccessNum(xmlBodyMap,mobile,PINID, tunnel, user.getUser_ext_code(), taskNumber));
 					return;
 				}
 				if(tunnel.getClassify() == 3){
-					tunnel_type = 3;
+//					tunnel_type = 3;
 					msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ?  smsSign: "" ));
-					msg.setTunnel_type(tunnel_type);
+//					msg.setTunnel_type(tunnel_type);
 					msg.setSms_access_number(tunnel.getAccessNumber());
 					return;
 				}else if(tunnel.getClassify() == 4){
-					tunnel_type = 4;
+//					tunnel_type = 4;
 					msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ?  smsSign: "" ));
-					msg.setTunnel_type(tunnel_type);
+//					msg.setTunnel_type(tunnel_type);
 					msg.setSms_access_number(tunnel.getAccessNumber());
 					return;
 				}
 				if( tunnel.getClassify() == 5){
-					tunnel_type = 5;
+//					tunnel_type = 5;
 					msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ?  smsSign: "" ));
-					msg.setTunnel_type(tunnel_type);
+//					msg.setTunnel_type(tunnel_type);
 					msg.setSms_access_number(tunnel.getAccessNumber());
 					return;
 				}else if(tunnel.getClassify() == 6){
-					tunnel_type = 6;
+//					tunnel_type = 6;
 					msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
-					msg.setTunnel_type(tunnel_type);
+//					msg.setTunnel_type(tunnel_type);
 					msg.setSms_access_number(tunnel.getAccessNumber());
 					return;
 				}else if( tunnel.getClassify() == 15 ){
 					//企信通 new
 					msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
 					msg.setSms_access_number(ProcessAccessNum(xmlBodyMap,mobile,PINID, tunnel, user.getUser_ext_code(), taskNumber));
-					tunnel_type = 15;
-					msg.setTunnel_type(tunnel_type);
+//					tunnel_type = 15;
+//					msg.setTunnel_type(tunnel_type);
 					return;
 				}else if( tunnel.getClassify() == 13 ){
 					//移动 三网
 					msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
 					msg.setSms_access_number( ProcessAccessNum(xmlBodyMap,mobile,PINID, tunnel, user.getUser_ext_code(), taskNumber) );
-					tunnel_type = 13;
-					msg.setTunnel_type(tunnel_type);
+//					tunnel_type = 13;
+//					msg.setTunnel_type(tunnel_type);
 					return;
 				}
 		}
@@ -400,41 +447,41 @@ public class CoreInterfaceImpl implements CoreInterface{
 			//企信通 new
 			msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
 			msg.setSms_access_number( String.valueOf( user.getZxt_user_id() ) );
-			tunnel_type = 14;
-			msg.setTunnel_type(tunnel_type);
+//			tunnel_type = 14;
+//			msg.setTunnel_type(tunnel_type);
 			return;
 		}else if(tunnel.getClassify() == 11){
 			// 企信通
 			msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
 			msg.setSms_access_number( String.valueOf( user.getZxt_user_id() ) );
-			tunnel_type = 11;
-			msg.setTunnel_type(tunnel_type);
+//			tunnel_type = 11;
+//			msg.setTunnel_type(tunnel_type);
 			return;
 		}else if(tunnel.getClassify() == 10){
 			// 资信通
 			msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
 			msg.setSms_access_number(user.getZxt_user_id());
-			tunnel_type = 10;
-			msg.setTunnel_type(tunnel_type);
+//			tunnel_type = 10;
+//			msg.setTunnel_type(tunnel_type);
 			return;
 		}else if(tunnel.getClassify() == 9 ){
 			//TD
 			msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ?  smsSign: "" ));
 			msg.setSms_access_number(user.getZxt_user_id());
-			tunnel_type = 9;
-			msg.setTunnel_type(tunnel_type);
+//			tunnel_type = 9;
+//			msg.setTunnel_type(tunnel_type);
 			return;
 		}else if(tunnel.getClassify() == 8){
 			//MODEM
 			msg.setContent(msg.getContent() + ( smsSign != null && !smsSign.equals("") ? smsSign: "" ));
 			msg.setSms_access_number(user.getZxt_user_id());
-			tunnel_type = 8;
-			msg.setTunnel_type(tunnel_type);
+//			tunnel_type = 8;
+//			msg.setTunnel_type(tunnel_type);
 			return;
 		}
 	}
 	
-	private void setSendClassify(Map<String,Object> xmlBodyMap, SmsSend msg, String provCode, String PINID, PortalUser user, String mobile,
+	private boolean setSendClassify(Map<String,Object> xmlBodyMap, SmsSend msg, String provCode, String PINID, PortalUser user, String mobile,
 			HashMap<Integer, SmsMbnTunnelVO>  tunnelList, Long batchId, String smsSign){
 		try{
 			//如果请求报文里边存在TunnelId，就用报文里边的值
@@ -448,10 +495,18 @@ public class CoreInterfaceImpl implements CoreInterface{
 					case"0": mobileType = "DX"; break;
 					case"5": mobileType = "YD"; break;
 					case"9": mobileType = "LT"; break;
-					default: ;
+					default: 
+						logger.info("170 is not exist： /0 /5 /9>>" + mobile);
+						return false;
 				}
 			}else{
-				mobileType = smsSendDao.loadMobileTypeByH3(threeNumber);
+				MbnThreeHCode hcode = h3MapSingleton.fetchH3Code(threeNumber);
+				if(hcode!=null){
+					mobileType = hcode.getCorp();//smsSendDao.loadMobileTypeByH3(threeNumber);
+				}else{
+					logger.info("h3code is not exist：" + mobile);
+					return false;
+				}
 			}
 			Iterator<Integer> tunnrlRangeIterator = tunnelList.keySet().iterator();
 			while(tunnrlRangeIterator.hasNext()){
@@ -462,30 +517,32 @@ public class CoreInterfaceImpl implements CoreInterface{
 						if( (tunnrlRange&2) == 2 ){
 							makeSureClassify(xmlBodyMap, msg, provCode, PINID, user, mobile,
 									tunnelList.get(tunnrlRange), batchId, smsSign);
-							return;
+							return true;
 						}
 					}else{
 						if( (tunnrlRange&1) == 1 ){
 							makeSureClassify(xmlBodyMap, msg, provCode, PINID, user, mobile,
 									tunnelList.get(tunnrlRange), batchId, smsSign);
-							return;
+							return true;
 						}
 					}
 				}
 				if( mobileType.equalsIgnoreCase("LT")&&(tunnrlRange&4) == 4){
 					makeSureClassify(xmlBodyMap, msg, provCode, PINID, user, mobile,
 							tunnelList.get(tunnrlRange), batchId, smsSign);
-					return;
+					return true;
 				}
 				if( mobileType.equalsIgnoreCase("DX")&&(tunnrlRange&8) == 8){
 					makeSureClassify(xmlBodyMap, msg, provCode, PINID, user, mobile,
 							tunnelList.get(tunnrlRange), batchId, smsSign);
-					return;
+					return true;
 				}
 			}
 			logger.info("通道不支持发送号码："+mobile);
+			return false;
 		}catch(Exception e){
 			logger.error("set send tunnel_type and classify exception:", e);
+			return false;
 		}
 		/*
 		String mobileType = smsSendDao.loadMobileTypeByH3(mobile.substring(0,3));
@@ -548,6 +605,7 @@ public class CoreInterfaceImpl implements CoreInterface{
 			}
 			if(user == null||user.getWebservice()!=2){
 				responseXmlRootElement.addElement("Result").setText("0003");
+				return responseXmlDoc.asXML();
 			}else{
 				responseXmlRootElement.addElement("Result").setText("0000");
 				String[] user_mobile = mobiles.split(",");
@@ -555,51 +613,56 @@ public class CoreInterfaceImpl implements CoreInterface{
 				HashMap<Integer, SmsMbnTunnelVO>  tunnelList = getTunnelList(user.getMerchant_pin());
 				Long batchId = PinGen.getSerialPin();
 				for(String mobile:user_mobile){
+					Element msgElement = responseXmlRootElement.addElement("Msg");
+					Region region = regionService.findByProvinceId(Long.parseLong(user.getProvince()));
+					String provCode = region.getCode();
 					SmsSend msg = new SmsSend();
 					msg.setId(PinGen.getSerialPin());
 					msg.setMerchant_pin(user.getMerchant_pin());
 					//msg.setOperation_id()
 					//msg.setTask_number("");
 					msg.setBatch_id(batchId);
-					Region region = regionService.findByProvinceId(Long.parseLong(user.getProvince()));
-					String provCode = region.getCode();
 					msg.setProvince(provCode);
 					msg.setSelf_mobile(user.getMobile());
 					msg.setTos(mobile);
 					msg.setTos_name(user.getName());
 					msg.setContent((String)xmlBodyMap.get(CONTENT));
 					//msg.setCut_apart_number(0);
-					String time = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
-					msg.setCommit_time(time);
-					msg.setReady_send_time(time);
-					//msg.setExpire_time(1500);
-					//msg.setComplete_time(time);
-					//
-					this.setSendClassify(xmlBodyMap, msg, provCode, PINID, user, mobile, tunnelList, batchId, smsSign );
-					
-					
-					String PriorityLevel = (String)xmlBodyMap.get(PRIORITY_LEVEL);
-					Integer levelP = 3;
-					if(StringUtils.isBlank(PriorityLevel)){
-						try{
-							levelP = Integer.parseInt(PriorityLevel);
-						}catch(Exception e){
-							levelP = 3;
+					if(this.setSendClassify(xmlBodyMap, msg, provCode, PINID, user, mobile, tunnelList, batchId, smsSign )){
+						String time = DateUtil.format(new Date(), "yyyy-MM-dd HH:mm:ss");
+						msg.setCommit_time(time);
+						msg.setReady_send_time(time);
+						//msg.setExpire_time(1500);
+						//msg.setComplete_time(time);
+						//
+						String PriorityLevel = (String)xmlBodyMap.get(PRIORITY_LEVEL);
+						Integer levelP = 3;
+						if(StringUtils.isBlank(PriorityLevel)){
+							try{
+								levelP = Integer.parseInt(PriorityLevel);
+							}catch(Exception e){
+								levelP = 3;
+							}
+							msg.setPriority_level(levelP);
+						}else{
+							msg.setPriority_level(3);
 						}
-						msg.setPriority_level(levelP);
+						msg.setSend_result(0);
+						msg.setFail_reason("");
+						msg.setDescription("");
+						msg.setCreate_by(user.getId());
+						msg.setTitle("");
+						msg.setWebservice(2);
+						smsSendDao.save(msg);
+						
+						msgElement.addElement("Mobile").setText(mobile);
+						msgElement.addElement("Id").setText(msg.getId()+"");
+						msgElement.addElement("State").setText("0000");
 					}else{
-						msg.setPriority_level(3);
+						msgElement.addElement("Mobile").setText(mobile);
+						msgElement.addElement("Id").setText("");
+						msgElement.addElement("State").setText("0005");
 					}
-					msg.setSend_result(0);
-					msg.setFail_reason("");
-					msg.setDescription("");
-					msg.setCreate_by(user.getId());
-					msg.setTitle("");
-					msg.setWebservice(2);
-					smsSendDao.save(msg);
-					Element msgElement = responseXmlRootElement.addElement("Msg");
-					msgElement.addElement("Mobile").setText(mobile);
-					msgElement.addElement("Id").setText(msg.getId()+"");
 				}
 			}
 			//加密返回
@@ -613,8 +676,11 @@ public class CoreInterfaceImpl implements CoreInterface{
 		}
 		catch(Exception e){
 			logger.error(e.toString());
+			Document responseXmlDoc = DocumentHelper.createDocument();
+			Element responseXmlRootElement = responseXmlDoc.addElement("Root");
+			responseXmlRootElement.addElement("Result").setText("9999");
+			return responseXmlDoc.asXML();
 		}
-		return "";
 	}
 	
 	private String ProcessAccessNum(Map<String,Object> xmlBodyMap,String mobile,String PINID, 
@@ -646,6 +712,7 @@ public class CoreInterfaceImpl implements CoreInterface{
 			PortalUser user = (PortalUser)xmlBodyMap.get(PORTAILUSER);
 			if(user == null||user.getWebservice()!=2){
 				responseXmlRootElement.addElement("Result").setText("0003");
+				return responseXmlDoc.asXML();
 			}
 			else{
 				responseXmlRootElement.addElement("Result").setText("0000");
@@ -691,8 +758,11 @@ public class CoreInterfaceImpl implements CoreInterface{
 		}
 		catch(Exception e){
 			logger.error(e.toString());
+			Document responseXmlDoc = DocumentHelper.createDocument();
+			Element responseXmlRootElement = responseXmlDoc.addElement("Root");
+			responseXmlRootElement.addElement("Result").setText("9999");
+			return responseXmlDoc.asXML();
 		}
-		return "";
 	}
 	private String processSmsGetReport(Map<String,Object> xmlBodyMap,String PINID){
 		try{
@@ -701,6 +771,7 @@ public class CoreInterfaceImpl implements CoreInterface{
 			PortalUser user = (PortalUser)xmlBodyMap.get(PORTAILUSER);
 			if(user == null||user.getWebservice()!=2){
 				responseXmlRootElement.addElement("Result").setText("0003");
+				return responseXmlDoc.asXML();
 			}
 			else{
 				responseXmlRootElement.addElement("Result").setText("0000");
@@ -728,8 +799,11 @@ public class CoreInterfaceImpl implements CoreInterface{
 		}
 		catch(Exception e){
 			logger.error(e.toString());
+			Document responseXmlDoc = DocumentHelper.createDocument();
+			Element responseXmlRootElement = responseXmlDoc.addElement("Root");
+			responseXmlRootElement.addElement("Result").setText("9999");
+			return responseXmlDoc.asXML();
 		}
-		return "";
 	}
 	
 	/**

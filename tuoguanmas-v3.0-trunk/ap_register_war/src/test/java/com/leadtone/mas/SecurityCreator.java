@@ -16,7 +16,7 @@ public class SecurityCreator {
 //		System.out.println("密码:"+userName);
 //		String encodePwd = MasPasswordTool.getEncString(userPWD, userName);
 //		System.out.println("密文:"+encodePwd);
-		System.out.println( MasPasswordTool.getDesString("Ae2U5mRa7M9wuwunA/5K9A==", "hbhhwy") );
+		System.out.println( MasPasswordTool.getDesString("JgoHITILYgIiBSz7/M4YoA==", "mascity_admin") );
 //		
 //		System.out.println("-----------------");
 //		

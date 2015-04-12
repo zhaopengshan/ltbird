@@ -10,6 +10,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.Resource;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -23,7 +25,6 @@ import org.springframework.context.annotation.Scope;
 
 import com.leadtone.delegatemas.security.bean.Region;
 import com.leadtone.delegatemas.security.service.IRegionService;
-import com.leadtone.delegatemas.tunnel.bean.MasTunnel;
 import com.leadtone.mas.bizplug.addr.bean.Contacts;
 import com.leadtone.mas.bizplug.addr.service.ContactsService;
 import com.leadtone.mas.bizplug.common.ApSmsConstants;
@@ -56,6 +57,7 @@ import com.leadtone.mas.bizplug.tunnel.service.MbnMerchantConsumeService;
 import com.leadtone.mas.bizplug.tunnel.service.MbnMerchantTunnelRelationService;
 import com.leadtone.mas.bizplug.tunnel.service.SmsMbnTunnelService;
 import com.leadtone.mas.bizplug.util.BizUtils;
+import com.leadtone.mas.bizplug.util.H3MapSingleton;
 import com.leadtone.mas.bizplug.util.SmsNumberArithmetic;
 import com.leadtone.mas.bizplug.util.WebUtils;
 import com.opensymphony.xwork2.ActionContext;
@@ -93,6 +95,8 @@ public class SmsSendAction extends BaseAction {
 	private UserService userService;
 	@Autowired
 	private IRegionService regionService;
+	@Resource
+	private H3MapSingleton h3MapSingleton; 
 	// 用户扩展信息
 	private PortalUserExtBean portalUserExt;
 	
@@ -424,7 +428,7 @@ public class SmsSendAction extends BaseAction {
 		// 把用户按运营商分类
 		ContactsContainer container = new ContactsContainer();
 		for (Contacts info : userSet) {
-			MbnThreeHCode hcode = mbnThreeHCodeService.queryByBobilePrefix(StringUtil.getShortPrefix(info.getMobile()));
+			MbnThreeHCode hcode = h3MapSingleton.fetchH3Code(StringUtil.getShortPrefix(info.getMobile()));//mbnThreeHCodeService.queryByBobilePrefix(StringUtil.getShortPrefix(info.getMobile()));
 			if( hcode != null && !hcode.getMobilePrefix().equals("170") ){
 				container.addContacts(info, hcode.getCorp());
 			}else{

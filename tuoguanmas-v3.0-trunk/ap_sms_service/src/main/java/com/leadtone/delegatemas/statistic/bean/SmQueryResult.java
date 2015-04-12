@@ -23,6 +23,7 @@ public class SmQueryResult {
     private String result;
     private String failurReason;
     private String content;
+    private int tunnelType;
 
     public String getAccountName() {
         return accountName;
@@ -103,5 +104,13 @@ public class SmQueryResult {
 
 	public void setContent(String content) {
 		this.content = content;
+	}
+
+	public int getTunnelType() {
+		return tunnelType;
+	}
+
+	public void setTunnelType(int tunnelType) {
+		this.tunnelType = tunnelType;
 	}
 }

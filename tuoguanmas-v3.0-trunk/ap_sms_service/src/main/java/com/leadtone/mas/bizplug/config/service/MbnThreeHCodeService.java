@@ -38,6 +38,8 @@ public interface MbnThreeHCodeService {
 	 * @return 结果（对象/集合）
 	 */
 	MbnThreeHCode queryByBobilePrefix(String prefix);
+	
+	List<MbnThreeHCode> queryAll();
 
 	/**
 	 * 插入数据

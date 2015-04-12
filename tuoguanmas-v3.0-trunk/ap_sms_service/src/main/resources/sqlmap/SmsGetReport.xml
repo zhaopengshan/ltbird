@@ -38,7 +38,7 @@
 		tunnel_type,priority_level,send_result,fail_reason,description,
 		create_by,title
 		FROM
-		mbn_sms_had_send WHERE webservice = 3 
+		mbn_sms_had_send WHERE webservice = 2
 		<iterate prepend=" and id in " open="(" close=")"
 			conjunction=",">
 			#[]#

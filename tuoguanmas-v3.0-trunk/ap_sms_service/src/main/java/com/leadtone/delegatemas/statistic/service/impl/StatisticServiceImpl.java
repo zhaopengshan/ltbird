@@ -59,6 +59,7 @@ public class StatisticServiceImpl implements IStatisticService {
                 if (sends != null && !sends.isEmpty()) {
                     for (MbnSmsReadySend send : sends) {
                         result = new SmQueryResult();
+                        result.setTunnelType(send.getTunnelType());
                         result.setAccountName(send.getTosName());
                         result.setCommunicationWay("发送");
                         result.setResult(send.getSendResult() == 2 ? "成功" : "失败");
@@ -70,7 +71,11 @@ public class StatisticServiceImpl implements IStatisticService {
                         	case 3: result.setFailurReason(send.getFailReason()); break;
                         	default: result.setFailurReason("发送失败");
                         }
-                        smItems = this.smItems(send.getContent(), nLength);
+                        if(send.getTunnelType()!=1&&send.getTunnelType()!=2){
+                        	smItems = this.smItems(send.getContent(), 0);
+                        }else{
+                        	smItems = this.smItems(send.getContent(), nLength);
+                        }
                         if (smItems > 1) {
                             result.setSmType("长短信");
                         } else {
@@ -94,9 +99,10 @@ public class StatisticServiceImpl implements IStatisticService {
                 if (inboxs != null && !inboxs.isEmpty()) {
                     for (MbnSmsInbox inbox : inboxs) {
                         result = new SmQueryResult();
+                        result.setTunnelType(0);
                         result.setCommunicationWay("接收");
                         result.setResult("成功");
-                        smItems = this.smItems(inbox.getContent(), nLength);
+                        smItems = this.smItems(inbox.getContent());//TODO
                         if (smItems > 1) {
                             result.setSmType("长短信");
                         } else {
@@ -137,6 +143,7 @@ public class StatisticServiceImpl implements IStatisticService {
                 if (sends != null && !sends.isEmpty()) {
                     for (MbnSmsReadySend send : sends) {
                         result = new SmQueryResult();
+                        result.setTunnelType(send.getTunnelType());
                         result.setAccountName(send.getTosName());
                         result.setCommunicationWay("发送");
                         result.setResult(send.getSendResult() == 2 ? "成功" : "失败");
@@ -148,7 +155,12 @@ public class StatisticServiceImpl implements IStatisticService {
                         	case 3: result.setFailurReason(send.getFailReason()); break;
                         	default: result.setFailurReason("发送失败");
                         }
-                        smItems = this.smItems(send.getContent(), nLength);
+//                        smItems = this.smItems(send.getContent(), nLength);
+                        if(send.getTunnelType()!=1&&send.getTunnelType()!=2){
+                        	smItems = this.smItems(send.getContent(), 0);
+                        }else{
+                        	smItems = this.smItems(send.getContent(), nLength);
+                        }
                         if (smItems > 1) {
                             result.setSmType("长短信");
                         } else {
@@ -173,9 +185,10 @@ public class StatisticServiceImpl implements IStatisticService {
                 if (inboxs != null && !inboxs.isEmpty()) {
                     for (MbnSmsInbox inbox : inboxs) {
                         result = new SmQueryResult();
+                        result.setTunnelType(0);
                         result.setCommunicationWay("接收");
                         result.setResult("成功");
-                        smItems = this.smItems(inbox.getContent(), nLength);
+                        smItems = this.smItems(inbox.getContent());//TODO
                         if (smItems > 1) {
                             result.setSmType("长短信");
                         } else {
@@ -213,13 +226,23 @@ public class StatisticServiceImpl implements IStatisticService {
         Long totalFailurItems = 0L;
         Long smItems = 0L;
         for (MbnSmsReadySend send : sends) {
-            smItems = new Long(this.smItems(send.getContent(), signLength));
-            if (send.getSendResult() == 2) {
-                totalSuccessItems += smItems;
-            } else {
-                totalFailurItems += smItems;
-            }
-            totalItems += smItems;
+        	if(send.getTunnelType()!=1&&send.getTunnelType()!=2){
+        		smItems = new Long(this.smItems(send.getContent(), 0));
+                if (send.getSendResult() == 2) {
+                    totalSuccessItems += smItems;
+                } else {
+                    totalFailurItems += smItems;
+                }
+                totalItems += smItems;
+        	}else{
+        		smItems = new Long(this.smItems(send.getContent(), signLength));
+                if (send.getSendResult() == 2) {
+                    totalSuccessItems += smItems;
+                } else {
+                    totalFailurItems += smItems;
+                }
+                totalItems += smItems;
+        	}
         }
         summary.setSmSendSuccessSummary(totalSuccessItems);
         summary.setSmSendFailurSummary(totalFailurItems);
@@ -343,7 +366,19 @@ public class StatisticServiceImpl implements IStatisticService {
     }
 
     private int smItems(String content, int signLength) {
-        return (content.length() + signLength - 1) / 70 + 1;
+    	int M = content.length();
+    	int N = signLength;
+    	int Z = 1;
+    	if ((M+N)<=70){
+    	    Z=1;
+    	}else{
+    		if((M+N)%67==0){
+    	        Z=(M+N)/67;
+    	    }else{
+    	        Z=(M+N)/67+1;
+    	    }
+    	}
+        return Z;
     }
 
     private int smItems(String content) {
