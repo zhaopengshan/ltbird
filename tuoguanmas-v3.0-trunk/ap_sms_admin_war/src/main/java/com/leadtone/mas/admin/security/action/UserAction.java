@@ -76,6 +76,7 @@ public class UserAction extends BaseAction {
 	
 	// 用户扩展信息
 	private PortalUserExtBean portalUserExt;
+	private Users userInfo;
 	
 	private Map<String, Object> entityMap = new HashMap<String, Object>();
 	
@@ -198,6 +199,23 @@ public class UserAction extends BaseAction {
 	public String smsCheckSettingForward(){
 		try{
 			portalUserExt = portalUserExtService.getByPk(portalUser.getId());
+//			List<Role> rolesList = userService.getAllRoles();
+//			logger.info("qeury allRoles: " + rolesList);
+//			request.setAttribute("rolesList", rolesList);
+			// 查询用户列表
+			//query();
+		}catch (Exception e) {
+			logger.error("query error, ", e);
+			return ERROR;
+		}
+		return SUCCESS;
+	}
+	
+	@Action(value = "webserviceInfoForward", results = { @Result(name = SUCCESS, location = "/ap/user/userWebServiceInfoDialog.jsp"),
+			@Result(name = ERROR, location = "/error.jsp")})
+	public String webserviceInfoForward(){
+		try{
+			userInfo = userService.queryByUserId(portalUser.getId());
 //			List<Role> rolesList = userService.getAllRoles();
 //			logger.info("qeury allRoles: " + rolesList);
 //			request.setAttribute("rolesList", rolesList);
@@ -1047,6 +1065,12 @@ public class UserAction extends BaseAction {
 	}
 	public void setUserSmsCheckPhone(String userSmsCheckPhone) {
 		this.userSmsCheckPhone = userSmsCheckPhone;
+	}
+	public Users getUserInfo() {
+		return userInfo;
+	}
+	public void setUserInfo(Users userInfo) {
+		this.userInfo = userInfo;
 	}
 	
 }

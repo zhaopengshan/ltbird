@@ -284,7 +284,10 @@
         }); 
 	}
 	function selectFile(){
-		$("#receiver").after("</br><span style='color: blue;'>已选择号码文件</span>");
+		var path=$("#inputfile").val();
+        var path1 = path.lastIndexOf("\\");
+        var name = path.substring(path1+1);
+		$("#receiver").nextAll().remove().end().after("</br><span style='color: blue;'>"+name+"</span>");
 	}
 
     /**

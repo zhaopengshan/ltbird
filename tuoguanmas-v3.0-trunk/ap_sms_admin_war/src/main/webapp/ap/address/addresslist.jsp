@@ -169,7 +169,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
             				$("#countGroupContacts").append("<li class='group_icon' onclick='queryByGroup(\""+cgc[i].bookGroupId+"\")'>"+cgc[i].groupName+"("+cgc[i].counts+")</li>");
             			}
             			var gl=data.groupsList;
-            			$("#forgroupList").children(":gt(0)").remove();
+            			$("#forgroupList").children().remove();
             			for(var i = 0;i < gl.length;i++){
             				$("#forgroupList").append("<li class='contact_div_content' onclick='moveContact(\""+gl[i].id+"\")'><label>"+gl[i].groupName+"</label></li>");
             			}

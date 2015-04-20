@@ -288,6 +288,12 @@
         //使用jquery拷贝方式生成行数据
         $("#userrowtemplate").clone(true).appendTo("#userdatalist");
         $("#userdatalist tr:last").attr("id",data.id).show();
+        var webservicestatus=false;
+        var webaction = "";
+        if(data.webService==2){
+        	webservicestatus = true;
+        	webaction = "onclick='webserviceInfo(\""+data.id+"\")'";
+        }
         <s:if test="#session.SESSION_USER_INFO.userType == 3 || #session.SESSION_USER_INFO.userType == 4">
         	if(data.userType==4){
 	        	$("#userdatalist tr:last td").eq(0).html("<input type='checkbox' name='userId' value='"+data.id+"'/>");
@@ -315,9 +321,9 @@
         $("#userdatalist tr:last td").eq(5).html(rols);
         var userstatus = "";
         switch(data.activeFlag){
-            case 1: userstatus = '<img src="./themes/mas3admin/images/user/u127_normal.png" width="13" height="16" alt="使用" title="使用">'; break;
-            case 0: userstatus = '<img src="./themes/mas3admin/images/user/u129_normal.png" width="13" height="16" alt="暂停/锁定" title="暂停/锁定">'; break;
-            default: userstatus = '<img src="./themes/mas3admin/images/user/u127_normal.png" width="13" height="16" alt="使用" title="使用">'; break;
+            case 1: userstatus = '<img src="./themes/mas3admin/images/user/u127_normal.png" '+webaction+' width="13" height="16" alt="使用" title="使用">'; break;
+            case 0: userstatus = '<img src="./themes/mas3admin/images/user/u129_normal.png" '+webaction+' width="13" height="16" alt="暂停/锁定" title="暂停/锁定">'; break;
+            default: userstatus = '<img src="./themes/mas3admin/images/user/u127_normal.png" '+webaction+' width="13" height="16" alt="使用" title="使用">'; break;
         }
         $("#userdatalist tr:last td").eq(6).html(userstatus);
         <s:if test="#session.SESSION_USER_INFO.userType == 3">
@@ -358,6 +364,12 @@
      function editSmsCheck(userId,merchantPin){
      	//userSmsCheck
          $("#userSmsCheck").load("./userAction/smsCheckSettingForward.action?portalUser.id="+userId+"&portalUser.merchantPin="+merchantPin,function(){
+    		
+            //$("#addContactDiv" ).dialog(dialogOptions);
+    	});
+    }
+    function webserviceInfo(userId){
+    	$("#userSmsCheck").load("./userAction/webserviceInfoForward.action?portalUser.id="+userId,function(){
     		
             //$("#addContactDiv" ).dialog(dialogOptions);
     	});
