@@ -306,6 +306,9 @@
         	<isNotNull prepend="and" property="id">
         		user.id = #id#
         	</isNotNull>
+			<isNotNull prepend="and" property="userType">
+        		user.user_type = #userType#
+        	</isNotNull>
         	<isNotNull prepend="and" property="corpAccessNumber">
         		user.corp_access_number = #corpAccessNumber#
         	</isNotNull>

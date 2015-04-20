@@ -718,32 +718,62 @@ public class CoreInterfaceImpl implements CoreInterface{
 				responseXmlRootElement.addElement("Result").setText("0000");
 				List<MasTunnel> userTunnelList = smsMbnTunnelService.getMerchantPinTunnels(user.getMerchant_pin());
 				for( MasTunnel tunnelBean : userTunnelList){
-					if( tunnelBean.getClassify() == 11 ){
-						String qxtUserId = user.getZxt_user_id();// smsReceiveDao.loadAccByUid(user.getMerchant_pin()+"");
-						List<SmsReceive> smsReceive=smsReceiveDao.loadByQxtUserId( Integer.parseInt(qxtUserId) );
-						for(SmsReceive sms:smsReceive){
-							Element msgElement = responseXmlRootElement.addElement("Msg");
-							msgElement.addElement("Mobile").setText(sms.getSender_mobile());
-							msgElement.addElement("Content").setText(sms.getContent());
-							msgElement.addElement("TunnelId").setText(sms.getReceiver_access_number());
-//							String time = DateUtil.format(report.getCommit_time(), "yyyy-MM-dd HH:mm:ss");
-							msgElement.addElement("SendTime").setText(sms.getCreate_time());
-							//更新状态
-							smsReceiveDao.updateSmsStatus(sms.getId()+"");
+					
+					if( tunnelBean.getClassify() == 11 || tunnelBean.getClassify() == 14){
+						if(user.getUser_type() == 3){
+							String qxtUserId = user.getZxt_user_id();// smsReceiveDao.loadAccByUid(user.getMerchant_pin()+"");
+							List<SmsReceive> smsReceive=smsReceiveDao.loadByQxtMpin( user.getMerchant_pin() );
+							for(SmsReceive sms:smsReceive){
+								Element msgElement = responseXmlRootElement.addElement("Msg");
+								msgElement.addElement("Mobile").setText(sms.getSender_mobile());
+								msgElement.addElement("Content").setText(sms.getContent());
+								msgElement.addElement("TunnelId").setText(sms.getReceiver_access_number());
+	//							String time = DateUtil.format(report.getCommit_time(), "yyyy-MM-dd HH:mm:ss");
+								msgElement.addElement("SendTime").setText(sms.getCreate_time());
+								//更新状态
+								smsReceiveDao.updateSmsStatus(sms.getId()+"");
+							}
+						}else{
+							String qxtUserId = user.getZxt_user_id();// smsReceiveDao.loadAccByUid(user.getMerchant_pin()+"");
+							List<SmsReceive> smsReceive=smsReceiveDao.loadByQxtUserId( Integer.parseInt(qxtUserId) );
+							for(SmsReceive sms:smsReceive){
+								Element msgElement = responseXmlRootElement.addElement("Msg");
+								msgElement.addElement("Mobile").setText(sms.getSender_mobile());
+								msgElement.addElement("Content").setText(sms.getContent());
+								msgElement.addElement("TunnelId").setText(sms.getReceiver_access_number());
+//								String time = DateUtil.format(report.getCommit_time(), "yyyy-MM-dd HH:mm:ss");
+								msgElement.addElement("SendTime").setText(sms.getCreate_time());
+								//更新状态
+								smsReceiveDao.updateSmsStatus(sms.getId()+"");
+							}
 						}
 					}else{
-						String accessNumber = tunnelBean.getAccessNumber() + (user.getUser_ext_code()==null?"":user.getUser_ext_code());
-//						accesses.add(user.getCorp_access_number()+(user.getUser_ext_code()==null?"":user.getUser_ext_code()));
-//						accesses.add(user.getZxt_user_id());
-						List<SmsReceive> smsReceive=smsReceiveDao.loadByPk( accessNumber );
-						for(SmsReceive sms:smsReceive){
-							Element msgElement = responseXmlRootElement.addElement("Msg");
-							msgElement.addElement("Mobile").setText(sms.getSender_mobile());
-							msgElement.addElement("Content").setText(sms.getContent());
-							msgElement.addElement("TunnelId").setText(sms.getReceiver_access_number());
-							msgElement.addElement("SendTime").setText(sms.getCreate_time());
-							//更新状态
-							smsReceiveDao.updateSmsStatus(sms.getId()+"");
+						if(user.getUser_type() == 3){
+							String accessNumber = tunnelBean.getAccessNumber();
+							List<SmsReceive> smsReceive=smsReceiveDao.loadByPk( accessNumber );
+							for(SmsReceive sms:smsReceive){
+								Element msgElement = responseXmlRootElement.addElement("Msg");
+								msgElement.addElement("Mobile").setText(sms.getSender_mobile());
+								msgElement.addElement("Content").setText(sms.getContent());
+								msgElement.addElement("TunnelId").setText(sms.getReceiver_access_number());
+								msgElement.addElement("SendTime").setText(sms.getCreate_time());
+								//更新状态
+								smsReceiveDao.updateSmsStatus(sms.getId()+"");
+							}
+						}else{
+							String accessNumber = tunnelBean.getAccessNumber() + (user.getUser_ext_code()==null?"":user.getUser_ext_code());
+//							accesses.add(user.getCorp_access_number()+(user.getUser_ext_code()==null?"":user.getUser_ext_code()));
+//							accesses.add(user.getZxt_user_id());
+							List<SmsReceive> smsReceive=smsReceiveDao.loadByPk( accessNumber );
+							for(SmsReceive sms:smsReceive){
+								Element msgElement = responseXmlRootElement.addElement("Msg");
+								msgElement.addElement("Mobile").setText(sms.getSender_mobile());
+								msgElement.addElement("Content").setText(sms.getContent());
+								msgElement.addElement("TunnelId").setText(sms.getReceiver_access_number());
+								msgElement.addElement("SendTime").setText(sms.getCreate_time());
+								//更新状态
+								smsReceiveDao.updateSmsStatus(sms.getId()+"");
+							}
 						}
 					}
 				}

@@ -95,6 +95,8 @@ public class UserServiceImp implements UserService {
 		// 将setId提前，用于级联操作
 		if( user.getId() == null || user.getId() <=0 ){
 			user.setId(PinGen.getSerialPin());
+			user.setZxtUserId(user.getId().toString());
+			//TODO
 		}
 		//传过来的就已经是加密过的了，sunyadong mark
 //				user.setPassword(new MasPasswordTool()

@@ -444,6 +444,7 @@ public class UserAction extends BaseAction {
 			}
 			portalUser.setId(PinGen.getSerialPin());
 			if(StringUtil.isEmpty(portalUser.getZxtUserId())){
+				//TODO
 				portalUser.setZxtUserId(portalUser.getId().toString());
 			}
 			userService.addUser(portalUser);

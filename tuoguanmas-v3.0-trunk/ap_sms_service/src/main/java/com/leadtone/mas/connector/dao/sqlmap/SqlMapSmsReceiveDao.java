@@ -55,6 +55,18 @@ public class SqlMapSmsReceiveDao extends SqlMapBaseDao<SmsReceive,Integer> imple
 		return null;
 	}
 	
+	@Override
+	public List<SmsReceive> loadByQxtMpin(Long Mpin){
+		try{
+			String statementName = StringUtil.concat(namespace, ".loadByQxtMpin");
+			return getSqlMapClientTemplate().queryForList(statementName, Mpin);
+		}
+		catch(Exception e){
+			logger.error(e.toString());
+		}
+		return null;
+	}
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<String> loadAccByUid(String uid) {

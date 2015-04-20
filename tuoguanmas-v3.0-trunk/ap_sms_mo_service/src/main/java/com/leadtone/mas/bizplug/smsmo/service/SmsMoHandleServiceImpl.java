@@ -217,7 +217,7 @@ public class SmsMoHandleServiceImpl implements SmsMoHandleService {
 			String accessNumber = smsMoLogBean.getReceiver();
 			int accessNumberLen = accessNumber.length();
 			
-			if( accessNumberLen> ( userExtDist + bizExtDist ) ){
+			if( accessNumberLen > ( userExtDist + bizExtDist ) ){
 				String tunnelAccessNumber =  accessNumber.substring( 0, accessNumberLen - ( userExtDist + bizExtDist ) );
 				String userBizExt =  accessNumber.substring( accessNumberLen - ( userExtDist + bizExtDist ) );
 				//根据通道 accessnumber 查询企业关联
@@ -246,9 +246,13 @@ public class SmsMoHandleServiceImpl implements SmsMoHandleService {
 						if (batchId == null) {
 							batchId = mbnSmsReadySendDaoImpl.getBatchIdByAccFromHad(smsMoLogBean.getReceiver());
 						}
+						if(batchId==null){
+							batchId = 0L;
+						}
 
 						mbnSmsInbox.setReplyBatchId(batchId);
 
+						logger.info("Can't find user by userVO[" + userVO.toString() + "]");
 						Users user = userDao.findByAccount(userVO);
 						mbnSmsInbox.setWebService(user.getWebService());
 					} catch (Exception e) {
@@ -258,6 +262,44 @@ public class SmsMoHandleServiceImpl implements SmsMoHandleService {
 					mbnSmsInbox.setReceiverAccessNumber(smsMoLogBean.getReceiver());
 					mbnSmsInbox.setReceiveTime(smsMoLogBean.getCreateTime());
 					return mbnSmsInbox;
+				}else{
+					logger.info("Can't find MbnMerchantTunnelRelation by tunnelAccessNumber[" + tunnelAccessNumber + "]");
+					mbnMerchantTunnelRelation = getMbnMerchantTunnelRelation(sender, accessNumber);
+					if(mbnMerchantTunnelRelation!=null){
+						mbnSmsInbox.setSenderName(getSenderName(sender, mbnMerchantTunnelRelation.getMerchantPin()));
+						mbnSmsInbox.setMerchantPin(mbnMerchantTunnelRelation.getMerchantPin());
+						try {
+							UserVO userVO = new UserVO();
+							userVO.setMerchantPin(mbnMerchantTunnelRelation.getMerchantPin());
+//							userVO.setUserExtCode(userBizExt.substring(0, userExtDist));
+							userVO.setUserType(3);
+							mbnSmsInbox.setServiceCode("00");
+							mbnSmsInbox.setOperationId("00");
+							mbnSmsInbox.setContent(smsMoLogBean.getContent());
+//							mbnSmsInbox.setClassify(smsMoLogBean.getClassify());
+							Long batchId = mbnSmsReadySendDaoImpl.getBatchIdByAcc(smsMoLogBean.getReceiver());
+							if (batchId == null) {
+								batchId = mbnSmsReadySendDaoImpl.getBatchIdByAccFromHad(smsMoLogBean.getReceiver());
+							}
+							if(batchId==null){
+								batchId = 0L;
+							}
+
+							mbnSmsInbox.setReplyBatchId(batchId);
+
+							logger.info("Can't find user by userVO[" + userVO.toString() + "]");
+							Users user = userDao.findByAccount(userVO);
+							mbnSmsInbox.setWebService(user.getWebService());
+						} catch (Exception e) {
+							logger.info("gw mo to inbox error--select user&batchid error:", e);
+						}
+						
+						mbnSmsInbox.setReceiverAccessNumber(smsMoLogBean.getReceiver());
+						mbnSmsInbox.setReceiveTime(smsMoLogBean.getCreateTime());
+						return mbnSmsInbox;
+					}else{
+						logger.info("Can't find MbnMerchantTunnelRelation by tunnelAccessNumber[" + tunnelAccessNumber + " 忽略 处理]");
+					}
 				}
 			}
 		}catch(Exception e){

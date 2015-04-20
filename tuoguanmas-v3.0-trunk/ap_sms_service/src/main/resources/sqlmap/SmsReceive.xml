@@ -35,7 +35,14 @@
 		where webstatus = 0 and user_id = #userId#
 		limit 10
 	</select>
-
+	<select id="loadByQxtMpin" parameterClass="java.lang.Long"
+		resultMap="SmsReceiveResultMap">
+		select id,sender_mobile,content,receiver_access_number,
+		create_time,status
+		from mbn_sms_up_comm_log
+		where webstatus = 0 and merchant_pin = #Uid#
+		limit 10
+	</select>
 	<select id="loadAccByUid" parameterClass="java.lang.String"
 		resultClass="java.lang.String">
 		select access_number

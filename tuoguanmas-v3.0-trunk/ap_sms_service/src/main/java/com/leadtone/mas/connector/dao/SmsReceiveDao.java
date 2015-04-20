@@ -27,4 +27,5 @@ public interface SmsReceiveDao {
 	void updateDbSyncSmsStatus(Long id);
 	List<SmsReceive> loadDbSyncSmsByAccessNumber(String accessNumber, String type);
 	List<SmsReceive> loadDbSyncSmsByUid(Long userId, String type);
+	List<SmsReceive> loadByQxtMpin(Long userId);
 }
