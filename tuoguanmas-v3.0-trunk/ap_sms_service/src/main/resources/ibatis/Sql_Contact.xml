@@ -445,8 +445,14 @@
 	    <isNotNull prepend="and" property="bookGroupId">
 			member.address_book_id_group = #bookGroupId#
 		</isNotNull>
+		<!--<isNotNull prepend="and" property="createBy">
+			member.create_by = #createBy#
+		</isNotNull>-->
 		<isNotNull prepend="and" property="createBy">
-			memver.create_by = #createBy#
+			member.create_by in
+			<iterate  open="("  close=")"  conjunction="," property="createBy">
+                 #createBy[]#
+      	 	</iterate>
 		</isNotNull>
 	    <isNotEmpty prepend="and" property="mobile">
 			member.mobile like CONCAT('%',#mobile#,'%')

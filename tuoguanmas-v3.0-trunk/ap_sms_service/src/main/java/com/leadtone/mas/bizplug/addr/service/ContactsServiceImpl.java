@@ -793,11 +793,12 @@ public class ContactsServiceImpl implements ContactsService {
 		return contactDao.pageCount(paraMap);
 	}
 	@Override
-	public List<ContactVO> exportContact(Contact contact) {
+	public List<ContactVO> exportContact(Contact contact, List<Long> userIds) {
 		Map<String, Object> paramMap = new HashMap<String, Object>();
 		paramMap.put("bookId", contact.getBookId());
 		paramMap.put("mobile", contact.getMobile());
 		paramMap.put("name", contact.getName());
+		paramMap.put("createBy", userIds);
 		paramMap.put("bookGroupId", (null == contact.getBookGroupId()? null : contact.getBookGroupId()));
 		return contactDao.exportContact(paramMap);
 	}

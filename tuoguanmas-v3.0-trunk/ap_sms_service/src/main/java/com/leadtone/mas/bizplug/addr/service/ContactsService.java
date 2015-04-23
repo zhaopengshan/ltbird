@@ -52,7 +52,7 @@ public interface ContactsService {
 	 * @param contact	导出条件 
 	 * @return
 	 */
-	public List<ContactVO> exportContact(Contact contact);
+	public List<ContactVO> exportContact(Contact contact, List<Long> userIds);
 	/**
 	 * 导出联系人(通过选择结果导出)
 	 * @param ids	选择的id

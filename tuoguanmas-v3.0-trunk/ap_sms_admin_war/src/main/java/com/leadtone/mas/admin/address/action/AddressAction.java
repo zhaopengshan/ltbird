@@ -32,9 +32,12 @@ import com.leadtone.mas.bizplug.addr.service.ContactsService;
 import com.leadtone.mas.bizplug.common.Page;
 import com.leadtone.mas.bizplug.common.PageUtil;
 import com.leadtone.mas.bizplug.common.PinGen;
+import com.leadtone.mas.bizplug.common.StringUtil;
 import com.leadtone.mas.bizplug.common.ex.export.DataExport;
 import com.leadtone.mas.bizplug.common.im.DataImport;
+import com.leadtone.mas.bizplug.security.bean.UserVO;
 import com.leadtone.mas.bizplug.security.bean.Users;
+import com.leadtone.mas.bizplug.security.service.UserService;
 import com.leadtone.mas.bizplug.util.WebUtils;
 
 @ParentPackage("json-default")
@@ -44,6 +47,8 @@ public class AddressAction extends BaseAction {
 	private Logger logger = Logger.getLogger(this.getClass());
 	@Resource
 	private ContactsService contactsService;
+	@Resource
+	private UserService userService; 
 	// 用于文件上传
 	private File upload;
 	private String uploadFileName;
@@ -781,17 +786,30 @@ public class AddressAction extends BaseAction {
 		try {
 			Long pinId = users.getMerchantPin();
 			Long createBy = users.getId();
+			List<Long> createBys = new ArrayList<Long>();
 			//通讯录 不区分 私有公共
 			if( !Boolean.valueOf( WebUtils.getPropertyByName(com.leadtone.mas.admin.common.ApSmsConstants.PRIVATEGROUPOPEN))
 					|| users.getUserType() == com.leadtone.mas.admin.common.ApSmsConstants.USER_TYPE_ENTERPRISE_ADMIN ){
-				createBy = null;
+				createBys = null;
+			}else{
+				createBys.add(createBy);
+				UserVO userVO = new UserVO();
+				userVO.setMerchantPin(pinId);
+				userVO.setUserType(3);
+				Users userTemp = userService.validateUser(userVO);
+				if(userTemp!=null){
+					createBys.add(userTemp.getId());
+				}
 			}
 			List<ContactVO> contactVOs = new ArrayList<ContactVO>();
+			if(contact!=null&&!StringUtil.isEmpty(contact.getName())){
+				contact.setName(URLDecoder.decode(contact.getName(), "UTF-8"));
+			}
 			if ("searchResult".equals(flag)) {
 				// 导出搜索结果的联系人
 				logger.info("export contact by searched results: " + contact);
 				contact.setBookId(pinId);
-				contactVOs = contactsService.exportContact(contact);
+				contactVOs = contactsService.exportContact(contact,createBys);
 			} else if ("selected".equals(flag)) {
 				// 导出选中的联系人 多个id以逗号分隔
 
@@ -810,7 +828,7 @@ public class AddressAction extends BaseAction {
 				contact.setMobile("");
 				contact.setBookGroupId(null);
 				contact.setBookId(pinId);
-				contactVOs = contactsService.exportContact(contact);
+				contactVOs = contactsService.exportContact(contact,createBys);
 			}
 
 			entityMap = new HashMap<String, Object>();
