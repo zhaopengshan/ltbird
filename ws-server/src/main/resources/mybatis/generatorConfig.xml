@@ -40,6 +40,8 @@
 
 	    <table tableName="tb_user" schema="mall"> <generatedKey 
 		column="id" sqlStatement="MySql" identity="true" /> </table>
+		<table tableName="tb_provision" schema="mall"> <generatedKey 
+        column="id" sqlStatement="MySql" identity="true" /> </table>
 	<!-- <table tableName="tb_user" schema="mall"></table> -->
 	</context>
 </generatorConfiguration>

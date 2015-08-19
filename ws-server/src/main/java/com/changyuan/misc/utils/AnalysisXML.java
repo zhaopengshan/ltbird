@@ -135,10 +135,10 @@ public class AnalysisXML {
                             provision.setLinkID(e.getTextNormalize());
                         }
                         if (e.getName().equals("ActionID")) {
-                            provision.setActionID(e.getTextNormalize());
+                            provision.setActionID(Integer.valueOf(e.getTextNormalize()));
                         }
                         if (e.getName().equals("ActionReasonID")) {
-                            provision.setActionReasonID(e.getTextNormalize());
+                            provision.setActionReasonID(Integer.valueOf(e.getTextNormalize()));
                         }
                         if (e.getName().equals("SPID")) {
                             provision.setSPID(e.getTextNormalize());

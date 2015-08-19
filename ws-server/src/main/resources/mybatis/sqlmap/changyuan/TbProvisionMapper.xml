@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.changyuan.misc.model.mapper.TbProvisionMapper" >
+  <resultMap id="BaseResultMap" type="com.changyuan.misc.model.pojo.TbProvision" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="platUserId" property="platuserid" jdbcType="INTEGER" />
+    <result column="MsgType" property="msgtype" jdbcType="VARCHAR" />
+    <result column="MSISDN_U" property="msisdnU" jdbcType="VARCHAR" />
+    <result column="MSISDN_U_UserIDType" property="msisdnUUseridtype" jdbcType="INTEGER" />
+    <result column="MSISDN_U_PseudoCode" property="msisdnUPseudocode" jdbcType="VARCHAR" />
+    <result column="MSISDN_D" property="msisdnD" jdbcType="VARCHAR" />
+    <result column="MSISDN_D_UserIDType" property="msisdnDUseridtype" jdbcType="INTEGER" />
+    <result column="MSISDN_D_PseudoCode" property="msisdnDPseudocode" jdbcType="VARCHAR" />
+    <result column="ActionID" property="actionid" jdbcType="INTEGER" />
+    <result column="ActionReasonID" property="actionreasonid" jdbcType="INTEGER" />
+    <result column="Pno" property="pno" jdbcType="VARCHAR" />
+    <result column="SPServiceID" property="spserviceid" jdbcType="VARCHAR" />
+    <result column="SPID" property="spid" jdbcType="VARCHAR" />
+    <result column="Version" property="version" jdbcType="VARCHAR" />
+    <result column="createtime" property="createtime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="TransactionID" property="transactionid" jdbcType="VARCHAR" />
+    <result column="LinkID" property="linkid" jdbcType="VARCHAR" />
+    <result column="FeatureStr" property="featurestr" jdbcType="VARCHAR" />
+    <result column="Send_DeviceType" property="sendDevicetype" jdbcType="INTEGER" />
+    <result column="Send_DeviceID" property="sendDeviceid" jdbcType="VARCHAR" />
+    <result column="Dest_DeviceType" property="destDevicetype" jdbcType="INTEGER" />
+    <result column="Dest_DeviceID" property="destDeviceid" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, platUserId, MsgType, MSISDN_U, MSISDN_U_UserIDType, MSISDN_U_PseudoCode, MSISDN_D, 
+    MSISDN_D_UserIDType, MSISDN_D_PseudoCode, ActionID, ActionReasonID, Pno, SPServiceID, 
+    SPID, Version, createtime, status, TransactionID, LinkID, FeatureStr, Send_DeviceType, 
+    Send_DeviceID, Dest_DeviceType, Dest_DeviceID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.changyuan.misc.model.pojo.TbProvisionExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from tb_provision
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <delete id="deleteByExample" parameterType="com.changyuan.misc.model.pojo.TbProvisionExample" >
+    delete from tb_provision
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insertSelective" parameterType="com.changyuan.misc.model.pojo.TbProvision" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_provision
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="platuserid != null" >
+        platUserId,
+      </if>
+      <if test="msgtype != null" >
+        MsgType,
+      </if>
+      <if test="msisdnU != null" >
+        MSISDN_U,
+      </if>
+      <if test="msisdnUUseridtype != null" >
+        MSISDN_U_UserIDType,
+      </if>
+      <if test="msisdnUPseudocode != null" >
+        MSISDN_U_PseudoCode,
+      </if>
+      <if test="msisdnD != null" >
+        MSISDN_D,
+      </if>
+      <if test="msisdnDUseridtype != null" >
+        MSISDN_D_UserIDType,
+      </if>
+      <if test="msisdnDPseudocode != null" >
+        MSISDN_D_PseudoCode,
+      </if>
+      <if test="actionid != null" >
+        ActionID,
+      </if>
+      <if test="actionreasonid != null" >
+        ActionReasonID,
+      </if>
+      <if test="pno != null" >
+        Pno,
+      </if>
+      <if test="spserviceid != null" >
+        SPServiceID,
+      </if>
+      <if test="spid != null" >
+        SPID,
+      </if>
+      <if test="version != null" >
+        Version,
+      </if>
+      <if test="createtime != null" >
+        createtime,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="transactionid != null" >
+        TransactionID,
+      </if>
+      <if test="linkid != null" >
+        LinkID,
+      </if>
+      <if test="featurestr != null" >
+        FeatureStr,
+      </if>
+      <if test="sendDevicetype != null" >
+        Send_DeviceType,
+      </if>
+      <if test="sendDeviceid != null" >
+        Send_DeviceID,
+      </if>
+      <if test="destDevicetype != null" >
+        Dest_DeviceType,
+      </if>
+      <if test="destDeviceid != null" >
+        Dest_DeviceID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="platuserid != null" >
+        #{platuserid,jdbcType=INTEGER},
+      </if>
+      <if test="msgtype != null" >
+        #{msgtype,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnU != null" >
+        #{msisdnU,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnUUseridtype != null" >
+        #{msisdnUUseridtype,jdbcType=INTEGER},
+      </if>
+      <if test="msisdnUPseudocode != null" >
+        #{msisdnUPseudocode,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnD != null" >
+        #{msisdnD,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnDUseridtype != null" >
+        #{msisdnDUseridtype,jdbcType=INTEGER},
+      </if>
+      <if test="msisdnDPseudocode != null" >
+        #{msisdnDPseudocode,jdbcType=VARCHAR},
+      </if>
+      <if test="actionid != null" >
+        #{actionid,jdbcType=INTEGER},
+      </if>
+      <if test="actionreasonid != null" >
+        #{actionreasonid,jdbcType=INTEGER},
+      </if>
+      <if test="pno != null" >
+        #{pno,jdbcType=VARCHAR},
+      </if>
+      <if test="spserviceid != null" >
+        #{spserviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="spid != null" >
+        #{spid,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=INTEGER},
+      </if>
+      <if test="transactionid != null" >
+        #{transactionid,jdbcType=VARCHAR},
+      </if>
+      <if test="linkid != null" >
+        #{linkid,jdbcType=VARCHAR},
+      </if>
+      <if test="featurestr != null" >
+        #{featurestr,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDevicetype != null" >
+        #{sendDevicetype,jdbcType=INTEGER},
+      </if>
+      <if test="sendDeviceid != null" >
+        #{sendDeviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="destDevicetype != null" >
+        #{destDevicetype,jdbcType=INTEGER},
+      </if>
+      <if test="destDeviceid != null" >
+        #{destDeviceid,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.changyuan.misc.model.pojo.TbProvisionExample" resultType="java.lang.Integer" >
+    select count(*) from tb_provision
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update tb_provision
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.platuserid != null" >
+        platUserId = #{record.platuserid,jdbcType=INTEGER},
+      </if>
+      <if test="record.msgtype != null" >
+        MsgType = #{record.msgtype,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msisdnU != null" >
+        MSISDN_U = #{record.msisdnU,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msisdnUUseridtype != null" >
+        MSISDN_U_UserIDType = #{record.msisdnUUseridtype,jdbcType=INTEGER},
+      </if>
+      <if test="record.msisdnUPseudocode != null" >
+        MSISDN_U_PseudoCode = #{record.msisdnUPseudocode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msisdnD != null" >
+        MSISDN_D = #{record.msisdnD,jdbcType=VARCHAR},
+      </if>
+      <if test="record.msisdnDUseridtype != null" >
+        MSISDN_D_UserIDType = #{record.msisdnDUseridtype,jdbcType=INTEGER},
+      </if>
+      <if test="record.msisdnDPseudocode != null" >
+        MSISDN_D_PseudoCode = #{record.msisdnDPseudocode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.actionid != null" >
+        ActionID = #{record.actionid,jdbcType=INTEGER},
+      </if>
+      <if test="record.actionreasonid != null" >
+        ActionReasonID = #{record.actionreasonid,jdbcType=INTEGER},
+      </if>
+      <if test="record.pno != null" >
+        Pno = #{record.pno,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spserviceid != null" >
+        SPServiceID = #{record.spserviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spid != null" >
+        SPID = #{record.spid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.version != null" >
+        Version = #{record.version,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createtime != null" >
+        createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=INTEGER},
+      </if>
+      <if test="record.transactionid != null" >
+        TransactionID = #{record.transactionid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.linkid != null" >
+        LinkID = #{record.linkid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.featurestr != null" >
+        FeatureStr = #{record.featurestr,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sendDevicetype != null" >
+        Send_DeviceType = #{record.sendDevicetype,jdbcType=INTEGER},
+      </if>
+      <if test="record.sendDeviceid != null" >
+        Send_DeviceID = #{record.sendDeviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.destDevicetype != null" >
+        Dest_DeviceType = #{record.destDevicetype,jdbcType=INTEGER},
+      </if>
+      <if test="record.destDeviceid != null" >
+        Dest_DeviceID = #{record.destDeviceid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update tb_provision
+    set id = #{record.id,jdbcType=INTEGER},
+      platUserId = #{record.platuserid,jdbcType=INTEGER},
+      MsgType = #{record.msgtype,jdbcType=VARCHAR},
+      MSISDN_U = #{record.msisdnU,jdbcType=VARCHAR},
+      MSISDN_U_UserIDType = #{record.msisdnUUseridtype,jdbcType=INTEGER},
+      MSISDN_U_PseudoCode = #{record.msisdnUPseudocode,jdbcType=VARCHAR},
+      MSISDN_D = #{record.msisdnD,jdbcType=VARCHAR},
+      MSISDN_D_UserIDType = #{record.msisdnDUseridtype,jdbcType=INTEGER},
+      MSISDN_D_PseudoCode = #{record.msisdnDPseudocode,jdbcType=VARCHAR},
+      ActionID = #{record.actionid,jdbcType=INTEGER},
+      ActionReasonID = #{record.actionreasonid,jdbcType=INTEGER},
+      Pno = #{record.pno,jdbcType=VARCHAR},
+      SPServiceID = #{record.spserviceid,jdbcType=VARCHAR},
+      SPID = #{record.spid,jdbcType=VARCHAR},
+      Version = #{record.version,jdbcType=VARCHAR},
+      createtime = #{record.createtime,jdbcType=TIMESTAMP},
+      status = #{record.status,jdbcType=INTEGER},
+      TransactionID = #{record.transactionid,jdbcType=VARCHAR},
+      LinkID = #{record.linkid,jdbcType=VARCHAR},
+      FeatureStr = #{record.featurestr,jdbcType=VARCHAR},
+      Send_DeviceType = #{record.sendDevicetype,jdbcType=INTEGER},
+      Send_DeviceID = #{record.sendDeviceid,jdbcType=VARCHAR},
+      Dest_DeviceType = #{record.destDevicetype,jdbcType=INTEGER},
+      Dest_DeviceID = #{record.destDeviceid,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.changyuan.misc.model.pojo.TbProvision" >
+    update tb_provision
+    <set >
+      <if test="platuserid != null" >
+        platUserId = #{platuserid,jdbcType=INTEGER},
+      </if>
+      <if test="msgtype != null" >
+        MsgType = #{msgtype,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnU != null" >
+        MSISDN_U = #{msisdnU,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnUUseridtype != null" >
+        MSISDN_U_UserIDType = #{msisdnUUseridtype,jdbcType=INTEGER},
+      </if>
+      <if test="msisdnUPseudocode != null" >
+        MSISDN_U_PseudoCode = #{msisdnUPseudocode,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnD != null" >
+        MSISDN_D = #{msisdnD,jdbcType=VARCHAR},
+      </if>
+      <if test="msisdnDUseridtype != null" >
+        MSISDN_D_UserIDType = #{msisdnDUseridtype,jdbcType=INTEGER},
+      </if>
+      <if test="msisdnDPseudocode != null" >
+        MSISDN_D_PseudoCode = #{msisdnDPseudocode,jdbcType=VARCHAR},
+      </if>
+      <if test="actionid != null" >
+        ActionID = #{actionid,jdbcType=INTEGER},
+      </if>
+      <if test="actionreasonid != null" >
+        ActionReasonID = #{actionreasonid,jdbcType=INTEGER},
+      </if>
+      <if test="pno != null" >
+        Pno = #{pno,jdbcType=VARCHAR},
+      </if>
+      <if test="spserviceid != null" >
+        SPServiceID = #{spserviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="spid != null" >
+        SPID = #{spid,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        Version = #{version,jdbcType=VARCHAR},
+      </if>
+      <if test="createtime != null" >
+        createtime = #{createtime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=INTEGER},
+      </if>
+      <if test="transactionid != null" >
+        TransactionID = #{transactionid,jdbcType=VARCHAR},
+      </if>
+      <if test="linkid != null" >
+        LinkID = #{linkid,jdbcType=VARCHAR},
+      </if>
+      <if test="featurestr != null" >
+        FeatureStr = #{featurestr,jdbcType=VARCHAR},
+      </if>
+      <if test="sendDevicetype != null" >
+        Send_DeviceType = #{sendDevicetype,jdbcType=INTEGER},
+      </if>
+      <if test="sendDeviceid != null" >
+        Send_DeviceID = #{sendDeviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="destDevicetype != null" >
+        Dest_DeviceType = #{destDevicetype,jdbcType=INTEGER},
+      </if>
+      <if test="destDeviceid != null" >
+        Dest_DeviceID = #{destDeviceid,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
