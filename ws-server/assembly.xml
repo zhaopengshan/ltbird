@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+	<id>all</id>
+	<formats>
+		<format>war</format>
+	</formats>
+	<includeBaseDirectory>true</includeBaseDirectory>
+	<baseDirectory>${name}</baseDirectory>
+
+	<dependencySets>
+		<dependencySet>
+			<useProjectArtifact>true</useProjectArtifact>
+			<outputDirectory>/WEB-INF/lib</outputDirectory>
+		</dependencySet>
+	</dependencySets>
+
+	<fileSets>
+		<fileSet>
+			<directory>${project.build.directory}/classes</directory>
+			<outputDirectory>/WEB-INF/classes</outputDirectory>
+			<includes>
+				<include>config/**</include>
+				<include>log4j.properties</include>
+				<include>spring/**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/scripts</directory>
+			<outputDirectory>lib</outputDirectory>
+			<includes>
+				<include>extensions/**</include>
+			</includes>
+		</fileSet>
+		<fileSet>
+			<directory>src/main/scripts</directory>
+			<outputDirectory>shell</outputDirectory>
+			<includes>
+				<include>start.sh</include>
+			</includes>
+		</fileSet>
+	</fileSets>
+</assembly>
+

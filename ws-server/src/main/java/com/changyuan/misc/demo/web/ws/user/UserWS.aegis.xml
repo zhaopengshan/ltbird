@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mappings xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://xfire.codehaus.org/schemas/1.0/mapping.xsd">
+	<mapping>
+		<method name="getUserList">
+			<return-type mappedName="userList" componentType="com.changyuan.misc.demo.domain.user.User" />
+		</method>
+	</mapping>
+</mappings>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//www.mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <setting name="cacheEnabled" value="false"/>
+    </settings>
+
+    <typeAliases>
+        <!--Define a aliases for easy use of them inside the mapper-->
+        <typeAlias type="org.joda.time.DateTime" alias="DateTime"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <typeHandler javaType="DateTime" jdbcType="DATE"
+                     handler="com.changyuan.misc.utils.typehandler.JodaDateTime2DateTypeHandler"></typeHandler>
+        <typeHandler javaType="DateTime" jdbcType="TIME"
+                     handler="com.changyuan.misc.utils.typehandler.JodaDateTime2TimeTypeHandler"></typeHandler>
+        <typeHandler javaType="DateTime" jdbcType="TIMESTAMP"
+                     handler="com.changyuan.misc.utils.typehandler.JodaDateTime2TimestampTypeHandler"></typeHandler>
+        <typeHandler javaType="String" jdbcType="TIMESTAMP"
+                     handler="com.changyuan.misc.utils.typehandler.String2TimestampTypeHandler"></typeHandler>
+    </typeHandlers>
+</configuration>
